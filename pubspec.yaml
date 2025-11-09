@@ -33,9 +33,13 @@ dependencies:
 
   # ─────────────── 기본 UI/위젯 ───────────────
   cupertino_icons: ^1.0.8
+  flutter_screenutil: ^5.9.3
 
   # ─────────────── 개발 편의성 ───────────────
   get: ^4.7.2
+
+  # ─────────────── 기타 유틸 ───────────────
+  logger: ^2.6.0
 
 dev_dependencies:
   flutter_test:

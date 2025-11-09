@@ -1,0 +1,5 @@
+/// 앱 라우트 경로 정의
+abstract class AppRoutes {
+  static const String splash = '/splash';
+  static const String main = '/main';
+}
