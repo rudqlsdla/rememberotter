@@ -8,6 +8,7 @@ import 'package:rememberotter/feature/birthday/widgets/birthday_list_item.dart';
 import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
+import 'package:rememberotter/shared/services/settings_service.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -146,13 +147,18 @@ class _SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserver {
   final NotificationService _notificationService = NotificationService();
+  final SettingsService _settingsService = SettingsService();
   PermissionStatus _permissionStatus = PermissionStatus.denied;
+  late int _notificationDaysBefore;
+  late TimeOfDay _notificationTime;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _checkPermission();
+    _notificationDaysBefore = _settingsService.notificationDaysBefore;
+    _notificationTime = _settingsService.notificationTime;
   }
 
   @override
@@ -231,6 +237,95 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
     return null;
   }
 
+  Future<void> _showNotificationTimePicker() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _notificationTime,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != _notificationTime) {
+      setState(() {
+        _notificationTime = picked;
+        _settingsService.notificationTime = picked;
+      });
+
+      // 알림 재스케줄링
+      final controller = Get.find<BirthdayController>();
+      await _notificationService
+          .rescheduleAllBirthdayNotifications(controller.birthdays);
+
+      Get.snackbar(
+        '알림 시간 변경',
+        '${_settingsService.notificationTimeLabel}에 알림을 받아요',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  void _showNotificationDaysPicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  '알림 받을 시점',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              const Divider(height: 1),
+              ...SettingsService.notificationDaysOptions.map((days) {
+                final isSelected = _notificationDaysBefore == days;
+                return ListTile(
+                  title: Text(
+                    SettingsService.getNotificationDaysLabel(days),
+                    style: TextStyle(
+                      color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+                  trailing: isSelected
+                      ? const Icon(Icons.check, color: AppColors.primary)
+                      : null,
+                  onTap: () {
+                    setState(() {
+                      _notificationDaysBefore = days;
+                      _settingsService.notificationDaysBefore = days;
+                    });
+                    Navigator.pop(context);
+                  },
+                );
+              }),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -248,14 +343,14 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
         _buildSettingTile(
           icon: Icons.schedule_outlined,
           title: '알림 시간',
-          subtitle: '오전 9시',
-          onTap: () {
-            Get.snackbar(
-              '준비 중',
-              '알림 시간 설정 기능은 준비 중이에요',
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          },
+          subtitle: _settingsService.notificationTimeLabel,
+          onTap: _showNotificationTimePicker,
+        ),
+        _buildSettingTile(
+          icon: Icons.calendar_month_outlined,
+          title: '알림 받을 시점',
+          subtitle: SettingsService.getNotificationDaysLabel(_notificationDaysBefore),
+          onTap: _showNotificationDaysPicker,
         ),
         const Divider(height: 32),
 
@@ -310,7 +405,7 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
           ? Text(
               subtitle,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 color: AppColors.textSecondary,
               ),
             )

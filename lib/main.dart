@@ -23,6 +23,7 @@ void main() async {
   Hive.registerAdapter(GiftAdapter());
   await Hive.openBox<Birthday>('birthdays');
   await Hive.openBox<Gift>('gifts');
+  await Hive.openBox('settings');
   logger.i('Hive 초기화 완료');
 
   // ─── 알림 초기화 ──────────────────────────────────────────────────────

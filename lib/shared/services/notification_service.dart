@@ -5,6 +5,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/settings_service.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -13,10 +14,7 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
-
-  // 알림 시간 (기본 오전 9시)
-  static const int _defaultHour = 9;
-  static const int _defaultMinute = 0;
+  final SettingsService _settingsService = SettingsService();
 
   Future<void> initialize() async {
     // 타임존 초기화
@@ -86,14 +84,14 @@ class NotificationService {
       Duration(days: birthday.notificationDaysBefore),
     );
 
-    // 알림 시간 설정 (오전 9시)
+    // 알림 시간 설정 (설정된 시간 사용)
     final scheduledDate = tz.TZDateTime(
       tz.local,
       notificationDate.year,
       notificationDate.month,
       notificationDate.day,
-      _defaultHour,
-      _defaultMinute,
+      _settingsService.notificationHour,
+      _settingsService.notificationMinute,
     );
 
     // 이미 지난 시간이면 스킵
