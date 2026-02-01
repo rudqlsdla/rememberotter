@@ -2,9 +2,11 @@ import 'package:get/get.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/domain/repositories/birthday_repository.dart';
 import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
+import 'package:rememberotter/shared/services/notification_service.dart';
 
 class BirthdayController extends GetxController {
   final BirthdayRepository _repository = BirthdayRepository();
+  final NotificationService _notificationService = NotificationService();
 
   final RxList<Birthday> birthdays = <Birthday>[].obs;
   final RxList<Birthday> upcomingBirthdays = <Birthday>[].obs;
@@ -15,6 +17,12 @@ class BirthdayController extends GetxController {
   void onInit() {
     super.onInit();
     loadBirthdays();
+    _scheduleAllNotifications();
+  }
+
+  /// 모든 생일 알림 스케줄링
+  Future<void> _scheduleAllNotifications() async {
+    await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
   }
 
   /// 모든 생일 로드
@@ -64,22 +72,26 @@ class BirthdayController extends GetxController {
     required DateTime birthDate,
     String? memo,
   }) async {
-    await _repository.add(
+    final birthday = await _repository.add(
       name: name,
       birthDate: birthDate,
       memo: memo,
     );
+    await _notificationService.scheduleBirthdayNotification(birthday);
     loadBirthdays();
   }
 
   /// 생일 수정
   Future<void> updateBirthday(Birthday birthday) async {
     await _repository.update(birthday);
+    await _notificationService.scheduleBirthdayNotification(birthday);
     loadBirthdays();
   }
 
   /// 생일 삭제 (관련 선물 기록도 함께 삭제)
   Future<void> deleteBirthday(String id) async {
+    // 알림 취소
+    await _notificationService.cancelBirthdayNotification(id);
     // 관련 선물 기록 먼저 삭제
     if (Get.isRegistered<GiftController>()) {
       await Get.find<GiftController>().deleteGiftsByBirthdayId(id);

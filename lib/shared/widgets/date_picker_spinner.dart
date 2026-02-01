@@ -29,7 +29,6 @@ class _DatePickerSpinnerState extends State<DatePickerSpinner> {
   List<String> _day = [];
   late double _width;
   late double _height;
-  late Size _itemSize;
   late ValueNotifier<String> currentDate;
 
   static const int _startYear = 1900;
@@ -42,7 +41,6 @@ class _DatePickerSpinnerState extends State<DatePickerSpinner> {
     );
     _width = widget.width ?? 300;
     _height = widget.height ?? 120;
-    _itemSize = Size(_width / 3, _height);
 
     // 1900년부터 현재 년도까지
     int currentYear = DateTime.now().year;

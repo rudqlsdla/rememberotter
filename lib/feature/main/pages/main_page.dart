@@ -6,6 +6,8 @@ import 'package:rememberotter/feature/birthday/controllers/birthday_controller.d
 import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart';
 import 'package:rememberotter/feature/birthday/widgets/birthday_list_item.dart';
 import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rememberotter/shared/services/notification_service.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -135,25 +137,186 @@ class _FriendsPage extends StatelessWidget {
 }
 
 // 설정 탭 페이지
-class _SettingsPage extends StatelessWidget {
+class _SettingsPage extends StatefulWidget {
   const _SettingsPage();
 
   @override
+  State<_SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserver {
+  final NotificationService _notificationService = NotificationService();
+  PermissionStatus _permissionStatus = PermissionStatus.denied;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkPermission();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      await _checkPermission();
+    }
+  }
+
+  Future<void> _checkPermission() async {
+    final status = await _notificationService.checkPermission();
+    if (mounted) {
+      setState(() {
+        _permissionStatus = status;
+      });
+    }
+  }
+
+  Future<void> _handleNotificationPermission() async {
+    if (_permissionStatus.isGranted) {
+      return;
+    }
+
+    if (_permissionStatus.isPermanentlyDenied) {
+      // 영구 거부 상태면 설정 화면으로 이동
+      final opened = await _notificationService.openSettings();
+      if (!opened) {
+        Get.snackbar(
+          '설정',
+          '설정 앱을 열 수 없습니다',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } else {
+      // 권한 요청
+      final granted = await _notificationService.requestPermission();
+      await _checkPermission();
+
+      if (granted) {
+        // 알림 재스케줄링
+        final controller = Get.find<BirthdayController>();
+        await _notificationService
+            .rescheduleAllBirthdayNotifications(controller.birthdays);
+
+        Get.snackbar(
+          '알림 권한',
+          '알림이 활성화되었습니다',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.success,
+          colorText: Colors.white,
+        );
+      }
+    }
+  }
+
+  String _getPermissionSubtitle() {
+    if (_permissionStatus.isGranted) {
+      return '알림이 활성화되어 있어요';
+    } else if (_permissionStatus.isPermanentlyDenied) {
+      return '설정에서 알림을 활성화해주세요';
+    } else {
+      return '생일 알림을 받으려면 권한이 필요해요';
+    }
+  }
+
+  Widget? _getPermissionTrailing() {
+    if (_permissionStatus.isGranted) {
+      return const Icon(Icons.check_circle, color: AppColors.success);
+    }
+    return null;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.settings, size: 80, color: Colors.grey),
-          const SizedBox(height: 20),
-          Text(
-            '설정',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Text('앱 설정을 관리하세요'),
-        ],
+    return ListView(
+      children: [
+        const SizedBox(height: 16),
+        // 알림 설정 섹션
+        _buildSectionHeader('알림'),
+        _buildSettingTile(
+          icon: Icons.notifications_outlined,
+          title: '알림 권한',
+          subtitle: _getPermissionSubtitle(),
+          onTap: _permissionStatus.isGranted ? null : _handleNotificationPermission,
+          trailing: _getPermissionTrailing(),
+        ),
+        _buildSettingTile(
+          icon: Icons.schedule_outlined,
+          title: '알림 시간',
+          subtitle: '오전 9시',
+          onTap: () {
+            Get.snackbar(
+              '준비 중',
+              '알림 시간 설정 기능은 준비 중이에요',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          },
+        ),
+        const Divider(height: 32),
+
+        // 앱 정보 섹션
+        _buildSectionHeader('앱 정보'),
+        _buildSettingTile(
+          icon: Icons.info_outline,
+          title: '버전',
+          subtitle: '1.0.0',
+        ),
+        _buildSettingTile(
+          icon: Icons.pets,
+          title: '기억해달',
+          subtitle: '해달이 소중한 돌을 간직하듯, 소중한 생일을 간직해드려요',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primary,
+        ),
       ),
+    );
+  }
+
+  Widget _buildSettingTile({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    VoidCallback? onTap,
+    Widget? trailing,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: AppColors.textSecondary),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textPrimary,
+        ),
+      ),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
+            )
+          : null,
+      trailing: trailing ?? (onTap != null ? const Icon(Icons.chevron_right, color: AppColors.textTertiary) : null),
+      onTap: onTap,
     );
   }
 }

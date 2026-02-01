@@ -9,6 +9,7 @@ import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/domain/models/gift.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/notification_service.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
@@ -23,6 +24,10 @@ void main() async {
   await Hive.openBox<Birthday>('birthdays');
   await Hive.openBox<Gift>('gifts');
   logger.i('Hive 초기화 완료');
+
+  // ─── 알림 초기화 ──────────────────────────────────────────────────────
+  await NotificationService().initialize();
+  logger.i('알림 서비스 초기화 완료');
 
   // ─── Orientation ──────────────────────────────────────────────────────
   await SystemChrome.setPreferredOrientations([
