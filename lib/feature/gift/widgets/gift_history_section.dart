@@ -4,6 +4,7 @@ import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
 import 'package:rememberotter/feature/gift/widgets/gift_form_sheet.dart';
 import 'package:rememberotter/feature/gift/widgets/gift_list_item.dart';
+import 'package:rememberotter/shared/widgets/otter_image.dart';
 
 class GiftHistorySection extends StatelessWidget {
   final String birthdayId;
@@ -78,24 +79,20 @@ class GiftHistorySection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(32),
       alignment: Alignment.center,
-      child: Column(
+      child: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.card_giftcard_outlined,
-            size: 48,
-            color: AppColors.textTertiary,
-          ),
-          const SizedBox(height: 12),
-          const Text(
+          OtterImage(type: OtterType.gift, size: 80),
+          SizedBox(height: 16),
+          Text(
             '아직 선물 기록이 없어요',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 4),
-          const Text(
+          SizedBox(height: 4),
+          Text(
             '위의 추가 버튼을 눌러 기록해보세요',
             style: TextStyle(
               fontSize: 12,

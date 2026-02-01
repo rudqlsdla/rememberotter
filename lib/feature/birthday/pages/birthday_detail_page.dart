@@ -81,20 +81,6 @@ class BirthdayDetailPage extends StatelessWidget {
       color: AppColors.surface,
       child: Column(
         children: [
-          // 프로필 아바타
-          CircleAvatar(
-            radius: 48,
-            backgroundColor: isToday ? AppColors.accent : AppColors.primaryLight,
-            child: Text(
-              birthday.name.isNotEmpty ? birthday.name[0] : '?',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: isToday ? Colors.white : AppColors.primary,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
           // 이름
           Text(
             birthday.name,
@@ -145,7 +131,7 @@ class BirthdayDetailPage extends StatelessWidget {
           const SizedBox(height: 16),
           _buildInfoRow(
             icon: Icons.cake_outlined,
-            label: '생년월일',
+            label: birthday.isLunarCalendar ? '생년월일 (음력)' : '생년월일',
             value: '${birthday.birthDate.year}년 ${birthday.birthDate.month}월 ${birthday.birthDate.day}일',
           ),
           const SizedBox(height: 12),
@@ -184,16 +170,14 @@ class BirthdayDetailPage extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Flexible(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
-            ),
-            textAlign: TextAlign.end,
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textPrimary,
           ),
+          textAlign: TextAlign.end,
         ),
       ],
     );

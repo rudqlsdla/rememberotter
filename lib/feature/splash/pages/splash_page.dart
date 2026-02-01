@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rememberotter/app/app_routes.dart';
+import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/widgets/otter_image.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -32,32 +34,29 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // TODO: 로고 이미지로 교체
-            Icon(
-              Icons.cake,
-              size: 100,
-              color: Colors.pinkAccent,
-            ),
-            const SizedBox(height: 20),
+          children: const [
+            OtterImage(type: OtterType.splash, size: 140),
+            SizedBox(height: 24),
             Text(
               '기억해달',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
-              '소중한 생일을 기억하세요',
+              '해달이 소중한 돌을 간직하듯\n소중한 생일을 간직해드려요',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.black54,
+                color: AppColors.textSecondary,
+                height: 1.5,
               ),
             ),
           ],

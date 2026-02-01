@@ -10,6 +10,7 @@ import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
+import 'package:rememberotter/shared/widgets/otter_image.dart';
 import 'package:rememberotter/shared/widgets/time_picker_spinner.dart';
 
 class MainPage extends StatefulWidget {
@@ -91,26 +92,22 @@ class _FriendsPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.cake_outlined,
-                  size: 80,
-                  color: AppColors.textTertiary,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  '등록된 생일이 없어요',
+                const OtterImage(type: OtterType.empty, size: 120),
+                const SizedBox(height: 24),
+                const Text(
+                  '아직 등록된 생일이 없어요',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   '소중한 사람의 생일을 추가해보세요',
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.textTertiary,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],
