@@ -37,7 +37,8 @@ class _MainPageState extends State<MainPage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            color: AppColors.textSecondary,
+            icon: const Icon(Icons.settings_rounded),
             onPressed: () => Get.toNamed(AppRoutes.settings),
           ),
         ],
@@ -48,19 +49,15 @@ class _MainPageState extends State<MainPage> {
         borderRadius: BorderRadius.circular(16),
         color: AppColors.primary,
         child: InkWell(
-          onTap: () => BirthdayFormSheet.show(),
+          onTap: () {
+            HapticFeedback.selectionClick();
+            BirthdayFormSheet.show();
+          },
           borderRadius: BorderRadius.circular(16),
-          child: Container(
-            height: 48,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.add, color: Colors.white),
-                SizedBox(width: 8),
-                Text('추가', style: TextStyle(color: Colors.white)),
-              ],
-            ),
+          child: SizedBox(
+            width: 50,
+            height: 50,
+            child: const Icon(Icons.add, color: Colors.white),
           ),
         ),
       ),

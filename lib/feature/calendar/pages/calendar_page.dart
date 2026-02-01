@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
@@ -214,25 +215,21 @@ class _CalendarPageState extends State<CalendarPage> {
               // 오늘 버튼 (FAB 위에 위치)
               Positioned(
                 right: 16,
-                bottom: 72,
+                bottom: 76,
                 child: Material(
                   elevation: 6,
                   borderRadius: BorderRadius.circular(16),
                   color: AppColors.primary,
                   child: InkWell(
-                    onTap: _scrollToToday,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      _scrollToToday();
+                    },
                     borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      height: 48,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.today, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text('오늘', style: TextStyle(color: Colors.white)),
-                        ],
-                      ),
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Center(child: Text('오늘', style: TextStyle(color: Colors.white))),
                     ),
                   ),
                 ),
