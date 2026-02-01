@@ -215,11 +215,26 @@ class _CalendarPageState extends State<CalendarPage> {
               Positioned(
                 right: 16,
                 bottom: 72,
-                child: FloatingActionButton.small(
-                  heroTag: 'todayButton',
-                  onPressed: _scrollToToday,
-                  backgroundColor: AppColors.primary,
-                  child: const Icon(Icons.today, color: Colors.white),
+                child: Material(
+                  elevation: 6,
+                  borderRadius: BorderRadius.circular(16),
+                  color: AppColors.primary,
+                  child: InkWell(
+                    onTap: _scrollToToday,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      height: 48,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.today, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text('오늘', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],

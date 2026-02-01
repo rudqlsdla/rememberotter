@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
@@ -30,7 +31,8 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         title: const Text('기억해달'),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
+        surfaceTintColor: AppColors.background,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
         actions: [
@@ -41,31 +43,54 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       body: _pages[_currentIndex],
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: () => BirthdayFormSheet.show(),
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add, color: Colors.white),
+      floatingActionButton: Material(
+        elevation: 6,
+        borderRadius: BorderRadius.circular(16),
+        color: AppColors.primary,
+        child: InkWell(
+          onTap: () => BirthdayFormSheet.show(),
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add, color: Colors.white),
+                SizedBox(width: 8),
+                Text('추가', style: TextStyle(color: Colors.white)),
+              ],
+            ),
+          ),
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textSecondary,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: '캘린더',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: '친구',
-          ),
-        ],
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: AppColors.background,
+          currentIndex: _currentIndex,
+          selectedItemColor: AppColors.primary,
+          unselectedItemColor: AppColors.textSecondary,
+          onTap: (index) {
+            HapticFeedback.selectionClick();
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today),
+              label: '캘린더',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.cake_outlined),
+              label: '생일',
+            ),
+          ],
+        ),
       ),
     );
   }
