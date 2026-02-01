@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:memocal/app/app_bindings.dart';
 import 'package:memocal/app/app_pages.dart';
 import 'package:memocal/app/app_routes.dart';
+import 'package:memocal/data/models/birthday.dart';
 import 'package:memocal/shared/log/logger.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
@@ -12,6 +14,12 @@ final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<v
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   logger.i('앱 시작');
+
+  // ─── Hive 초기화 ──────────────────────────────────────────────────────
+  await Hive.initFlutter();
+  Hive.registerAdapter(BirthdayAdapter());
+  await Hive.openBox<Birthday>('birthdays');
+  logger.i('Hive 초기화 완료');
 
   // ─── Orientation ──────────────────────────────────────────────────────
   await SystemChrome.setPreferredOrientations([

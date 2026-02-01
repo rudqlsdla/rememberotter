@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:memocal/design_system/variable/app_colors.dart';
+import 'package:memocal/feature/birthday/controllers/birthday_controller.dart';
 import 'package:memocal/feature/calendar/widgets/month_calendar_widget.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -23,6 +25,12 @@ class _CalendarPageState extends State<CalendarPage> {
   void initState() {
     super.initState();
     _selectedDay = DateTime.now();
+
+    // 생일 데이터 변경 시 캘린더 갱신
+    final controller = Get.find<BirthdayController>();
+    ever(controller.birthdays, (_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -85,6 +93,11 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
+  bool _hasBirthday(DateTime date) {
+    final controller = Get.find<BirthdayController>();
+    return controller.hasBirthdayOnDate(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -145,6 +158,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           },
                           isSameDay: _isSameDay,
                           isToday: _isToday,
+                          hasBirthday: _hasBirthday,
                         );
                       },
                       childCount: _monthRange, // 과거 5년으로 제한
@@ -166,6 +180,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       },
                       isSameDay: _isSameDay,
                       isToday: _isToday,
+                      hasBirthday: _hasBirthday,
                     ),
                   ),
                   // 미래 달들 (아래로 스크롤) - 5년 제한
@@ -188,6 +203,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           },
                           isSameDay: _isSameDay,
                           isToday: _isToday,
+                          hasBirthday: _hasBirthday,
                         );
                       },
                       childCount: _monthRange, // 미래 5년으로 제한

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:memocal/design_system/variable/app_colors.dart';
+import 'package:memocal/feature/birthday/controllers/birthday_controller.dart';
+import 'package:memocal/feature/birthday/widgets/birthday_form_sheet.dart';
+import 'package:memocal/feature/birthday/widgets/birthday_list_item.dart';
 import 'package:memocal/feature/calendar/pages/calendar_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -30,6 +34,13 @@ class _MainPageState extends State<MainPage> {
         elevation: 0,
       ),
       body: _pages[_currentIndex],
+      floatingActionButton: _currentIndex != 2
+          ? FloatingActionButton(
+              onPressed: () => BirthdayFormSheet.show(),
+              backgroundColor: AppColors.primary,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         selectedItemColor: AppColors.primary,
@@ -64,20 +75,56 @@ class _FriendsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.people, size: 80, color: Colors.blue),
-          const SizedBox(height: 20),
-          Text(
-            '친구 목록',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Text('친구를 추가하고 관리하세요'),
-        ],
-      ),
+    return GetX<BirthdayController>(
+      builder: (controller) {
+        final birthdays = controller.birthdays;
+
+        if (birthdays.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.cake_outlined,
+                  size: 80,
+                  color: AppColors.textTertiary,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  '등록된 생일이 없어요',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '소중한 사람의 생일을 추가해보세요',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          itemCount: birthdays.length,
+          separatorBuilder: (_, __) => const Divider(height: 1),
+          itemBuilder: (context, index) {
+            final birthday = birthdays[index];
+            return BirthdayListItem(
+              birthday: birthday,
+              onTap: () => BirthdayFormSheet.show(birthday: birthday),
+              onDelete: () => controller.deleteBirthday(birthday.id),
+            );
+          },
+        );
+      },
     );
   }
 }

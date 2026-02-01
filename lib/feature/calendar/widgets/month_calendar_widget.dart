@@ -9,6 +9,7 @@ class MonthCalendarWidget extends StatelessWidget {
   final Function(DateTime) onDaySelected;
   final bool Function(DateTime?, DateTime?) isSameDay;
   final bool Function(DateTime) isToday;
+  final bool Function(DateTime)? hasBirthday;
 
   const MonthCalendarWidget({
     super.key,
@@ -19,6 +20,7 @@ class MonthCalendarWidget extends StatelessWidget {
     required this.onDaySelected,
     required this.isSameDay,
     required this.isToday,
+    this.hasBirthday,
   });
 
   bool _isCurrentMonth(DateTime day) {
@@ -63,6 +65,7 @@ class MonthCalendarWidget extends StatelessWidget {
               final isSelected = isSameDay(day, selectedDay);
               final isCurrentMonthDay = _isCurrentMonth(day);
               final weekday = day.weekday;
+              final hasBirthdayOnDay = hasBirthday?.call(day) ?? false;
 
               return GestureDetector(
                 onTap: () => onDaySelected(day),
@@ -76,25 +79,41 @@ class MonthCalendarWidget extends StatelessWidget {
                             : Colors.transparent,
                     shape: BoxShape.circle,
                   ),
-                  child: Center(
-                    child: Text(
-                      '${day.day}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: isTodayDate || isSelected
-                            ? FontWeight.w600
-                            : FontWeight.normal,
-                        color: isSelected
-                            ? Colors.white
-                            : !isCurrentMonthDay
-                                ? AppColors.calendarDisabled
-                                : weekday == 7
-                                    ? AppColors.calendarWeekend
-                                    : weekday == 6
-                                        ? AppColors.primary
-                                        : AppColors.textPrimary,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: isTodayDate || isSelected
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                          color: isSelected
+                              ? Colors.white
+                              : !isCurrentMonthDay
+                                  ? AppColors.calendarDisabled
+                                  : weekday == 7
+                                      ? AppColors.calendarWeekend
+                                      : weekday == 6
+                                          ? AppColors.primary
+                                          : AppColors.textPrimary,
+                        ),
                       ),
-                    ),
+                      // 생일 마커
+                      if (hasBirthdayOnDay && isCurrentMonthDay)
+                        Positioned(
+                          bottom: 6,
+                          child: Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: isSelected ? Colors.white : AppColors.accent,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               );
