@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart';
@@ -119,7 +120,10 @@ class _FriendsPage extends StatelessWidget {
             final birthday = birthdays[index];
             return BirthdayListItem(
               birthday: birthday,
-              onTap: () => BirthdayFormSheet.show(birthday: birthday),
+              onTap: () => Get.toNamed(
+                AppRoutes.birthdayDetail,
+                arguments: birthday.id,
+              ),
               onDelete: () => controller.deleteBirthday(birthday.id),
             );
           },

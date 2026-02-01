@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/domain/repositories/birthday_repository.dart';
+import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
 
 class BirthdayController extends GetxController {
   final BirthdayRepository _repository = BirthdayRepository();
@@ -77,8 +78,12 @@ class BirthdayController extends GetxController {
     loadBirthdays();
   }
 
-  /// 생일 삭제
+  /// 생일 삭제 (관련 선물 기록도 함께 삭제)
   Future<void> deleteBirthday(String id) async {
+    // 관련 선물 기록 먼저 삭제
+    if (Get.isRegistered<GiftController>()) {
+      await Get.find<GiftController>().deleteGiftsByBirthdayId(id);
+    }
     await _repository.delete(id);
     loadBirthdays();
   }

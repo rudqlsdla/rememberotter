@@ -7,6 +7,7 @@ import 'package:rememberotter/app/app_bindings.dart';
 import 'package:rememberotter/app/app_pages.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
+import 'package:rememberotter/domain/models/gift.dart';
 import 'package:rememberotter/shared/log/logger.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
@@ -18,7 +19,9 @@ void main() async {
   // ─── Hive 초기화 ──────────────────────────────────────────────────────
   await Hive.initFlutter();
   Hive.registerAdapter(BirthdayAdapter());
+  Hive.registerAdapter(GiftAdapter());
   await Hive.openBox<Birthday>('birthdays');
+  await Hive.openBox<Gift>('gifts');
   logger.i('Hive 초기화 완료');
 
   // ─── Orientation ──────────────────────────────────────────────────────
