@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/feature/splash/pages/splash_page.dart';
+import 'package:rememberotter/feature/onboarding/pages/notification_consent_page.dart';
 import 'package:rememberotter/feature/main/pages/main_page.dart';
 import 'package:rememberotter/feature/birthday/pages/birthday_detail_page.dart';
 import 'package:rememberotter/feature/settings/pages/settings_page.dart';
@@ -13,6 +14,12 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.splash,
       page: () => const SplashPage(),
+    ),
+
+    // 알림 동의 화면
+    GetPage(
+      name: AppRoutes.notificationConsent,
+      page: () => const NotificationConsentPage(),
     ),
 
     // 메인 화면

@@ -7,12 +7,17 @@ class SettingsService {
   factory SettingsService() => _instance;
   SettingsService._internal();
 
-  static const String _boxName = 'settings';
+  static const String boxName = 'settings';
   static const String _keyNotificationDaysBefore = 'notificationDaysBefore';
   static const String _keyNotificationHour = 'notificationHour';
   static const String _keyNotificationMinute = 'notificationMinute';
 
-  Box get _box => Hive.box(_boxName);
+  Box get _box => Hive.box(boxName);
+
+  /// Box 인스턴스 반환 (static 접근용)
+  static Future<Box> getBox() async {
+    return Hive.box(boxName);
+  }
 
   /// 기본 알림 일수 (기본값: 1일 전)
   int get notificationDaysBefore {

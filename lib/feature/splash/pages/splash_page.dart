@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
+import 'package:rememberotter/feature/onboarding/pages/notification_consent_page.dart';
 import 'package:rememberotter/shared/log/logger.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
 
@@ -27,8 +28,16 @@ class _SplashPageState extends State<SplashPage> {
     // 스플래시 화면 표시 시간 (2초)
     await Future.delayed(const Duration(seconds: 2));
 
-    // 메인 화면으로 이동
-    Get.offAllNamed(AppRoutes.main);
+    // 알림 동의 화면을 봤는지 확인
+    final hasShownConsent = await NotificationConsentPage.hasShownConsent();
+
+    if (hasShownConsent) {
+      // 이미 봤으면 메인 화면으로
+      Get.offAllNamed(AppRoutes.main);
+    } else {
+      // 처음이면 알림 동의 화면으로
+      Get.offAllNamed(AppRoutes.notificationConsent);
+    }
   }
 
   @override
