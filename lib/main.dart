@@ -51,6 +51,9 @@ class MyApp extends StatelessWidget {
           navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,
           title: '기억해달',
+          theme: ThemeData(
+            fontFamily: 'Maplestory',
+          ),
           initialRoute: AppRoutes.splash,
           getPages: AppPages.routes,
           initialBinding: AppBindings(),
