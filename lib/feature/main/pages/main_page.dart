@@ -35,7 +35,7 @@ class _MainPageState extends State<MainPage> {
       ),
       body: _pages[_currentIndex],
       floatingActionButton: _currentIndex != 2
-          ? FloatingActionButton(
+          ? FloatingActionButton.small(
               onPressed: () => BirthdayFormSheet.show(),
               backgroundColor: AppColors.primary,
               child: const Icon(Icons.add, color: Colors.white),

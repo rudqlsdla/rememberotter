@@ -211,11 +211,12 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 ],
               ),
-              // 오늘 버튼
+              // 오늘 버튼 (FAB 위에 위치)
               Positioned(
                 right: 16,
-                bottom: 16,
+                bottom: 72,
                 child: FloatingActionButton.small(
+                  heroTag: 'todayButton',
                   onPressed: _scrollToToday,
                   backgroundColor: AppColors.primary,
                   child: const Icon(Icons.today, color: Colors.white),
