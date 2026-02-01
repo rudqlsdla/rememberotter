@@ -104,4 +104,16 @@ class BirthdayController extends GetxController {
   List<Birthday> searchBirthdays(String query) {
     return _repository.search(query);
   }
+
+  /// 모든 생일의 알림 일수 일괄 업데이트
+  Future<void> updateAllNotificationDaysBefore(int days) async {
+    for (final birthday in birthdays) {
+      if (birthday.notificationDaysBefore != days) {
+        final updated = birthday.copyWith(notificationDaysBefore: days);
+        await _repository.update(updated);
+      }
+    }
+    loadBirthdays();
+    await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
+  }
 }

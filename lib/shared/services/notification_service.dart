@@ -79,13 +79,13 @@ class NotificationService {
       return;
     }
 
-    final nextBirthday = _getNextBirthday(birthday.birthDate);
-    final notificationDate = nextBirthday.subtract(
+    var nextBirthday = _getNextBirthday(birthday.birthDate);
+    var notificationDate = nextBirthday.subtract(
       Duration(days: birthday.notificationDaysBefore),
     );
 
     // 알림 시간 설정 (설정된 시간 사용)
-    final scheduledDate = tz.TZDateTime(
+    var scheduledDate = tz.TZDateTime(
       tz.local,
       notificationDate.year,
       notificationDate.month,
@@ -94,10 +94,20 @@ class NotificationService {
       _settingsService.notificationMinute,
     );
 
-    // 이미 지난 시간이면 스킵
+    // 이미 지난 시간이면 내년 생일 기준으로 재계산
     if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
-      logger.i('${birthday.name} 알림: 이미 지난 시간');
-      return;
+      nextBirthday = DateTime(nextBirthday.year + 1, nextBirthday.month, nextBirthday.day);
+      notificationDate = nextBirthday.subtract(
+        Duration(days: birthday.notificationDaysBefore),
+      );
+      scheduledDate = tz.TZDateTime(
+        tz.local,
+        notificationDate.year,
+        notificationDate.month,
+        notificationDate.day,
+        _settingsService.notificationHour,
+        _settingsService.notificationMinute,
+      );
     }
 
     final notificationId = birthday.id.hashCode;

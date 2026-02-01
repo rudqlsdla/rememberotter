@@ -1,7 +1,7 @@
 name: rememberotter
 description: "기억해달 프로젝트"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.2+1
 
 environment:
   sdk: ^3.8.1
@@ -32,6 +32,9 @@ dependencies:
 
   # ─────────────── 권한 관리 ───────────────
   permission_handler: ^12.0.1
+
+  # ─────────────── 앱 정보 ───────────────
+  package_info_plus: ^8.0.0
 
 dev_dependencies:
   flutter_test:

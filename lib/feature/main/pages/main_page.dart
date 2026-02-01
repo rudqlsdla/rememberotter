@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
@@ -149,9 +150,10 @@ class _SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserver {
   final NotificationService _notificationService = NotificationService();
   final SettingsService _settingsService = SettingsService();
-  PermissionStatus _permissionStatus = PermissionStatus.denied;
+  PermissionStatus? _permissionStatus;
   late int _notificationDaysBefore;
   late TimeOfDay _notificationTime;
+  String _appVersion = '';
 
   @override
   void initState() {
@@ -160,6 +162,16 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
     _checkPermission();
     _notificationDaysBefore = _settingsService.notificationDaysBefore;
     _notificationTime = _settingsService.notificationTime;
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _appVersion = packageInfo.version;
+      });
+    }
   }
 
   @override
@@ -185,11 +197,12 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
   }
 
   Future<void> _handleNotificationPermission() async {
-    if (_permissionStatus.isGranted) {
+    if (_permissionStatus == null) return;
+    if (_permissionStatus!.isGranted) {
       return;
     }
 
-    if (_permissionStatus.isPermanentlyDenied) {
+    if (_permissionStatus!.isPermanentlyDenied) {
       // 영구 거부 상태면 설정 화면으로 이동
       final opened = await _notificationService.openSettings();
       if (!opened) {
@@ -222,9 +235,12 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
   }
 
   String _getPermissionSubtitle() {
-    if (_permissionStatus.isGranted) {
+    if (_permissionStatus == null) {
+      return '';
+    }
+    if (_permissionStatus!.isGranted) {
       return '알림이 활성화되어 있어요';
-    } else if (_permissionStatus.isPermanentlyDenied) {
+    } else if (_permissionStatus!.isPermanentlyDenied) {
       return '설정에서 알림을 활성화해주세요';
     } else {
       return '생일 알림을 받으려면 권한이 필요해요';
@@ -232,7 +248,8 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
   }
 
   Widget? _getPermissionTrailing() {
-    if (_permissionStatus.isGranted) {
+    if (_permissionStatus == null) return null;
+    if (_permissionStatus!.isGranted) {
       return const Icon(Icons.check_circle, color: AppColors.success);
     }
     return null;
@@ -366,12 +383,22 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
                   trailing: isSelected
                       ? const Icon(Icons.check, color: AppColors.primary)
                       : null,
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
                       _notificationDaysBefore = days;
                       _settingsService.notificationDaysBefore = days;
                     });
                     Navigator.pop(context);
+
+                    // 기존 생일 데이터도 일괄 업데이트
+                    final controller = Get.find<BirthdayController>();
+                    await controller.updateAllNotificationDaysBefore(days);
+
+                    Get.snackbar(
+                      '알림 설정 변경',
+                      '모든 생일의 알림 시점이 ${SettingsService.getNotificationDaysLabel(days)}(으)로 변경되었어요',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
                   },
                 );
               }),
@@ -394,7 +421,7 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
           icon: Icons.notifications_outlined,
           title: '알림 권한',
           subtitle: _getPermissionSubtitle(),
-          onTap: _permissionStatus.isGranted ? null : _handleNotificationPermission,
+          onTap: (_permissionStatus?.isGranted ?? false) ? null : _handleNotificationPermission,
           trailing: _getPermissionTrailing(),
         ),
         _buildSettingTile(
@@ -416,7 +443,7 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
         _buildSettingTile(
           icon: Icons.info_outline,
           title: '버전',
-          subtitle: '1.0.0',
+          subtitle: _appVersion.isEmpty ? '-' : _appVersion,
         ),
         _buildSettingTile(
           icon: Icons.pets,
