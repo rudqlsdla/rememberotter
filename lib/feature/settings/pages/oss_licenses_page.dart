@@ -33,7 +33,7 @@ class OssLicensesPage extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  package.version,
+                  package.version ?? '',
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
@@ -227,13 +227,14 @@ class _LicenseDetailPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    'v${package.version}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
+                  if (package.version != null)
+                    Text(
+                      'v${package.version}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
-                  ),
                   if (package.description.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     Text(

@@ -286,8 +286,9 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
       appBar: AppBar(
         title: const Text('설정'),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
         foregroundColor: AppColors.textPrimary,
+        surfaceTintColor: AppColors.background,
         elevation: 0,
       ),
       body: ListView(
