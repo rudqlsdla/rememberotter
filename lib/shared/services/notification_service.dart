@@ -14,6 +14,9 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
+  /// iOS 최대 예약 알림 개수 제한
+  static const int _maxScheduledNotifications = 64;
+
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
   final SettingsService _settingsService = SettingsService();
@@ -185,13 +188,27 @@ class NotificationService {
     logger.i('모든 알림 취소');
   }
 
-  /// 모든 생일 알림 재스케줄링
+  /// 모든 생일 알림 재스케줄링 (iOS 64개 제한 대응)
   Future<void> rescheduleAllBirthdayNotifications(List<Birthday> birthdays) async {
     await cancelAllNotifications();
-    for (final birthday in birthdays) {
+
+    // 알림 활성화된 생일만 필터링
+    final enabledBirthdays = birthdays
+        .where((b) => b.notificationEnabled)
+        .toList();
+
+    // D-day 가까운 순으로 정렬
+    enabledBirthdays.sort((a, b) =>
+        a.daysUntilBirthday.compareTo(b.daysUntilBirthday));
+
+    // 최대 64개만 스케줄링
+    final toSchedule = enabledBirthdays.take(_maxScheduledNotifications);
+
+    for (final birthday in toSchedule) {
       await scheduleBirthdayNotification(birthday);
     }
-    logger.i('${birthdays.length}개 생일 알림 재스케줄링 완료');
+
+    logger.i('${toSchedule.length}/${enabledBirthdays.length}개 생일 알림 스케줄링 완료');
   }
 
   /// 다음 생일 날짜 계산
