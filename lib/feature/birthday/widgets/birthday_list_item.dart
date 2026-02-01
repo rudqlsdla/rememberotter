@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rememberotter/data/models/birthday.dart';
+import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 
 class BirthdayListItem extends StatelessWidget {

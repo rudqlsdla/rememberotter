@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:rememberotter/data/models/birthday.dart';
+import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:uuid/uuid.dart';
 
 class BirthdayRepository {

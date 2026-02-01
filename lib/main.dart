@@ -6,7 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rememberotter/app/app_bindings.dart';
 import 'package:rememberotter/app/app_pages.dart';
 import 'package:rememberotter/app/app_routes.dart';
-import 'package:rememberotter/data/models/birthday.dart';
+import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/shared/log/logger.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rememberotter/data/models/birthday.dart';
+import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/shared/widgets/date_picker_spinner.dart';
