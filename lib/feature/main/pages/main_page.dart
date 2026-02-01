@@ -35,6 +35,7 @@ class _MainPageState extends State<MainPage> {
         elevation: 0,
       ),
       body: _pages[_currentIndex],
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
       floatingActionButton: _currentIndex != 2
           ? FloatingActionButton.small(
               onPressed: () => BirthdayFormSheet.show(),

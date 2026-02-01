@@ -107,7 +107,7 @@ class _CalendarPageState extends State<CalendarPage> {
         // 요일 헤더 (고정)
         Container(
           color: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 2),
           child: Row(
             children: weekdays.map((day) {
               return Expanded(
@@ -115,7 +115,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   child: Text(
                     day,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 10,
                       fontWeight: FontWeight.w600,
                       color: day == '일'
                           ? AppColors.calendarWeekend
