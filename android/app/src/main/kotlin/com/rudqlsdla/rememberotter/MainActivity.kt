@@ -1,4 +1,4 @@
-package com.rudqlsdla.memocal
+package com.rudqlsdla.rememberotter
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:memocal/data/models/birthday.dart';
-import 'package:memocal/data/repositories/birthday_repository.dart';
+import 'package:rememberotter/data/models/birthday.dart';
+import 'package:rememberotter/data/repositories/birthday_repository.dart';
 
 class BirthdayController extends GetxController {
   final BirthdayRepository _repository = BirthdayRepository();

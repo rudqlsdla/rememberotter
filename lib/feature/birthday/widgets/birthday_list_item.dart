@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:memocal/data/models/birthday.dart';
-import 'package:memocal/design_system/variable/app_colors.dart';
+import 'package:rememberotter/data/models/birthday.dart';
+import 'package:rememberotter/design_system/variable/app_colors.dart';
 
 class BirthdayListItem extends StatelessWidget {
   final Birthday birthday;

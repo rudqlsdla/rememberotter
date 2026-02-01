@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:memocal/app/app_bindings.dart';
-import 'package:memocal/app/app_pages.dart';
-import 'package:memocal/app/app_routes.dart';
-import 'package:memocal/data/models/birthday.dart';
-import 'package:memocal/shared/log/logger.dart';
+import 'package:rememberotter/app/app_bindings.dart';
+import 'package:rememberotter/app/app_pages.dart';
+import 'package:rememberotter/app/app_routes.dart';
+import 'package:rememberotter/data/models/birthday.dart';
+import 'package:rememberotter/shared/log/logger.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 

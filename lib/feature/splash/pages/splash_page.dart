@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:memocal/app/app_routes.dart';
-import 'package:memocal/shared/log/logger.dart';
+import 'package:rememberotter/app/app_routes.dart';
+import 'package:rememberotter/shared/log/logger.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

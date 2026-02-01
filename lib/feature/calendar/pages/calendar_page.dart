@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:memocal/design_system/variable/app_colors.dart';
-import 'package:memocal/feature/birthday/controllers/birthday_controller.dart';
-import 'package:memocal/feature/calendar/widgets/month_calendar_widget.dart';
+import 'package:rememberotter/design_system/variable/app_colors.dart';
+import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
+import 'package:rememberotter/feature/calendar/widgets/month_calendar_widget.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});

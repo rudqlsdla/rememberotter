@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:memocal/design_system/variable/app_colors.dart';
-import 'package:memocal/feature/birthday/controllers/birthday_controller.dart';
-import 'package:memocal/feature/birthday/widgets/birthday_form_sheet.dart';
-import 'package:memocal/feature/birthday/widgets/birthday_list_item.dart';
-import 'package:memocal/feature/calendar/pages/calendar_page.dart';
+import 'package:rememberotter/design_system/variable/app_colors.dart';
+import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
+import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart';
+import 'package:rememberotter/feature/birthday/widgets/birthday_list_item.dart';
+import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
