@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:memocal/design_system/variable/app_colors.dart';
 
 class MainPage extends StatefulWidget {
