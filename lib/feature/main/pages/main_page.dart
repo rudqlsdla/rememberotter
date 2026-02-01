@@ -9,6 +9,7 @@ import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
+import 'package:rememberotter/shared/widgets/time_picker_spinner.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -237,39 +238,95 @@ class _SettingsPageState extends State<_SettingsPage> with WidgetsBindingObserve
     return null;
   }
 
-  Future<void> _showNotificationTimePicker() async {
-    final picked = await showTimePicker(
+  void _showNotificationTimePicker() {
+    TimeOfDay tempTime = _notificationTime;
+
+    showModalBottomSheet(
       context: context,
-      initialTime: _notificationTime,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-            ),
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Container(
+          height: 280,
+          padding: const EdgeInsets.only(top: 8),
+          child: Column(
+            children: [
+              // 헤더
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        '취소',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      '알림 시간',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        setState(() {
+                          _notificationTime = tempTime;
+                          _settingsService.notificationTime = tempTime;
+                        });
+                        Navigator.pop(context);
+
+                        // 알림 재스케줄링
+                        final controller = Get.find<BirthdayController>();
+                        await _notificationService
+                            .rescheduleAllBirthdayNotifications(controller.birthdays);
+
+                        Get.snackbar(
+                          '알림 시간 변경',
+                          '${_settingsService.notificationTimeLabel}에 알림을 받아요',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      },
+                      child: const Text(
+                        '확인',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              // Time Picker
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: TimePickerSpinner(
+                    height: 150,
+                    time: _notificationTime,
+                    onChanged: (time) {
+                      tempTime = time;
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
-          child: child!,
         );
       },
     );
-
-    if (picked != null && picked != _notificationTime) {
-      setState(() {
-        _notificationTime = picked;
-        _settingsService.notificationTime = picked;
-      });
-
-      // 알림 재스케줄링
-      final controller = Get.find<BirthdayController>();
-      await _notificationService
-          .rescheduleAllBirthdayNotifications(controller.birthdays);
-
-      Get.snackbar(
-        '알림 시간 변경',
-        '${_settingsService.notificationTimeLabel}에 알림을 받아요',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
   }
 
   void _showNotificationDaysPicker() {
