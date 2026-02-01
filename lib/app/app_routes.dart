@@ -3,4 +3,5 @@ abstract class AppRoutes {
   static const String splash = '/splash';
   static const String main = '/main';
   static const String birthdayDetail = '/birthday/detail';
+  static const String settings = '/settings';
 }
