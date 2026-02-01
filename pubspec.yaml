@@ -48,6 +48,12 @@ dev_dependencies:
   # ─────────────── 앱 아이콘 ───────────────
   flutter_launcher_icons: ^0.14.3
 
+  # ─────────────── 오픈소스 라이선스 ───────────────
+  flutter_oss_licenses: ^3.0.4
+
+flutter_oss_licenses:
+  output: lib/oss_licenses.dart
+
 flutter_launcher_icons:
   android: true
   ios: true

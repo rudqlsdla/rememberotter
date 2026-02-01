@@ -4,4 +4,5 @@ abstract class AppRoutes {
   static const String main = '/main';
   static const String birthdayDetail = '/birthday/detail';
   static const String settings = '/settings';
+  static const String ossLicenses = '/settings/oss-licenses';
 }

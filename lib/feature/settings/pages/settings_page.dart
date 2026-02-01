@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
@@ -321,6 +322,12 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
             icon: Icons.info_outline,
             title: '버전',
             subtitle: _appVersion.isEmpty ? '-' : _appVersion,
+          ),
+          _buildSettingTile(
+            icon: Icons.description_outlined,
+            title: '오픈소스 라이선스',
+            subtitle: '사용된 오픈소스 라이브러리',
+            onTap: () => Get.toNamed(AppRoutes.ossLicenses),
           ),
           _buildSettingTile(
             icon: Icons.pets,
