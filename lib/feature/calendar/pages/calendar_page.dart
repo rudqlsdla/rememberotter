@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
+import 'package:rememberotter/feature/calendar/widgets/date_birthday_sheet.dart';
 import 'package:rememberotter/feature/calendar/widgets/month_calendar_widget.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -94,6 +95,14 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
+  void _onDaySelected(DateTime day) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      _selectedDay = day;
+    });
+    DateBirthdaySheet.show(day);
+  }
+
   bool _hasBirthday(DateTime date) {
     final controller = Get.find<BirthdayController>();
     return controller.hasBirthdayOnDate(date);
@@ -107,7 +116,7 @@ class _CalendarPageState extends State<CalendarPage> {
       children: [
         // 요일 헤더 (고정)
         Container(
-          color: Colors.white,
+          color: AppColors.background,
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 2),
           child: Row(
             children: weekdays.map((day) {
@@ -152,11 +161,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           days: days,
                           weeksCount: days.length ~/ 7,
                           selectedDay: _selectedDay,
-                          onDaySelected: (day) {
-                            setState(() {
-                              _selectedDay = day;
-                            });
-                          },
+                          onDaySelected: (day) => _onDaySelected(day),
                           isSameDay: _isSameDay,
                           isToday: _isToday,
                           hasBirthday: _hasBirthday,
@@ -174,11 +179,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       weeksCount:
                           _getDaysInMonth(_getMonthFromOffset(0)).length ~/ 7,
                       selectedDay: _selectedDay,
-                      onDaySelected: (day) {
-                        setState(() {
-                          _selectedDay = day;
-                        });
-                      },
+                      onDaySelected: (day) => _onDaySelected(day),
                       isSameDay: _isSameDay,
                       isToday: _isToday,
                       hasBirthday: _hasBirthday,
@@ -197,11 +198,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           days: days,
                           weeksCount: days.length ~/ 7,
                           selectedDay: _selectedDay,
-                          onDaySelected: (day) {
-                            setState(() {
-                              _selectedDay = day;
-                            });
-                          },
+                          onDaySelected: (day) => _onDaySelected(day),
                           isSameDay: _isSameDay,
                           isToday: _isToday,
                           hasBirthday: _hasBirthday,

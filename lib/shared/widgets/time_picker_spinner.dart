@@ -59,7 +59,7 @@ class _TimePickerSpinnerState extends State<TimePickerSpinner> {
 
   String _formatHourLabel(int hour) {
     if (hour == 0) return '오전 12';
-    if (hour < 12) return '오전 $hour';
+    if (hour < 12) return '오전 $hour 시';
     if (hour == 12) return '오후 12';
     return '오후 ${hour - 12}시';
   }
