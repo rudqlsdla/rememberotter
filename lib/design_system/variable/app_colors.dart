@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 /// 앱 전체에서 사용하는 색상 정의
 abstract class AppColors {
+  static Color op(Color color, double alpha) =>
+      color.withValues(alpha: alpha.clamp(0.0, 1.0));
+
   // Primary Colors (보라색 계열)
   static const Color primary = Color(0xFFB8A3E6); // 라벤더 보라색
   static const Color primaryLight = Color(0xFFD4C5F0);
