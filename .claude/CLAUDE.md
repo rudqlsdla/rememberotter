@@ -154,7 +154,7 @@ class Birthday extends HiveObject {
   @HiveField(2) final DateTime birthDate;
   @HiveField(3) final String? memo;
   @HiveField(4) final String? profileImage;
-  @HiveField(5) final bool isLunarCalendar;      // 음력 여부 (미사용)
+  @HiveField(5) final bool isLunarCalendar;      // @Deprecated - Hive 호환성 유지용
   @HiveField(6) final bool notificationEnabled;
   @HiveField(7) final int notificationDaysBefore;
   @HiveField(8) final DateTime createdAt;
@@ -223,7 +223,15 @@ error: #EF4444
 warning: #F59E0B
 
 // Calendar
+calendarToday: primary
+calendarSelected: primary
 calendarWeekend: #EF4444  // 일요일
+calendarDisabled: #D1D5DB
+calendarEvent: accent
+
+// Border
+border: #E5E7EB
+divider: #F3F4F6
 ```
 
 ## 코딩 컨벤션
@@ -241,3 +249,4 @@ calendarWeekend: #EF4444  // 일요일
 - [ ] 다크모드 지원
 - [ ] 위젯 (홈 화면)
 - [ ] iCloud/Google Drive 백업
+- [ ] 음력 생일 지원 (HiveField 유지됨, UI만 추가하면 됨)
