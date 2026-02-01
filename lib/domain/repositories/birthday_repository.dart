@@ -49,7 +49,6 @@ class BirthdayRepository {
     required DateTime birthDate,
     String? memo,
     String? profileImage,
-    bool isLunarCalendar = false,
     bool notificationEnabled = true,
     int notificationDaysBefore = 1,
   }) async {
@@ -60,7 +59,6 @@ class BirthdayRepository {
       birthDate: birthDate,
       memo: memo,
       profileImage: profileImage,
-      isLunarCalendar: isLunarCalendar,
       notificationEnabled: notificationEnabled,
       notificationDaysBefore: notificationDaysBefore,
       createdAt: now,

@@ -20,6 +20,7 @@ class Birthday extends HiveObject {
   final String? profileImage;
 
   @HiveField(5)
+  @Deprecated('음력 기능 미사용 - Hive 호환성을 위해 필드 유지')
   final bool isLunarCalendar;
 
   @HiveField(6)

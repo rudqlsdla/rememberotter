@@ -131,7 +131,7 @@ class BirthdayDetailPage extends StatelessWidget {
           const SizedBox(height: 16),
           _buildInfoRow(
             icon: Icons.cake_outlined,
-            label: birthday.isLunarCalendar ? '생년월일 (음력)' : '생년월일',
+            label: '생년월일',
             value: '${birthday.birthDate.year}년 ${birthday.birthDate.month}월 ${birthday.birthDate.day}일',
           ),
           const SizedBox(height: 12),
