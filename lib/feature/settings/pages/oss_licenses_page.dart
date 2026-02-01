@@ -22,7 +22,7 @@ class OssLicensesPage extends StatelessWidget {
           _buildFontLicenseSection(context),
           const Divider(height: 1),
           // 패키지 라이선스 목록
-          ...ossLicenses.map((package) => Column(
+          ...allDependencies.map((package) => Column(
             children: [
               ListTile(
                 title: Text(
