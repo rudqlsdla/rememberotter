@@ -28,14 +28,88 @@
 - **포인트 컬러**: 핑크 (#EC4899) - 파티햇, 케이크, 선물 등
 - **표정**: 동글동글, 친근한 미소, 반짝이는 눈
 
-#### 캐릭터 활용 장면
-| 장면 | 포즈/상황 |
-|------|-----------|
-| 스플래시 | 케이크 들고 인사 |
-| 빈 생일 목록 | 돌(또는 케이크) 품고 기다리는 모습 |
-| 생일 알림 | 파티햇 쓰고 축하 |
-| 선물 기록 | 선물상자 주고받는 모습 |
-| 에러/실패 | 당황한 표정 |
+#### 캐릭터 활용 장면 & Placeholder 가이드
+
+해달 이미지가 필요한 UI에는 placeholder를 넣어두고, 이미지 완성 후 교체합니다.
+
+| 장면 | 포즈/상황 | 파일명 | Placeholder |
+|------|-----------|--------|-------------|
+| 스플래시 | 케이크 들고 인사 | `img_otter_splash.png` | 앱 아이콘 or 로딩 인디케이터 |
+| 빈 생일 목록 | 돌(또는 케이크) 품고 기다리는 모습 | `img_otter_empty.png` | `Icons.cake_outlined` + 텍스트 |
+| 생일 알림 | 파티햇 쓰고 축하 | `img_otter_celebrate.png` | `Icons.celebration` |
+| 선물 기록 | 선물상자 주고받는 모습 | `img_otter_gift.png` | `Icons.card_giftcard` |
+| 에러/실패 | 당황한 표정 | `img_otter_error.png` | `Icons.error_outline` |
+| 온보딩 | 손 흔들며 인사 | `img_otter_wave.png` | `Icons.waving_hand` |
+
+#### 이미지 관리 규칙
+```
+assets/
+└── images/
+    └── otter/
+        ├── img_otter_splash.png
+        ├── img_otter_empty.png
+        ├── img_otter_celebrate.png
+        ├── img_otter_gift.png
+        ├── img_otter_error.png
+        └── img_otter_wave.png
+```
+
+#### Placeholder 구현 방식
+```dart
+// lib/shared/widgets/otter_image.dart
+class OtterImage extends StatelessWidget {
+  final OtterType type;
+  final double size;
+
+  const OtterImage({
+    required this.type,
+    this.size = 120,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final assetPath = 'assets/images/otter/${type.fileName}';
+
+    // 이미지 파일이 있으면 이미지, 없으면 placeholder 아이콘
+    return Image.asset(
+      assetPath,
+      width: size,
+      height: size,
+      errorBuilder: (_, __, ___) => _buildPlaceholder(),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Icon(
+      type.placeholderIcon,
+      size: size,
+      color: AppColors.textTertiary,
+    );
+  }
+}
+
+enum OtterType {
+  splash('img_otter_splash.png', Icons.pets),
+  empty('img_otter_empty.png', Icons.cake_outlined),
+  celebrate('img_otter_celebrate.png', Icons.celebration),
+  gift('img_otter_gift.png', Icons.card_giftcard),
+  error('img_otter_error.png', Icons.error_outline),
+  wave('img_otter_wave.png', Icons.waving_hand);
+
+  final String fileName;
+  final IconData placeholderIcon;
+
+  const OtterType(this.fileName, this.placeholderIcon);
+}
+```
+
+#### 사용 예시
+```dart
+// 빈 생일 목록 화면
+OtterImage(type: OtterType.empty, size: 100)
+
+// 나중에 이미지 추가 시: assets/images/otter/img_otter_empty.png 추가만 하면 자동 적용
+```
 
 #### 앱 문구 예시
 - 온보딩: "해달은 좋아하는 돌을 평생 간직해요. 저도 소중한 생일을 절대 잊지 않을게요!"
