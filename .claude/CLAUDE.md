@@ -3,6 +3,96 @@
 ## 프로젝트 개요
 생일을 관리해주는 캘린더 앱. 소중한 사람들의 생일을 기록하고, 선물 교환 여부를 추적하며, 푸시 알림을 통해 생일을 놓치지 않도록 도와줍니다.
 
+## 브랜딩 & 캐릭터
+
+### 앱 이름
+**기억해달** = "기억해달라" + "해달(Sea Otter)"의 언어유희
+
+### 마스코트: 해달 (Sea Otter)
+
+#### 해달과 앱의 연결고리
+해달은 **좋아하는 돌을 평생 간직하는** 습성이 있습니다. 조개를 깰 때 사용하는 자기만의 돌을 겨드랑이 주머니에 넣고 평생 가지고 다니며 절대 잃어버리지 않습니다.
+
+> "해달이 소중한 돌을 간직하듯, 소중한 사람들의 생일을 간직해드릴게요"
+
+#### 활용 가능한 해달 습성
+| 습성 | 앱 연결 | 활용 예시 |
+|------|---------|-----------|
+| 돌을 평생 간직 | 생일을 잊지 않고 기억 | 핵심 컨셉, 앱 소개 |
+| 잠잘 때 손 잡고 잠 | 소중한 사람과의 연결 | 빈 화면 일러스트 |
+| 배 위에 조개 올려놓음 | 생일 정보를 정리해서 보관 | 리스트 화면 |
+
+#### 캐릭터 디자인 가이드
+- **스타일**: 스티커 일러스트 (흰 외곽선, 다양한 배경에 활용 가능)
+- **메인 컬러**: 라벤더 보라색 (#B8A3E6) - 해달 털 색상
+- **포인트 컬러**: 핑크 (#EC4899) - 파티햇, 케이크, 선물 등
+- **표정**: 동글동글, 친근한 미소, 반짝이는 눈
+
+#### 캐릭터 활용 장면
+| 장면 | 포즈/상황 |
+|------|-----------|
+| 스플래시 | 케이크 들고 인사 |
+| 빈 생일 목록 | 돌(또는 케이크) 품고 기다리는 모습 |
+| 생일 알림 | 파티햇 쓰고 축하 |
+| 선물 기록 | 선물상자 주고받는 모습 |
+| 에러/실패 | 당황한 표정 |
+
+#### 앱 문구 예시
+- 온보딩: "해달은 좋아하는 돌을 평생 간직해요. 저도 소중한 생일을 절대 잊지 않을게요!"
+- 빈 화면: "아직 등록된 생일이 없어요. 소중한 사람을 추가해주세요!"
+- 알림: "내일은 OOO님의 생일이에요! 잊지 않고 기억해달이 알려드려요 🎂"
+
+### 이미지 생성 프롬프트 (ChatGPT/DALL-E)
+
+#### 기본 스티커 캐릭터 (앱 아이콘, 단일 이미지용)
+```
+A cute kawaii sea otter sticker character for a birthday calendar app.
+
+Style: Sticker illustration with white outline/border, die-cut style, slight drop shadow for depth.
+
+Design:
+- Soft lavender purple fur (#B8A3E6)
+- Cream-colored belly
+- Small pink (#EC4899) party hat
+- Holding a birthday cake with pink candles
+- Round chubby body, big sparkly eyes, happy smile
+
+Color palette: Pastel tones - lavender purple, soft pink, cream white.
+Background: Transparent or light gray (#F9FAFB).
+Modern, minimal, mobile app friendly.
+```
+
+#### 캐릭터 시트 (여러 포즈용)
+```
+Cute kawaii sea otter mascot character design for a birthday reminder app.
+
+Color palette:
+- Main fur color: Soft lavender purple (#B8A3E6)
+- Belly/inner ears: Cream white
+- Accessories: Pink (#EC4899)
+- Background: Light gray (#F9FAFB)
+
+Character design:
+- Round, chubby, adorable body
+- Big sparkling eyes, friendly smile
+- Pink party hat or pink bow tie
+- Holding pink-wrapped gifts or birthday cake
+
+Poses:
+1. Waving hello (for empty state)
+2. Holding birthday cake (for birthday notification)
+3. Giving a gift box (for gift tracking feature)
+4. Sleeping with zzz (for no upcoming birthdays)
+
+Style: Modern flat vector illustration, minimal, pastel tones, mobile app UI friendly.
+```
+
+#### 프롬프트 수정 팁
+- 배경 제거: `transparent background` 또는 `no background` 추가
+- 특정 포즈만: Poses 섹션에서 원하는 것만 남기기
+- 스플래시용: `centered, app splash screen layout` 추가
+- 더 단순하게: `extremely minimal, simple shapes` 추가
+
 ## 기술 스택
 - **Framework**: Flutter 3.8.1+
 - **State Management**: GetX
