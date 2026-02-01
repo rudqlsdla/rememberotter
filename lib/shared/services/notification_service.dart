@@ -1,8 +1,10 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/shared/log/logger.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
@@ -42,12 +44,28 @@ class NotificationService {
       onDidReceiveNotificationResponse: _onNotificationTapped,
     );
 
+    // 앱이 종료된 상태에서 알림 탭으로 실행된 경우 처리
+    final launchDetails = await _notifications.getNotificationAppLaunchDetails();
+    if (launchDetails?.didNotificationLaunchApp == true) {
+      final response = launchDetails!.notificationResponse;
+      if (response != null) {
+        // 약간의 딜레이 후 이동 (앱 초기화 완료 대기)
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _onNotificationTapped(response);
+        });
+      }
+    }
+
     logger.i('NotificationService 초기화 완료');
   }
 
   void _onNotificationTapped(NotificationResponse response) {
     logger.i('알림 탭: ${response.payload}');
-    // TODO: 알림 탭 시 해당 생일 상세 페이지로 이동
+
+    final birthdayId = response.payload;
+    if (birthdayId != null && birthdayId.isNotEmpty) {
+      Get.toNamed(AppRoutes.birthdayDetail, arguments: birthdayId);
+    }
   }
 
   /// 알림 권한 상태 확인
