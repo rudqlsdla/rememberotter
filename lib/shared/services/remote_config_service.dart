@@ -38,7 +38,7 @@ class RemoteConfigService {
       );
 
       await _remoteConfig.setDefaults({
-        'latest_version': '1.0.0',
+        'hard_latest_version': '1.0.0',
         'soft_latest_version': '1.0.0',
       });
 
@@ -56,7 +56,7 @@ class RemoteConfigService {
       final currentVersion = packageInfo.version;
 
       final softLatestVersion = _remoteConfig.getString('soft_latest_version');
-      final hardLatestVersion = _remoteConfig.getString('latest_version');
+      final hardLatestVersion = _remoteConfig.getString('hard_latest_version');
 
       logger.i('현재 버전: $currentVersion');
       logger.i('소프트 최신 버전: $softLatestVersion');
@@ -100,10 +100,8 @@ class RemoteConfigService {
   /// 플랫폼별 스토어 URL
   String get storeUrl {
     if (Platform.isIOS) {
-      // TODO: 실제 앱 스토어 ID로 교체
-      return 'https://apps.apple.com/app/id000000000';
+      return 'https://apps.apple.com/app/6758571069';
     }
-    // TODO: 실제 패키지명으로 교체
-    return 'https://play.google.com/store/apps/details?id=com.example.rememberotter';
+    return 'https://play.google.com/store/apps/details?id=com.rudqlsdla.rememberotter';
   }
 }

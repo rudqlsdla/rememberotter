@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "313860276779",
+    "project_id": "rememberotter",
+    "storage_bucket": "rememberotter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313860276779:android:3cae0dcd6593a9d692e06e",
+        "android_client_info": {
+          "package_name": "com.rudqlsdla.rememberotter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQRBU-yLTPNl-h3VFUtys_U6l3jUfo6Ro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
