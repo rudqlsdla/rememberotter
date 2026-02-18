@@ -103,9 +103,12 @@ class _CalendarPageState extends State<CalendarPage> {
     DateBirthdaySheet.show(day);
   }
 
-  bool _hasBirthday(DateTime date) {
+  List<String> _getBirthdayNames(DateTime date) {
     final controller = Get.find<BirthdayController>();
-    return controller.hasBirthdayOnDate(date);
+    return controller
+        .getBirthdaysOnDate(date)
+        .map((b) => b.name)
+        .toList();
   }
 
   @override
@@ -164,7 +167,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           onDaySelected: (day) => _onDaySelected(day),
                           isSameDay: _isSameDay,
                           isToday: _isToday,
-                          hasBirthday: _hasBirthday,
+                          getBirthdayNames: _getBirthdayNames,
                         );
                       },
                       childCount: _monthRange, // 과거 5년으로 제한
@@ -182,7 +185,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       onDaySelected: (day) => _onDaySelected(day),
                       isSameDay: _isSameDay,
                       isToday: _isToday,
-                      hasBirthday: _hasBirthday,
+                      getBirthdayNames: _getBirthdayNames,
                     ),
                   ),
                   // 미래 달들 (아래로 스크롤) - 5년 제한
@@ -201,7 +204,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           onDaySelected: (day) => _onDaySelected(day),
                           isSameDay: _isSameDay,
                           isToday: _isToday,
-                          hasBirthday: _hasBirthday,
+                          getBirthdayNames: _getBirthdayNames,
                         );
                       },
                       childCount: _monthRange, // 미래 5년으로 제한

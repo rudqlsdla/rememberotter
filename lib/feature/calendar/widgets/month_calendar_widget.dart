@@ -9,7 +9,7 @@ class MonthCalendarWidget extends StatelessWidget {
   final Function(DateTime) onDaySelected;
   final bool Function(DateTime?, DateTime?) isSameDay;
   final bool Function(DateTime) isToday;
-  final bool Function(DateTime)? hasBirthday;
+  final List<String> Function(DateTime)? getBirthdayNames;
 
   const MonthCalendarWidget({
     super.key,
@@ -20,7 +20,7 @@ class MonthCalendarWidget extends StatelessWidget {
     required this.onDaySelected,
     required this.isSameDay,
     required this.isToday,
-    this.hasBirthday,
+    this.getBirthdayNames,
   });
 
   bool _isCurrentMonth(DateTime day) {
@@ -29,7 +29,6 @@ class MonthCalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 년도 표시: 2025 -> 25
     final yearLabel = '${month.year % 100}년 ${month.month}월';
 
     return Container(
@@ -38,7 +37,6 @@ class MonthCalendarWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 년월 라벨
           Padding(
             padding: const EdgeInsets.only(top: 16, bottom: 8),
             child: Text(
@@ -50,13 +48,12 @@ class MonthCalendarWidget extends StatelessWidget {
               ),
             ),
           ),
-          // 날짜 그리드
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
-              childAspectRatio: 1,
+              childAspectRatio: 0.75,
             ),
             itemCount: days.length,
             itemBuilder: (context, index) {
@@ -65,54 +62,97 @@ class MonthCalendarWidget extends StatelessWidget {
               final isSelected = isSameDay(day, selectedDay);
               final isCurrentMonthDay = _isCurrentMonth(day);
               final weekday = day.weekday;
-              final hasBirthdayOnDay = hasBirthday?.call(day) ?? false;
+              final names = isCurrentMonthDay
+                  ? (getBirthdayNames?.call(day) ?? [])
+                  : <String>[];
+
+              final dayColor = isSelected
+                  ? Colors.white
+                  : !isCurrentMonthDay
+                      ? AppColors.calendarDisabled
+                      : weekday == 7
+                          ? AppColors.calendarWeekend
+                          : weekday == 6
+                              ? AppColors.primary
+                              : AppColors.textPrimary;
 
               return GestureDetector(
                 onTap: () => onDaySelected(day),
                 child: Container(
-                  margin: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.all(1),
+                  padding: EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppColors.primary
                         : isTodayDate
                             ? AppColors.primary.withValues(alpha: 0.1)
                             : Colors.transparent,
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Stack(
-                    alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 4),
+                      // 날짜 숫자
                       Text(
                         '${day.day}',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: isTodayDate || isSelected
                               ? FontWeight.w600
                               : FontWeight.normal,
-                          color: isSelected
-                              ? Colors.white
-                              : !isCurrentMonthDay
-                                  ? AppColors.calendarDisabled
-                                  : weekday == 7
-                                      ? AppColors.calendarWeekend
-                                      : weekday == 6
-                                          ? AppColors.primary
-                                          : AppColors.textPrimary,
+                          color: dayColor,
                         ),
                       ),
-                      // 생일 마커
-                      if (hasBirthdayOnDay && isCurrentMonthDay)
-                        Positioned(
-                          bottom: 6,
-                          child: Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: isSelected ? Colors.white : AppColors.accent,
-                              shape: BoxShape.circle,
+                      // 생일 이름 표시
+                      if (names.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        // 첫 번째 이름
+                        Flexible(
+                          child: Text(
+                            names.first,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w500,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.accent,
                             ),
                           ),
                         ),
+                        // 두 번째 이름 or +N
+                        if (names.length == 2)
+                          Flexible(
+                            child: Text(
+                              names[1],
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w500,
+                                color: isSelected
+                                    ? Colors.white
+                                    : AppColors.accent,
+                              ),
+                            ),
+                          )
+                        else if (names.length > 2)
+                          Flexible(
+                            child: Text(
+                              '+${names.length - 1}',
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w500,
+                                color: isSelected
+                                    ? Colors.white70
+                                    : AppColors.op(AppColors.accent, 0.7),
+                              ),
+                            ),
+                          ),
+                      ],
                     ],
                   ),
                 ),

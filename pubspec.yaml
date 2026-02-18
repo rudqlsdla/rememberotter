@@ -30,6 +30,9 @@ dependencies:
   timezone: ^0.10.0
   flutter_timezone: ^3.0.1
 
+  # ─────────────── 연락처 ───────────────
+  flutter_contacts: ^1.1.9+2
+
   # ─────────────── 권한 관리 ───────────────
   permission_handler: ^12.0.1
 
