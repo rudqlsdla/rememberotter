@@ -6,6 +6,7 @@ import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/onboarding/pages/notification_consent_page.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/remote_config_service.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
 
 class SplashPage extends StatefulWidget {
@@ -25,8 +26,11 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _startApp() async {
     logger.i('스플래시 화면 시작');
 
-    // 스플래시 화면 표시 시간 (2초)
-    await Future.delayed(const Duration(seconds: 2));
+    // 2초 대기 + 버전 체크 병렬 실행
+    await Future.wait([
+      Future.delayed(const Duration(seconds: 2)),
+      RemoteConfigService().checkAndStoreUpdateStatus(),
+    ]);
 
     // 알림 동의 화면을 봤는지 확인
     final hasShownConsent = await NotificationConsentPage.hasShownConsent();
