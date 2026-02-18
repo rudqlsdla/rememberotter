@@ -6,6 +6,7 @@ import 'package:rememberotter/feature/main/pages/main_page.dart';
 import 'package:rememberotter/feature/birthday/pages/birthday_detail_page.dart';
 import 'package:rememberotter/feature/settings/pages/settings_page.dart';
 import 'package:rememberotter/feature/settings/pages/oss_licenses_page.dart';
+import 'package:rememberotter/feature/contact/pages/contact_import_page.dart';
 
 /// 앱의 페이지와 라우트 매핑
 abstract class AppPages {
@@ -44,6 +45,12 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.ossLicenses,
       page: () => const OssLicensesPage(),
+    ),
+
+    // 연락처 가져오기 화면
+    GetPage(
+      name: AppRoutes.contactImport,
+      page: () => const ContactImportPage(),
     ),
   ];
 }

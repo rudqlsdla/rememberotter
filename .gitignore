@@ -49,3 +49,6 @@ app.*.map.json
 /ios/Flutter/Generated.xcconfig
 /ios/Flutter/Debug.xcconfig
 /ios/Flutter/Release.xcconfig
+
+# Unused platforms
+linux/

@@ -317,6 +317,16 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
           ),
           const Divider(height: 32),
 
+          // 데이터 섹션
+          _buildSectionHeader('데이터'),
+          _buildSettingTile(
+            icon: Icons.contacts_outlined,
+            title: '연락처에서 가져오기',
+            subtitle: '연락처에 저장된 생일을 가져와요',
+            onTap: () => Get.toNamed(AppRoutes.contactImport),
+          ),
+          const Divider(height: 32),
+
           // 앱 정보 섹션
           _buildSectionHeader('앱 정보'),
           _buildSettingTile(

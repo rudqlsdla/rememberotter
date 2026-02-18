@@ -100,6 +100,20 @@ class BirthdayController extends GetxController {
     loadBirthdays();
   }
 
+  /// 생일 일괄 추가 (연락처 가져오기용)
+  Future<void> addBirthdayBatch(
+    List<({String name, DateTime birthDate})> items,
+  ) async {
+    for (final item in items) {
+      await _repository.add(
+        name: item.name,
+        birthDate: item.birthDate,
+      );
+    }
+    loadBirthdays();
+    await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
+  }
+
   /// 이름으로 검색
   List<Birthday> searchBirthdays(String query) {
     return _repository.search(query);
