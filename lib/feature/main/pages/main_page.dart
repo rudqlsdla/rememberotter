@@ -8,6 +8,7 @@ import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart'
 import 'package:rememberotter/feature/birthday/widgets/birthday_list_item.dart';
 import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
+import 'package:rememberotter/shared/widgets/update_bottom_sheet.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -23,6 +24,14 @@ class _MainPageState extends State<MainPage> {
     const CalendarPage(),
     const _FriendsPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UpdateBottomSheet.showIfNeeded();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,14 +9,26 @@ import 'package:rememberotter/app/app_pages.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/domain/models/gift.dart';
+import 'package:rememberotter/firebase_options.dart';
 import 'package:rememberotter/shared/log/logger.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
+import 'package:rememberotter/shared/services/remote_config_service.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   logger.i('앱 시작');
+
+  // ─── Firebase 초기화 ────────────────────────────────────────────────────
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  logger.i('Firebase 초기화 완료');
+
+  // ─── Remote Config 초기화 ───────────────────────────────────────────────
+  await RemoteConfigService().initialize();
+  logger.i('RemoteConfig 초기화 완료');
 
   // ─── Hive 초기화 ──────────────────────────────────────────────────────
   await Hive.initFlutter();
