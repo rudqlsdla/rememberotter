@@ -68,6 +68,7 @@ class FeedbackService {
 
       return 'v${packageInfo.version} | $osVersion | $deviceModel';
     } catch (e) {
+      logger.e('기기 정보 수집 실패: $e');
       return 'v? | 기기 정보 수집 실패';
     }
   }

@@ -1,4 +1,6 @@
 PODS:
+  - device_info_plus (0.0.1):
+    - Flutter
   - Firebase/Analytics (11.15.0):
     - Firebase/Core
   - Firebase/Core (11.15.0):
@@ -163,6 +165,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
@@ -195,6 +198,8 @@ SPEC REPOS:
     - sqlite3
 
 EXTERNAL SOURCES:
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
@@ -221,6 +226,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
+  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   Firebase: d99ac19b909cd2c548339c2241ecd0d1599ab02e
   firebase_analytics: 0e25ca1d4001ccedd40b4e5b74c0ec34e18f6425
   firebase_core: 995454a784ff288be5689b796deb9e9fa3601818

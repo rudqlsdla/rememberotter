@@ -21,11 +21,9 @@ class RemoteConfigService {
 
   /// 버전 체크 결과 캐시
   UpdateStatus _updateStatus = UpdateStatus.none;
-  bool _updateSheetShown = false;
+  bool updateSheetShown = false;
 
   UpdateStatus get updateStatus => _updateStatus;
-  bool get updateSheetShown => _updateSheetShown;
-  set updateSheetShown(bool value) => _updateSheetShown = value;
 
   /// Remote Config 초기화 및 fetch
   Future<void> initialize() async {
@@ -70,7 +68,7 @@ class RemoteConfigService {
         _updateStatus = UpdateStatus.none;
       }
 
-      _updateSheetShown = false;
+      updateSheetShown = false;
       logger.i('업데이트 상태: $_updateStatus');
     } catch (e) {
       logger.e('버전 체크 실패: $e');
