@@ -5,7 +5,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
+import 'package:rememberotter/shared/services/remote_config_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
 import 'package:rememberotter/feature/settings/widgets/feedback_sheet.dart';
 import 'package:rememberotter/shared/widgets/time_picker_spinner.dart';
@@ -421,11 +423,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
             subtitle: '불편한 점이나 개선 아이디어를 알려주세요',
             onTap: () => FeedbackSheet.show(),
           ),
-          _buildSettingTile(
-            icon: Icons.info_outline,
-            title: '버전',
-            subtitle: _appVersion.isEmpty ? '-' : _appVersion,
-          ),
+          _buildVersionTile(),
           _buildSettingTile(
             icon: Icons.description_outlined,
             title: '오픈소스 라이선스',
@@ -440,6 +438,63 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
         ],
       ),
     );
+  }
+
+  Widget _buildVersionTile() {
+    final remoteConfig = RemoteConfigService();
+    final hasUpdate = remoteConfig.hasNewVersion;
+
+    return ListTile(
+      leading: const Icon(Icons.info_outline, color: AppColors.textSecondary),
+      title: Row(
+        children: [
+          const Text(
+            '버전',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          if (hasUpdate) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppColors.accent.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text(
+                '업데이트 가능',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.accent,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+      subtitle: Text(
+        _appVersion.isEmpty ? '-' : _appVersion,
+        style: const TextStyle(
+          fontSize: 12,
+          color: AppColors.textSecondary,
+        ),
+      ),
+      trailing: hasUpdate
+          ? const Icon(Icons.open_in_new, color: AppColors.accent, size: 20)
+          : null,
+      onTap: hasUpdate ? _openStore : null,
+    );
+  }
+
+  Future<void> _openStore() async {
+    final url = Uri.parse(RemoteConfigService().storeUrl);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
   }
 
   Widget _buildSectionHeader(String title) {

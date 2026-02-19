@@ -38,6 +38,7 @@ class RemoteConfigService {
       await _remoteConfig.setDefaults({
         'hard_latest_version': '1.0.0',
         'soft_latest_version': '1.0.0',
+        'latest_version': '1.0.0',
         'feedback_webhook_url': '',
       });
 
@@ -53,6 +54,7 @@ class RemoteConfigService {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = packageInfo.version;
+      _currentVersion = currentVersion;
 
       final softLatestVersion = _remoteConfig.getString('soft_latest_version');
       final hardLatestVersion = _remoteConfig.getString('hard_latest_version');
@@ -95,6 +97,14 @@ class RemoteConfigService {
 
     return false;
   }
+
+  /// 최신 버전 (UI 표시용)
+  String get latestVersion => _remoteConfig.getString('latest_version');
+
+  /// 현재 버전이 최신 버전보다 낮은지 확인
+  bool get hasNewVersion => _isVersionOlder(_currentVersion, latestVersion);
+
+  String _currentVersion = '';
 
   /// 피드백 Webhook URL (Remote Config에서 관리)
   String get feedbackWebhookUrl => _remoteConfig.getString('feedback_webhook_url');
