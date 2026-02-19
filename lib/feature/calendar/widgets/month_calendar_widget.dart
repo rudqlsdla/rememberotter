@@ -3,7 +3,7 @@ import 'package:rememberotter/design_system/variable/app_colors.dart';
 
 class MonthCalendarWidget extends StatelessWidget {
   final DateTime month;
-  final List<DateTime> days;
+  final List<DateTime?> days;
   final int weeksCount;
   final DateTime? selectedDay;
   final Function(DateTime) onDaySelected;
@@ -22,10 +22,6 @@ class MonthCalendarWidget extends StatelessWidget {
     required this.isToday,
     this.getBirthdayNames,
   });
-
-  bool _isCurrentMonth(DateTime day) {
-    return day.month == month.month && day.year == month.year;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,23 +54,20 @@ class MonthCalendarWidget extends StatelessWidget {
             itemCount: days.length,
             itemBuilder: (context, index) {
               final day = days[index];
+              if (day == null) return const SizedBox.shrink();
+
               final isTodayDate = isToday(day);
               final isSelected = isSameDay(day, selectedDay);
-              final isCurrentMonthDay = _isCurrentMonth(day);
               final weekday = day.weekday;
-              final names = isCurrentMonthDay
-                  ? (getBirthdayNames?.call(day) ?? [])
-                  : <String>[];
+              final names = getBirthdayNames?.call(day) ?? [];
 
               final dayColor = isSelected
                   ? Colors.white
-                  : !isCurrentMonthDay
-                      ? AppColors.calendarDisabled
-                      : weekday == 7
-                          ? AppColors.calendarWeekend
-                          : weekday == 6
-                              ? AppColors.primary
-                              : AppColors.textPrimary;
+                  : weekday == 7
+                      ? AppColors.calendarWeekend
+                      : weekday == 6
+                          ? AppColors.primary
+                          : AppColors.textPrimary;
 
               return GestureDetector(
                 onTap: () => onDaySelected(day),

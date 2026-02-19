@@ -47,7 +47,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return DateTime(now.year, now.month + offset, 1);
   }
 
-  List<DateTime> _getDaysInMonth(DateTime date) {
+  List<DateTime?> _getDaysInMonth(DateTime date) {
     final firstDay = DateTime(date.year, date.month, 1);
     final lastDay = DateTime(date.year, date.month + 1, 0);
     final daysInMonth = lastDay.day;
@@ -55,11 +55,11 @@ class _CalendarPageState extends State<CalendarPage> {
     // 시작 요일 (일요일: 0, 월요일: 1, ...)
     final startWeekday = firstDay.weekday % 7;
 
-    List<DateTime> days = [];
+    List<DateTime?> days = [];
 
-    // 이전 달의 날짜들로 채우기
-    for (int i = startWeekday - 1; i >= 0; i--) {
-      days.add(firstDay.subtract(Duration(days: i + 1)));
+    // 이전 달 자리는 빈 칸
+    for (int i = 0; i < startWeekday; i++) {
+      days.add(null);
     }
 
     // 현재 달의 날짜들
@@ -67,11 +67,11 @@ class _CalendarPageState extends State<CalendarPage> {
       days.add(DateTime(date.year, date.month, i + 1));
     }
 
-    // 다음 달의 날짜들로 채우기 (6주가 되도록)
+    // 마지막 주 남은 칸은 빈 칸
     final totalCells = ((days.length / 7).ceil()) * 7;
     final remaining = totalCells - days.length;
     for (int i = 0; i < remaining; i++) {
-      days.add(lastDay.add(Duration(days: i + 1)));
+      days.add(null);
     }
 
     return days;

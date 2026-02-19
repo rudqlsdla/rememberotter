@@ -322,7 +322,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
           _buildSettingTile(
             icon: Icons.contacts_outlined,
             title: '연락처에서 가져오기',
-            subtitle: '연락처에 저장된 생일을 가져와요',
+            subtitle: '연락처에 저장된 생일을 가져올 수 있어요',
             onTap: () => Get.toNamed(AppRoutes.contactImport),
           ),
           const Divider(height: 32),
