@@ -110,6 +110,10 @@ class _FriendsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetX<BirthdayController>(
       builder: (controller) {
+        if (!controller.isLoaded.value) {
+          return const SizedBox.shrink();
+        }
+
         final birthdays = controller.birthdays;
 
         if (birthdays.isEmpty) {
@@ -133,6 +137,23 @@ class _FriendsPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                OutlinedButton.icon(
+                  onPressed: () => Get.toNamed(AppRoutes.contactImport),
+                  icon: const Icon(Icons.contact_phone_outlined, size: 18),
+                  label: const Text('연락처에서 가져오기'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    side: const BorderSide(color: AppColors.primary),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                   ),
                 ),
               ],

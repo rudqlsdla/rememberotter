@@ -12,6 +12,7 @@ class BirthdayController extends GetxController {
   final RxList<Birthday> upcomingBirthdays = <Birthday>[].obs;
   final Rx<DateTime> selectedDate = DateTime.now().obs;
   final RxList<Birthday> selectedDateBirthdays = <Birthday>[].obs;
+  final RxBool isLoaded = false.obs;
 
   @override
   void onInit() {
@@ -33,6 +34,7 @@ class BirthdayController extends GetxController {
         all.where((b) => b.daysUntilBirthday <= 30).toList();
     _updateSelectedDateBirthdays();
     _scheduleAllNotifications();
+    isLoaded.value = true;
   }
 
   /// 선택된 날짜 변경
