@@ -5,17 +5,21 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/remote_config_service.dart';
 
 class FeedbackService {
   static final FeedbackService _instance = FeedbackService._internal();
   factory FeedbackService() => _instance;
   FeedbackService._internal();
 
-  static const String _webhookUrl =
-      'https://discord.com/api/webhooks/1473940341349421198/WmfuWbKZ4ejYYLPGvr_l8HGyZThsrAOyirqH6BW6OGRXlU5n3eU6NtOKnIOionEGYPl3';
-
   Future<bool> sendFeedback(String content) async {
     try {
+      final webhookUrl = RemoteConfigService().feedbackWebhookUrl;
+      if (webhookUrl.isEmpty) {
+        logger.w('Discord Webhook URL이 설정되지 않음');
+        return false;
+      }
+
       final footerText = await _getDeviceInfo();
 
       final body = jsonEncode({
@@ -31,7 +35,7 @@ class FeedbackService {
       });
 
       final response = await http.post(
-        Uri.parse(_webhookUrl),
+        Uri.parse(webhookUrl),
         headers: {'Content-Type': 'application/json'},
         body: body,
       );

@@ -38,6 +38,7 @@ class RemoteConfigService {
       await _remoteConfig.setDefaults({
         'hard_latest_version': '1.0.0',
         'soft_latest_version': '1.0.0',
+        'feedback_webhook_url': '',
       });
 
       await _remoteConfig.fetchAndActivate();
@@ -94,6 +95,9 @@ class RemoteConfigService {
 
     return false;
   }
+
+  /// 피드백 Webhook URL (Remote Config에서 관리)
+  String get feedbackWebhookUrl => _remoteConfig.getString('feedback_webhook_url');
 
   /// 플랫폼별 스토어 URL
   String get storeUrl {
