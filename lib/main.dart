@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,7 +71,10 @@ class MyApp extends StatelessWidget {
           textScaler: const TextScaler.linear(1),
         ),
         child: GetMaterialApp(
-          navigatorObservers: [routeObserver],
+          navigatorObservers: [
+            routeObserver,
+            FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+          ],
           debugShowCheckedModeBanner: false,
           title: '기억해달',
           theme: ThemeData(
