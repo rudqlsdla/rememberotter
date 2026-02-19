@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:rememberotter/shared/services/settings_service.dart';
 
 part 'birthday.g.dart';
 
@@ -93,9 +94,28 @@ class Birthday extends HiveObject {
     return nextBirthday.difference(today).inDays;
   }
 
-  /// 나이 계산 (올해 기준)
+  /// 만나이 계산
   int? get age {
     final now = DateTime.now();
+    int age = now.year - birthDate.year;
+    if (now.month < birthDate.month ||
+        (now.month == birthDate.month && now.day < birthDate.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  /// 연나이 계산 (올해 연도 - 출생 연도)
+  int? get yearAge {
+    final now = DateTime.now();
     return now.year - birthDate.year;
+  }
+
+  /// 설정에 따른 나이 텍스트 (예: "만 25세" 또는 "25세")
+  String? get ageText {
+    final useIntl = SettingsService().useInternationalAge;
+    final displayAge = useIntl ? age : yearAge;
+    if (displayAge == null) return null;
+    return useIntl ? '만 $displayAge세' : '$displayAge세';
   }
 }

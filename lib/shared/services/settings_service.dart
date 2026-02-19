@@ -11,6 +11,7 @@ class SettingsService {
   static const String _keyNotificationDaysBefore = 'notificationDaysBefore';
   static const String _keyNotificationHour = 'notificationHour';
   static const String _keyNotificationMinute = 'notificationMinute';
+  static const String _keyUseInternationalAge = 'useInternationalAge';
 
   Box get _box => Hive.box(boxName);
 
@@ -62,6 +63,15 @@ class SettingsService {
     final displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour);
     final displayMinute = minute.toString().padLeft(2, '0');
     return '$period $displayHour:$displayMinute';
+  }
+
+  /// 만나이 사용 여부 (기본값: true)
+  bool get useInternationalAge {
+    return _box.get(_keyUseInternationalAge, defaultValue: true);
+  }
+
+  set useInternationalAge(bool value) {
+    _box.put(_keyUseInternationalAge, value);
   }
 
   /// 알림 일수 옵션 목록

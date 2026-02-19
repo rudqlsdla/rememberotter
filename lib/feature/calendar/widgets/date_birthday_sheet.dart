@@ -179,7 +179,7 @@ class DateBirthdaySheet extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        '${birthday.birthDate.year}년생${birthday.age != null ? ' (${birthday.age}세)' : ''}',
+        '${birthday.birthDate.year}년생${birthday.ageText != null ? ' (${birthday.ageText})' : ''}',
         style: const TextStyle(
           fontSize: 14,
           color: AppColors.textSecondary,

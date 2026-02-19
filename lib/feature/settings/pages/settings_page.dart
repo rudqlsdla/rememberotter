@@ -279,6 +279,81 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
     );
   }
 
+  void _showAgeTypePicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  '나이 표시 방식',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              const Divider(height: 1),
+              _buildAgeOption(
+                title: '만 나이',
+                subtitle: '생일이 지나야 한 살 추가',
+                isSelected: _settingsService.useInternationalAge,
+                onTap: () {
+                  setState(() => _settingsService.useInternationalAge = true);
+                  Navigator.pop(context);
+                },
+              ),
+              _buildAgeOption(
+                title: '연 나이',
+                subtitle: '올해 연도 - 출생 연도',
+                isSelected: !_settingsService.useInternationalAge,
+                onTap: () {
+                  setState(() => _settingsService.useInternationalAge = false);
+                  Navigator.pop(context);
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAgeOption({
+    required String title,
+    required String subtitle,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isSelected ? AppColors.primary : AppColors.textPrimary,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+      ),
+      trailing: isSelected
+          ? const Icon(Icons.check, color: AppColors.primary)
+          : null,
+      onTap: onTap,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -314,6 +389,16 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
             title: '알림 받을 시점',
             subtitle: SettingsService.getNotificationDaysLabel(_notificationDaysBefore),
             onTap: _showNotificationDaysPicker,
+          ),
+          const Divider(height: 32),
+
+          // 표시 섹션
+          _buildSectionHeader('표시'),
+          _buildSettingTile(
+            icon: Icons.cake_outlined,
+            title: '나이 표시 방식',
+            subtitle: _settingsService.useInternationalAge ? '만 나이' : '연 나이',
+            onTap: _showAgeTypePicker,
           ),
           const Divider(height: 32),
 

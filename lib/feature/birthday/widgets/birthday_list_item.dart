@@ -53,7 +53,7 @@ class BirthdayListItem extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          '${birthday.birthDate.month}월 ${birthday.birthDate.day}일${birthday.age != null ? ' (${birthday.age}세)' : ''}',
+          '${birthday.birthDate.month}월 ${birthday.birthDate.day}일${birthday.ageText != null ? ' (${birthday.ageText})' : ''}',
           style: const TextStyle(
             fontSize: 14,
             color: AppColors.textSecondary,

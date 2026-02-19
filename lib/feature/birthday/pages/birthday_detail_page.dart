@@ -138,7 +138,7 @@ class BirthdayDetailPage extends StatelessWidget {
           _buildInfoRow(
             icon: Icons.person_outline,
             label: '나이',
-            value: birthday.age != null ? '${birthday.age}세' : '-',
+            value: birthday.ageText ?? '-',
           ),
           if (birthday.memo != null && birthday.memo!.isNotEmpty) ...[
             const SizedBox(height: 12),
