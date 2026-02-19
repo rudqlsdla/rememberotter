@@ -1,39 +1,15 @@
-import 'package:hive/hive.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
 
-part 'birthday.g.dart';
-
-@HiveType(typeId: 0)
-class Birthday extends HiveObject {
-  @HiveField(0)
+class Birthday {
   final String id;
-
-  @HiveField(1)
   final String name;
-
-  @HiveField(2)
   final DateTime birthDate;
-
-  @HiveField(3)
   final String? memo;
-
-  @HiveField(4)
   final String? profileImage;
-
-  @HiveField(5)
-  @Deprecated('음력 기능 미사용 - Hive 호환성을 위해 필드 유지')
   final bool isLunarCalendar;
-
-  @HiveField(6)
   final bool notificationEnabled;
-
-  @HiveField(7)
   final int notificationDaysBefore;
-
-  @HiveField(8)
   final DateTime createdAt;
-
-  @HiveField(9)
   final DateTime updatedAt;
 
   Birthday({

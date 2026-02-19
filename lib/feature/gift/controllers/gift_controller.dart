@@ -15,18 +15,23 @@ class GiftController extends GetxController {
   }
 
   /// 모든 선물 기록 로드
-  void loadGifts() {
-    gifts.value = _repository.getAll();
+  Future<void> loadGifts() async {
+    gifts.value = await _repository.getAll();
   }
 
-  /// Birthday ID로 선물 기록 조회
+  /// Birthday ID로 선물 기록 조회 (로드된 리스트에서 필터링)
   List<Gift> getGiftsByBirthdayId(String birthdayId) {
-    return _repository.getByBirthdayId(birthdayId);
+    return gifts
+        .where((g) => g.birthdayId == birthdayId)
+        .toList()
+      ..sort((a, b) => b.year.compareTo(a.year));
   }
 
-  /// Birthday ID와 연도로 선물 기록 조회
+  /// Birthday ID와 연도로 선물 기록 조회 (로드된 리스트에서 필터링)
   Gift? getGiftByBirthdayIdAndYear(String birthdayId, int year) {
-    return _repository.getByBirthdayIdAndYear(birthdayId, year);
+    return gifts
+        .where((g) => g.birthdayId == birthdayId && g.year == year)
+        .firstOrNull;
   }
 
   /// 선물 기록 추가
@@ -48,24 +53,24 @@ class GiftController extends GetxController {
       receivedGiftName: receivedGiftName,
       memo: memo,
     );
-    loadGifts();
+    await loadGifts();
   }
 
   /// 선물 기록 수정
   Future<void> updateGift(Gift gift) async {
     await _repository.update(gift);
-    loadGifts();
+    await loadGifts();
   }
 
   /// 선물 기록 삭제
   Future<void> deleteGift(String id) async {
     await _repository.delete(id);
-    loadGifts();
+    await loadGifts();
   }
 
   /// Birthday 삭제 시 관련 선물 기록 모두 삭제
   Future<void> deleteGiftsByBirthdayId(String birthdayId) async {
     await _repository.deleteByBirthdayId(birthdayId);
-    loadGifts();
+    await loadGifts();
   }
 }

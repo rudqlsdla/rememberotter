@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rememberotter/app/app_bindings.dart';
 import 'package:rememberotter/app/app_pages.dart';
 import 'package:rememberotter/app/app_routes.dart';
-import 'package:rememberotter/domain/models/birthday.dart';
-import 'package:rememberotter/domain/models/gift.dart';
+import 'package:rememberotter/data/database/app_database.dart';
 import 'package:rememberotter/firebase_options.dart';
+import 'package:rememberotter/gen/fonts.gen.dart';
 import 'package:rememberotter/shared/log/logger.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
+import 'package:rememberotter/shared/services/settings_service.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
@@ -31,14 +31,13 @@ void main() async {
   await RemoteConfigService().initialize();
   logger.i('RemoteConfig 초기화 완료');
 
-  // ─── Hive 초기화 ──────────────────────────────────────────────────────
-  await Hive.initFlutter();
-  Hive.registerAdapter(BirthdayAdapter());
-  Hive.registerAdapter(GiftAdapter());
-  await Hive.openBox<Birthday>('birthdays');
-  await Hive.openBox<Gift>('gifts');
-  await Hive.openBox('settings');
-  logger.i('Hive 초기화 완료');
+  // ─── Settings 초기화 ────────────────────────────────────────────────────
+  await SettingsService().initialize();
+  logger.i('Settings 초기화 완료');
+
+  // ─── 데이터베이스 초기화 ──────────────────────────────────────────────────
+  AppDatabase.instance;
+  logger.i('데이터베이스 초기화 완료');
 
   // ─── 알림 초기화 ──────────────────────────────────────────────────────
   await NotificationService().initialize();
@@ -78,7 +77,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: '기억해달',
           theme: ThemeData(
-            fontFamily: 'Maplestory',
+            fontFamily: FontFamily.maplestory,
           ),
           initialRoute: AppRoutes.splash,
           getPages: AppPages.routes,

@@ -7,7 +7,8 @@ import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/onboarding/pages/notification_consent_page.dart';
 import 'package:rememberotter/shared/log/logger.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
-import 'package:rememberotter/shared/widgets/otter_image.dart';
+
+import '../../../gen/assets.gen.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -51,8 +52,8 @@ class _SplashPageState extends State<SplashPage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            OtterImage(type: OtterType.splash, size: 140),
+          children: [
+            Assets.images.splash.splashOtter.image(width: 200, height: 260),
             SizedBox(height: 24),
             Text(
               '기억해달',

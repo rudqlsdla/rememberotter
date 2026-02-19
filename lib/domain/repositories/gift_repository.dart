@@ -1,41 +1,49 @@
-import 'package:hive/hive.dart';
+import 'package:drift/drift.dart';
+import 'package:rememberotter/data/database/app_database.dart';
 import 'package:rememberotter/domain/models/gift.dart';
 import 'package:uuid/uuid.dart';
 
 class GiftRepository {
-  static const String _boxName = 'gifts';
   final _uuid = const Uuid();
-
-  Box<Gift> get _box => Hive.box<Gift>(_boxName);
+  AppDatabase get _db => AppDatabase.instance;
 
   /// 모든 선물 기록 조회
-  List<Gift> getAll() {
-    return _box.values.toList();
+  Future<List<Gift>> getAll() async {
+    final rows = await _db.select(_db.gifts).get();
+    return rows.map(_fromRow).toList();
   }
 
   /// ID로 선물 기록 조회
-  Gift? getById(String id) {
-    return _box.values.where((g) => g.id == id).firstOrNull;
+  Future<Gift?> getById(String id) async {
+    final row = await (_db.select(_db.gifts)
+          ..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+    return row == null ? null : _fromRow(row);
   }
 
   /// Birthday ID로 선물 기록 조회
-  List<Gift> getByBirthdayId(String birthdayId) {
-    return _box.values
-        .where((g) => g.birthdayId == birthdayId)
-        .toList()
-      ..sort((a, b) => b.year.compareTo(a.year)); // 최신 연도 우선
+  Future<List<Gift>> getByBirthdayId(String birthdayId) async {
+    final rows = await (_db.select(_db.gifts)
+          ..where((t) => t.birthdayId.equals(birthdayId))
+          ..orderBy([(t) => OrderingTerm.desc(t.year)]))
+        .get();
+    return rows.map(_fromRow).toList();
   }
 
   /// Birthday ID와 연도로 선물 기록 조회
-  Gift? getByBirthdayIdAndYear(String birthdayId, int year) {
-    return _box.values
-        .where((g) => g.birthdayId == birthdayId && g.year == year)
-        .firstOrNull;
+  Future<Gift?> getByBirthdayIdAndYear(String birthdayId, int year) async {
+    final row = await (_db.select(_db.gifts)
+          ..where((t) => t.birthdayId.equals(birthdayId) & t.year.equals(year)))
+        .getSingleOrNull();
+    return row == null ? null : _fromRow(row);
   }
 
   /// 연도별 선물 기록 조회
-  List<Gift> getByYear(int year) {
-    return _box.values.where((g) => g.year == year).toList();
+  Future<List<Gift>> getByYear(int year) async {
+    final rows = await (_db.select(_db.gifts)
+          ..where((t) => t.year.equals(year)))
+        .get();
+    return rows.map(_fromRow).toList();
   }
 
   /// 선물 기록 추가
@@ -49,8 +57,21 @@ class GiftRepository {
     String? memo,
   }) async {
     final now = DateTime.now();
-    final gift = Gift(
-      id: _uuid.v4(),
+    final id = _uuid.v4();
+    await _db.into(_db.gifts).insert(GiftsCompanion.insert(
+      id: id,
+      birthdayId: birthdayId,
+      year: year,
+      given: Value(given),
+      received: Value(received),
+      givenGiftName: Value(givenGiftName),
+      receivedGiftName: Value(receivedGiftName),
+      memo: Value(memo),
+      createdAt: now,
+      updatedAt: now,
+    ));
+    return Gift(
+      id: id,
       birthdayId: birthdayId,
       year: year,
       given: given,
@@ -61,33 +82,55 @@ class GiftRepository {
       createdAt: now,
       updatedAt: now,
     );
-
-    await _box.put(gift.id, gift);
-    return gift;
   }
 
   /// 선물 기록 수정
   Future<Gift?> update(Gift gift) async {
     final updated = gift.copyWith(updatedAt: DateTime.now());
-    await _box.put(updated.id, updated);
+    await (_db.update(_db.gifts)..where((t) => t.id.equals(updated.id)))
+        .write(GiftsCompanion(
+      birthdayId: Value(updated.birthdayId),
+      year: Value(updated.year),
+      given: Value(updated.given),
+      received: Value(updated.received),
+      givenGiftName: Value(updated.givenGiftName),
+      receivedGiftName: Value(updated.receivedGiftName),
+      memo: Value(updated.memo),
+      updatedAt: Value(updated.updatedAt),
+    ));
     return updated;
   }
 
   /// 선물 기록 삭제
   Future<void> delete(String id) async {
-    await _box.delete(id);
+    await (_db.delete(_db.gifts)..where((t) => t.id.equals(id))).go();
   }
 
   /// Birthday ID로 모든 선물 기록 삭제 (Birthday 삭제 시 사용)
   Future<void> deleteByBirthdayId(String birthdayId) async {
-    final gifts = getByBirthdayId(birthdayId);
-    for (final gift in gifts) {
-      await _box.delete(gift.id);
-    }
+    await (_db.delete(_db.gifts)
+          ..where((t) => t.birthdayId.equals(birthdayId)))
+        .go();
   }
 
   /// 모든 선물 기록 삭제
   Future<void> deleteAll() async {
-    await _box.clear();
+    await _db.delete(_db.gifts).go();
+  }
+
+  /// Drift row → 도메인 모델 변환
+  Gift _fromRow(GiftData row) {
+    return Gift(
+      id: row.id,
+      birthdayId: row.birthdayId,
+      year: row.year,
+      given: row.given,
+      received: row.received,
+      givenGiftName: row.givenGiftName,
+      receivedGiftName: row.receivedGiftName,
+      memo: row.memo,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    );
   }
 }

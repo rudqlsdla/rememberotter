@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
+import 'package:rememberotter/gen/assets.gen.dart';
 
 /// 해달 캐릭터 이미지 위젯
 /// 이미지 파일이 없으면 placeholder 아이콘을 표시합니다.
@@ -15,10 +16,10 @@ class OtterImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final assetPath = 'assets/images/otter/${type.fileName}';
+    final asset = type.asset;
+    if (asset == null) return _buildPlaceholder();
 
-    return Image.asset(
-      assetPath,
+    return asset.image(
       width: size,
       height: size,
       errorBuilder: (_, __, ___) => _buildPlaceholder(),
@@ -43,15 +44,24 @@ class OtterImage extends StatelessWidget {
 }
 
 enum OtterType {
-  splash('img_otter_splash.png', Icons.pets),
-  empty('img_otter_empty.png', Icons.cake_outlined),
-  celebrate('img_otter_celebrate.png', Icons.celebration),
-  gift('img_otter_gift.png', Icons.card_giftcard),
-  error('img_otter_error.png', Icons.error_outline),
-  wave('img_otter_wave.png', Icons.waving_hand);
+  splash(Icons.pets),
+  empty(Icons.cake_outlined),
+  celebrate(Icons.celebration),
+  gift(Icons.card_giftcard),
+  error(Icons.error_outline),
+  wave(Icons.waving_hand);
 
-  final String fileName;
   final IconData placeholderIcon;
 
-  const OtterType(this.fileName, this.placeholderIcon);
+  const OtterType(this.placeholderIcon);
+
+  /// otter 전용 이미지가 아직 없으므로 common 에셋에서 매핑
+  AssetGenImage? get asset {
+    switch (this) {
+      case OtterType.splash:
+        return Assets.images.splash.splashOtter;
+      default:
+        return null;
+    }
+  }
 }

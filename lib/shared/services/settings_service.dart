@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 앱 설정 관리 서비스
 class SettingsService {
@@ -7,43 +7,42 @@ class SettingsService {
   factory SettingsService() => _instance;
   SettingsService._internal();
 
-  static const String boxName = 'settings';
   static const String _keyNotificationDaysBefore = 'notificationDaysBefore';
   static const String _keyNotificationHour = 'notificationHour';
   static const String _keyNotificationMinute = 'notificationMinute';
   static const String _keyUseInternationalAge = 'useInternationalAge';
 
-  Box get _box => Hive.box(boxName);
+  late SharedPreferences _prefs;
 
-  /// Box 인스턴스 반환 (static 접근용)
-  static Future<Box> getBox() async {
-    return Hive.box(boxName);
+  /// SharedPreferences 초기화 (main에서 호출)
+  Future<void> initialize() async {
+    _prefs = await SharedPreferences.getInstance();
   }
 
   /// 기본 알림 일수 (기본값: 1일 전)
   int get notificationDaysBefore {
-    return _box.get(_keyNotificationDaysBefore, defaultValue: 1);
+    return _prefs.getInt(_keyNotificationDaysBefore) ?? 1;
   }
 
   set notificationDaysBefore(int days) {
-    _box.put(_keyNotificationDaysBefore, days);
+    _prefs.setInt(_keyNotificationDaysBefore, days);
   }
 
   /// 알림 시간 (기본값: 오전 9시)
   int get notificationHour {
-    return _box.get(_keyNotificationHour, defaultValue: 9);
+    return _prefs.getInt(_keyNotificationHour) ?? 9;
   }
 
   set notificationHour(int hour) {
-    _box.put(_keyNotificationHour, hour);
+    _prefs.setInt(_keyNotificationHour, hour);
   }
 
   int get notificationMinute {
-    return _box.get(_keyNotificationMinute, defaultValue: 0);
+    return _prefs.getInt(_keyNotificationMinute) ?? 0;
   }
 
   set notificationMinute(int minute) {
-    _box.put(_keyNotificationMinute, minute);
+    _prefs.setInt(_keyNotificationMinute, minute);
   }
 
   TimeOfDay get notificationTime {
@@ -67,11 +66,11 @@ class SettingsService {
 
   /// 만나이 사용 여부 (기본값: true)
   bool get useInternationalAge {
-    return _box.get(_keyUseInternationalAge, defaultValue: true);
+    return _prefs.getBool(_keyUseInternationalAge) ?? true;
   }
 
   set useInternationalAge(bool value) {
-    _box.put(_keyUseInternationalAge, value);
+    _prefs.setBool(_keyUseInternationalAge, value);
   }
 
   /// 알림 일수 옵션 목록

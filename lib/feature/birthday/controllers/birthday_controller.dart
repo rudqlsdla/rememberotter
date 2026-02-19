@@ -17,7 +17,6 @@ class BirthdayController extends GetxController {
   void onInit() {
     super.onInit();
     loadBirthdays();
-    _scheduleAllNotifications();
   }
 
   /// 모든 생일 알림 스케줄링
@@ -26,11 +25,14 @@ class BirthdayController extends GetxController {
   }
 
   /// 모든 생일 로드
-  void loadBirthdays() {
-    birthdays.value = _repository.getAll();
-    birthdays.sort((a, b) => a.daysUntilBirthday.compareTo(b.daysUntilBirthday));
-    upcomingBirthdays.value = _repository.getUpcoming(days: 30);
+  Future<void> loadBirthdays() async {
+    final all = await _repository.getAll();
+    all.sort((a, b) => a.daysUntilBirthday.compareTo(b.daysUntilBirthday));
+    birthdays.value = all;
+    upcomingBirthdays.value =
+        all.where((b) => b.daysUntilBirthday <= 30).toList();
     _updateSelectedDateBirthdays();
+    _scheduleAllNotifications();
   }
 
   /// 선택된 날짜 변경
@@ -39,17 +41,18 @@ class BirthdayController extends GetxController {
     _updateSelectedDateBirthdays();
   }
 
-  /// 선택된 날짜의 생일 업데이트
+  /// 선택된 날짜의 생일 업데이트 (로드된 리스트에서 필터링)
   void _updateSelectedDateBirthdays() {
-    selectedDateBirthdays.value = _repository.getByDate(
-      selectedDate.value.month,
-      selectedDate.value.day,
-    );
+    selectedDateBirthdays.value = birthdays
+        .where((b) =>
+            b.birthDate.month == selectedDate.value.month &&
+            b.birthDate.day == selectedDate.value.day)
+        .toList();
   }
 
-  /// 특정 월의 생일 조회
+  /// 특정 월의 생일 조회 (로드된 리스트에서 필터링)
   List<Birthday> getBirthdaysByMonth(int month) {
-    return _repository.getByMonth(month);
+    return birthdays.where((b) => b.birthDate.month == month).toList();
   }
 
   /// 특정 날짜에 생일이 있는지 확인
@@ -78,14 +81,14 @@ class BirthdayController extends GetxController {
       memo: memo,
     );
     await _notificationService.scheduleBirthdayNotification(birthday);
-    loadBirthdays();
+    await loadBirthdays();
   }
 
   /// 생일 수정
   Future<void> updateBirthday(Birthday birthday) async {
     await _repository.update(birthday);
     await _notificationService.scheduleBirthdayNotification(birthday);
-    loadBirthdays();
+    await loadBirthdays();
   }
 
   /// 생일 삭제 (관련 선물 기록도 함께 삭제)
@@ -97,7 +100,7 @@ class BirthdayController extends GetxController {
       await Get.find<GiftController>().deleteGiftsByBirthdayId(id);
     }
     await _repository.delete(id);
-    loadBirthdays();
+    await loadBirthdays();
   }
 
   /// 생일 일괄 추가 (연락처 가져오기용)
@@ -110,13 +113,17 @@ class BirthdayController extends GetxController {
         birthDate: item.birthDate,
       );
     }
-    loadBirthdays();
+    await loadBirthdays();
     await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
   }
 
-  /// 이름으로 검색
+  /// 이름으로 검색 (로드된 리스트에서 필터링)
   List<Birthday> searchBirthdays(String query) {
-    return _repository.search(query);
+    if (query.isEmpty) return birthdays.toList();
+    final lowerQuery = query.toLowerCase();
+    return birthdays
+        .where((b) => b.name.toLowerCase().contains(lowerQuery))
+        .toList();
   }
 
   /// 모든 생일의 알림 일수 일괄 업데이트
@@ -127,7 +134,7 @@ class BirthdayController extends GetxController {
         await _repository.update(updated);
       }
     }
-    loadBirthdays();
+    await loadBirthdays();
     await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
   }
 }

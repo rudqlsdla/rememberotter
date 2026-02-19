@@ -1,46 +1,41 @@
-import 'package:hive/hive.dart';
+import 'package:drift/drift.dart';
+import 'package:rememberotter/data/database/app_database.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:uuid/uuid.dart';
 
 class BirthdayRepository {
-  static const String _boxName = 'birthdays';
   final _uuid = const Uuid();
-
-  Box<Birthday> get _box => Hive.box<Birthday>(_boxName);
+  AppDatabase get _db => AppDatabase.instance;
 
   /// 모든 생일 조회
-  List<Birthday> getAll() {
-    return _box.values.toList();
+  Future<List<Birthday>> getAll() async {
+    final rows = await _db.select(_db.birthdays).get();
+    return rows.map(_fromRow).toList();
   }
 
   /// ID로 생일 조회
-  Birthday? getById(String id) {
-    return _box.values.where((b) => b.id == id).firstOrNull;
+  Future<Birthday?> getById(String id) async {
+    final row = await (_db.select(_db.birthdays)
+          ..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+    return row == null ? null : _fromRow(row);
   }
 
   /// 특정 월의 생일 조회
-  List<Birthday> getByMonth(int month) {
-    return _box.values.where((b) => b.birthDate.month == month).toList();
+  Future<List<Birthday>> getByMonth(int month) async {
+    final rows = await (_db.select(_db.birthdays)
+          ..where((t) => t.birthDate.month.equals(month)))
+        .get();
+    return rows.map(_fromRow).toList();
   }
 
   /// 특정 날짜의 생일 조회 (월, 일 기준)
-  List<Birthday> getByDate(int month, int day) {
-    return _box.values
-        .where((b) => b.birthDate.month == month && b.birthDate.day == day)
-        .toList();
-  }
-
-  /// 다가오는 생일 조회 (N일 이내)
-  List<Birthday> getUpcoming({int days = 30}) {
-    final all = _box.values.toList();
-    return all.where((b) => b.daysUntilBirthday <= days).toList()
-      ..sort((a, b) => a.daysUntilBirthday.compareTo(b.daysUntilBirthday));
-  }
-
-  /// 오늘 생일인 사람 조회
-  List<Birthday> getTodayBirthdays() {
-    final now = DateTime.now();
-    return getByDate(now.month, now.day);
+  Future<List<Birthday>> getByDate(int month, int day) async {
+    final rows = await (_db.select(_db.birthdays)
+          ..where(
+              (t) => t.birthDate.month.equals(month) & t.birthDate.day.equals(day)))
+        .get();
+    return rows.map(_fromRow).toList();
   }
 
   /// 생일 추가
@@ -53,8 +48,20 @@ class BirthdayRepository {
     int notificationDaysBefore = 1,
   }) async {
     final now = DateTime.now();
-    final birthday = Birthday(
-      id: _uuid.v4(),
+    final id = _uuid.v4();
+    await _db.into(_db.birthdays).insert(BirthdaysCompanion.insert(
+      id: id,
+      name: name,
+      birthDate: birthDate,
+      memo: Value(memo),
+      profileImage: Value(profileImage),
+      notificationEnabled: Value(notificationEnabled),
+      notificationDaysBefore: Value(notificationDaysBefore),
+      createdAt: now,
+      updatedAt: now,
+    ));
+    return Birthday(
+      id: id,
       name: name,
       birthDate: birthDate,
       memo: memo,
@@ -64,34 +71,57 @@ class BirthdayRepository {
       createdAt: now,
       updatedAt: now,
     );
-
-    await _box.put(birthday.id, birthday);
-    return birthday;
   }
 
   /// 생일 수정
   Future<Birthday?> update(Birthday birthday) async {
     final updated = birthday.copyWith(updatedAt: DateTime.now());
-    await _box.put(updated.id, updated);
+    await (_db.update(_db.birthdays)..where((t) => t.id.equals(updated.id)))
+        .write(BirthdaysCompanion(
+      name: Value(updated.name),
+      birthDate: Value(updated.birthDate),
+      memo: Value(updated.memo),
+      profileImage: Value(updated.profileImage),
+      isLunarCalendar: Value(updated.isLunarCalendar),
+      notificationEnabled: Value(updated.notificationEnabled),
+      notificationDaysBefore: Value(updated.notificationDaysBefore),
+      updatedAt: Value(updated.updatedAt),
+    ));
     return updated;
   }
 
   /// 생일 삭제
   Future<void> delete(String id) async {
-    await _box.delete(id);
+    await (_db.delete(_db.birthdays)..where((t) => t.id.equals(id))).go();
   }
 
   /// 모든 생일 삭제
   Future<void> deleteAll() async {
-    await _box.clear();
+    await _db.delete(_db.birthdays).go();
   }
 
   /// 이름으로 검색
-  List<Birthday> search(String query) {
+  Future<List<Birthday>> search(String query) async {
     if (query.isEmpty) return getAll();
-    final lowerQuery = query.toLowerCase();
-    return _box.values
-        .where((b) => b.name.toLowerCase().contains(lowerQuery))
-        .toList();
+    final rows = await (_db.select(_db.birthdays)
+          ..where((t) => t.name.like('%$query%')))
+        .get();
+    return rows.map(_fromRow).toList();
+  }
+
+  /// Drift row → 도메인 모델 변환
+  Birthday _fromRow(BirthdayData row) {
+    return Birthday(
+      id: row.id,
+      name: row.name,
+      birthDate: row.birthDate,
+      memo: row.memo,
+      profileImage: row.profileImage,
+      isLunarCalendar: row.isLunarCalendar,
+      notificationEnabled: row.notificationEnabled,
+      notificationDaysBefore: row.notificationDaysBefore,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    );
   }
 }

@@ -1,37 +1,13 @@
-import 'package:hive/hive.dart';
-
-part 'gift.g.dart';
-
-@HiveType(typeId: 1)
-class Gift extends HiveObject {
-  @HiveField(0)
+class Gift {
   final String id;
-
-  @HiveField(1)
   final String birthdayId;
-
-  @HiveField(2)
   final int year;
-
-  @HiveField(3)
   final bool given;
-
-  @HiveField(4)
   final bool received;
-
-  @HiveField(5)
   final String? givenGiftName;
-
-  @HiveField(6)
   final String? receivedGiftName;
-
-  @HiveField(7)
   final String? memo;
-
-  @HiveField(8)
   final DateTime createdAt;
-
-  @HiveField(9)
   final DateTime updatedAt;
 
   Gift({

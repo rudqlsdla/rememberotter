@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
-import 'package:rememberotter/shared/services/settings_service.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationConsentPage extends StatelessWidget {
   const NotificationConsentPage({super.key});
@@ -13,14 +13,14 @@ class NotificationConsentPage extends StatelessWidget {
 
   /// 동의 화면을 이미 봤는지 확인
   static Future<bool> hasShownConsent() async {
-    final settingsBox = await SettingsService.getBox();
-    return settingsBox.get(_consentKey, defaultValue: false);
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_consentKey) ?? false;
   }
 
   /// 동의 화면을 봤다고 표시
   static Future<void> markConsentShown() async {
-    final settingsBox = await SettingsService.getBox();
-    await settingsBox.put(_consentKey, true);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_consentKey, true);
   }
 
   Future<void> _onAllow() async {
