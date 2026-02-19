@@ -27,12 +27,12 @@ class NotificationConsentPage extends StatelessWidget {
     final notificationService = NotificationService();
     await notificationService.requestPermission();
     await markConsentShown();
-    Get.offAllNamed(AppRoutes.main);
+    Get.offAllNamed(AppRoutes.onboardingContactImport);
   }
 
   Future<void> _onSkip() async {
     await markConsentShown();
-    Get.offAllNamed(AppRoutes.main);
+    Get.offAllNamed(AppRoutes.onboardingContactImport);
   }
 
   @override

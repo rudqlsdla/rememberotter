@@ -7,4 +7,5 @@ abstract class AppRoutes {
   static const String settings = '/settings';
   static const String ossLicenses = '/settings/oss-licenses';
   static const String contactImport = '/contact/import';
+  static const String onboardingContactImport = '/onboarding/contact-import';
 }

@@ -295,7 +295,6 @@ class _ContactImportPageState extends State<ContactImportPage>
 
         // 전체 선택 헤더
         Obx(() {
-          final filtered = _controller.filteredContacts;
           final selectedCount = _controller.selectedContactIds.length;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -317,7 +316,7 @@ class _ContactImportPageState extends State<ContactImportPage>
                 Text(
                   selectedCount > 0
                       ? '$selectedCount명 선택됨'
-                      : '전체 선택 (${filtered.length}명)',
+                      : '생일 등록된 연락처 전체 선택 (${_controller.selectableCount}명)',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
