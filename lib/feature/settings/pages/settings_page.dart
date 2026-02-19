@@ -7,6 +7,7 @@ import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
+import 'package:rememberotter/feature/settings/widgets/feedback_sheet.dart';
 import 'package:rememberotter/shared/widgets/time_picker_spinner.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -319,6 +320,12 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
 
           // 앱 정보 섹션
           _buildSectionHeader('앱 정보'),
+          _buildSettingTile(
+            icon: Icons.feedback_outlined,
+            title: '피드백 보내기',
+            subtitle: '불편한 점이나 개선 아이디어를 알려주세요',
+            onTap: () => FeedbackSheet.show(),
+          ),
           _buildSettingTile(
             icon: Icons.info_outline,
             title: '버전',
