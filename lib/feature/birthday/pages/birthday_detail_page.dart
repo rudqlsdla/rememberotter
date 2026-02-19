@@ -37,9 +37,22 @@ class BirthdayDetailPage extends StatelessWidget {
                 .where((b) => b.id == birthdayId)
                 .firstOrNull;
             if (birthday == null) return const SizedBox();
-            return IconButton(
-              icon: const Icon(Icons.edit_outlined, color: AppColors.textPrimary),
-              onPressed: () => BirthdayFormSheet.show(birthday: birthday),
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit_outlined, color: AppColors.textPrimary),
+                  onPressed: () => BirthdayFormSheet.show(birthday: birthday),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete_outline, color: AppColors.error),
+                  onPressed: () => _showDeleteConfirmDialog(
+                    birthday.id,
+                    birthday.name,
+                    birthdayController,
+                  ),
+                ),
+              ],
             );
           }),
         ],
@@ -68,6 +81,89 @@ class BirthdayDetailPage extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  void _showDeleteConfirmDialog(
+    String id,
+    String name,
+    BirthdayController controller,
+  ) {
+    Get.bottomSheet(
+      SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.delete_outline, size: 48, color: AppColors.error),
+              const SizedBox(height: 16),
+              Text(
+                '$name의 생일을 삭제할까요?',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '선물 기록도 함께 삭제됩니다',
+                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    Get.back(); // 바텀시트 닫기
+                    await controller.deleteBirthday(id);
+                    Get.back(); // 상세 페이지 닫기
+                    Get.snackbar(
+                      '삭제 완료',
+                      '$name의 생일이 삭제되었어요',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.error,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    '삭제하기',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: TextButton(
+                  onPressed: () => Get.back(),
+                  child: const Text(
+                    '취소',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
     );
   }
 
