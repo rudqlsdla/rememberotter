@@ -348,7 +348,7 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
             child: TextFormField(
               controller: _givenGiftNameController,
               decoration: InputDecoration(
-                labelText: '준 선물 이름',
+                labelText: '준 선물 이름(선택)',
                 hintText: '예: 향수, 지갑',
                 filled: true,
                 fillColor: AppColors.surfaceVariant,
@@ -398,7 +398,7 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
             child: TextFormField(
               controller: _receivedGiftNameController,
               decoration: InputDecoration(
-                labelText: '받은 선물 이름',
+                labelText: '받은 선물 이름(선택)',
                 hintText: '예: 케이크, 카드',
                 filled: true,
                 fillColor: AppColors.surfaceVariant,
