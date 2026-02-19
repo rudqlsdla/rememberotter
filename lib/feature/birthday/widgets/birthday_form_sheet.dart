@@ -157,10 +157,8 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(top: 0),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Form(
+      padding: const EdgeInsets.all(24),
+      child: Form(
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -302,7 +300,6 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
             ],
           ),
         ),
-      ),
     );
   }
 }

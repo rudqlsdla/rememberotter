@@ -101,10 +101,6 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Padding(
         padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
@@ -192,7 +188,6 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
             ],
           ),
         ),
-      ),
     );
   }
 
