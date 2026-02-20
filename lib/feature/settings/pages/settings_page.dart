@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rememberotter/app/app_constants.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
@@ -431,6 +432,16 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
             onTap: () => Get.toNamed(AppRoutes.ossLicenses),
           ),
           _buildSettingTile(
+            icon: Icons.privacy_tip_outlined,
+            title: '개인정보처리방침',
+            onTap: () => _openUrl(AppConstants.privacyPolicyUrl),
+          ),
+          _buildSettingTile(
+            icon: Icons.gavel_outlined,
+            title: '이용약관',
+            onTap: () => _openUrl(AppConstants.termsOfServiceUrl),
+          ),
+          _buildSettingTile(
             icon: Icons.pets,
             title: '기억해달',
             subtitle: '해달이 소중한 돌을 간직하듯, 소중한 생일을 간직해드려요',
@@ -492,6 +503,13 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
 
   Future<void> _openStore() async {
     final url = Uri.parse(RemoteConfigService().storeUrl);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _openUrl(String urlString) async {
+    final url = Uri.parse(urlString);
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     }

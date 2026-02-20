@@ -2,4 +2,8 @@
 abstract class AppConstants {
   // 앱 정보
   static const String appName = '기억해달';
+
+  // 외부 링크
+  static const String privacyPolicyUrl = 'https://notion.so/privacy-policy';  // TODO: 실제 노션 URL로 교체
+  static const String termsOfServiceUrl = 'https://notion.so/terms-of-service';  // TODO: 실제 노션 URL로 교체
 }
