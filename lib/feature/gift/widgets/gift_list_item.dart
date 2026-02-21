@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rememberotter/domain/models/gift.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
+import 'package:rememberotter/shared/utils/price_formatter.dart';
 
 class GiftListItem extends StatelessWidget {
   final Gift gift;
@@ -41,17 +42,17 @@ class GiftListItem extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (gift.given && gift.givenGiftName != null)
+            if (gift.given && _hasGivenInfo)
               Text(
-                '준 선물: ${gift.givenGiftName}',
+                '준 선물: ${_formatGiftInfo(gift.givenGiftName, gift.givenGiftPrice)}',
                 style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                 ),
               ),
-            if (gift.received && gift.receivedGiftName != null)
+            if (gift.received && _hasReceivedInfo)
               Text(
-                '받은 선물: ${gift.receivedGiftName}',
+                '받은 선물: ${_formatGiftInfo(gift.receivedGiftName, gift.receivedGiftPrice)}',
                 style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
@@ -72,6 +73,28 @@ class GiftListItem extends StatelessWidget {
         trailing: _buildExchangeStatusBadge(),
       ),
     );
+  }
+
+  bool get _hasGivenInfo =>
+      (gift.givenGiftName != null && gift.givenGiftName!.isNotEmpty) ||
+      (gift.givenGiftPrice != null && gift.givenGiftPrice! > 0);
+
+  bool get _hasReceivedInfo =>
+      (gift.receivedGiftName != null && gift.receivedGiftName!.isNotEmpty) ||
+      (gift.receivedGiftPrice != null && gift.receivedGiftPrice! > 0);
+
+  String _formatGiftInfo(String? name, int? price) {
+    final hasName = name != null && name.isNotEmpty;
+    final hasPrice = price != null && price > 0;
+
+    if (hasName && hasPrice) {
+      return '$name (${PriceFormatter.formatWithUnit(price)})';
+    } else if (hasName) {
+      return name;
+    } else if (hasPrice) {
+      return PriceFormatter.formatWithUnit(price);
+    }
+    return '';
   }
 
   Widget _buildStatusIcon() {

@@ -711,6 +711,17 @@ class $GiftsTable extends Gifts with TableInfo<$GiftsTable, GiftData> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _givenGiftPriceMeta = const VerificationMeta(
+    'givenGiftPrice',
+  );
+  @override
+  late final GeneratedColumn<int> givenGiftPrice = GeneratedColumn<int>(
+    'given_gift_price',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _receivedGiftNameMeta = const VerificationMeta(
     'receivedGiftName',
   );
@@ -720,6 +731,17 @@ class $GiftsTable extends Gifts with TableInfo<$GiftsTable, GiftData> {
     aliasedName,
     true,
     type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _receivedGiftPriceMeta = const VerificationMeta(
+    'receivedGiftPrice',
+  );
+  @override
+  late final GeneratedColumn<int> receivedGiftPrice = GeneratedColumn<int>(
+    'received_gift_price',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _memoMeta = const VerificationMeta('memo');
@@ -761,7 +783,9 @@ class $GiftsTable extends Gifts with TableInfo<$GiftsTable, GiftData> {
     given,
     received,
     givenGiftName,
+    givenGiftPrice,
     receivedGiftName,
+    receivedGiftPrice,
     memo,
     createdAt,
     updatedAt,
@@ -820,12 +844,30 @@ class $GiftsTable extends Gifts with TableInfo<$GiftsTable, GiftData> {
         ),
       );
     }
+    if (data.containsKey('given_gift_price')) {
+      context.handle(
+        _givenGiftPriceMeta,
+        givenGiftPrice.isAcceptableOrUnknown(
+          data['given_gift_price']!,
+          _givenGiftPriceMeta,
+        ),
+      );
+    }
     if (data.containsKey('received_gift_name')) {
       context.handle(
         _receivedGiftNameMeta,
         receivedGiftName.isAcceptableOrUnknown(
           data['received_gift_name']!,
           _receivedGiftNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('received_gift_price')) {
+      context.handle(
+        _receivedGiftPriceMeta,
+        receivedGiftPrice.isAcceptableOrUnknown(
+          data['received_gift_price']!,
+          _receivedGiftPriceMeta,
         ),
       );
     }
@@ -884,9 +926,17 @@ class $GiftsTable extends Gifts with TableInfo<$GiftsTable, GiftData> {
         DriftSqlType.string,
         data['${effectivePrefix}given_gift_name'],
       ),
+      givenGiftPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}given_gift_price'],
+      ),
       receivedGiftName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}received_gift_name'],
+      ),
+      receivedGiftPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}received_gift_price'],
       ),
       memo: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -916,7 +966,9 @@ class GiftData extends DataClass implements Insertable<GiftData> {
   final bool given;
   final bool received;
   final String? givenGiftName;
+  final int? givenGiftPrice;
   final String? receivedGiftName;
+  final int? receivedGiftPrice;
   final String? memo;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -927,7 +979,9 @@ class GiftData extends DataClass implements Insertable<GiftData> {
     required this.given,
     required this.received,
     this.givenGiftName,
+    this.givenGiftPrice,
     this.receivedGiftName,
+    this.receivedGiftPrice,
     this.memo,
     required this.createdAt,
     required this.updatedAt,
@@ -943,8 +997,14 @@ class GiftData extends DataClass implements Insertable<GiftData> {
     if (!nullToAbsent || givenGiftName != null) {
       map['given_gift_name'] = Variable<String>(givenGiftName);
     }
+    if (!nullToAbsent || givenGiftPrice != null) {
+      map['given_gift_price'] = Variable<int>(givenGiftPrice);
+    }
     if (!nullToAbsent || receivedGiftName != null) {
       map['received_gift_name'] = Variable<String>(receivedGiftName);
+    }
+    if (!nullToAbsent || receivedGiftPrice != null) {
+      map['received_gift_price'] = Variable<int>(receivedGiftPrice);
     }
     if (!nullToAbsent || memo != null) {
       map['memo'] = Variable<String>(memo);
@@ -964,9 +1024,15 @@ class GiftData extends DataClass implements Insertable<GiftData> {
       givenGiftName: givenGiftName == null && nullToAbsent
           ? const Value.absent()
           : Value(givenGiftName),
+      givenGiftPrice: givenGiftPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(givenGiftPrice),
       receivedGiftName: receivedGiftName == null && nullToAbsent
           ? const Value.absent()
           : Value(receivedGiftName),
+      receivedGiftPrice: receivedGiftPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(receivedGiftPrice),
       memo: memo == null && nullToAbsent ? const Value.absent() : Value(memo),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -985,7 +1051,9 @@ class GiftData extends DataClass implements Insertable<GiftData> {
       given: serializer.fromJson<bool>(json['given']),
       received: serializer.fromJson<bool>(json['received']),
       givenGiftName: serializer.fromJson<String?>(json['givenGiftName']),
+      givenGiftPrice: serializer.fromJson<int?>(json['givenGiftPrice']),
       receivedGiftName: serializer.fromJson<String?>(json['receivedGiftName']),
+      receivedGiftPrice: serializer.fromJson<int?>(json['receivedGiftPrice']),
       memo: serializer.fromJson<String?>(json['memo']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -1001,7 +1069,9 @@ class GiftData extends DataClass implements Insertable<GiftData> {
       'given': serializer.toJson<bool>(given),
       'received': serializer.toJson<bool>(received),
       'givenGiftName': serializer.toJson<String?>(givenGiftName),
+      'givenGiftPrice': serializer.toJson<int?>(givenGiftPrice),
       'receivedGiftName': serializer.toJson<String?>(receivedGiftName),
+      'receivedGiftPrice': serializer.toJson<int?>(receivedGiftPrice),
       'memo': serializer.toJson<String?>(memo),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -1015,7 +1085,9 @@ class GiftData extends DataClass implements Insertable<GiftData> {
     bool? given,
     bool? received,
     Value<String?> givenGiftName = const Value.absent(),
+    Value<int?> givenGiftPrice = const Value.absent(),
     Value<String?> receivedGiftName = const Value.absent(),
+    Value<int?> receivedGiftPrice = const Value.absent(),
     Value<String?> memo = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -1028,9 +1100,15 @@ class GiftData extends DataClass implements Insertable<GiftData> {
     givenGiftName: givenGiftName.present
         ? givenGiftName.value
         : this.givenGiftName,
+    givenGiftPrice: givenGiftPrice.present
+        ? givenGiftPrice.value
+        : this.givenGiftPrice,
     receivedGiftName: receivedGiftName.present
         ? receivedGiftName.value
         : this.receivedGiftName,
+    receivedGiftPrice: receivedGiftPrice.present
+        ? receivedGiftPrice.value
+        : this.receivedGiftPrice,
     memo: memo.present ? memo.value : this.memo,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -1047,9 +1125,15 @@ class GiftData extends DataClass implements Insertable<GiftData> {
       givenGiftName: data.givenGiftName.present
           ? data.givenGiftName.value
           : this.givenGiftName,
+      givenGiftPrice: data.givenGiftPrice.present
+          ? data.givenGiftPrice.value
+          : this.givenGiftPrice,
       receivedGiftName: data.receivedGiftName.present
           ? data.receivedGiftName.value
           : this.receivedGiftName,
+      receivedGiftPrice: data.receivedGiftPrice.present
+          ? data.receivedGiftPrice.value
+          : this.receivedGiftPrice,
       memo: data.memo.present ? data.memo.value : this.memo,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -1065,7 +1149,9 @@ class GiftData extends DataClass implements Insertable<GiftData> {
           ..write('given: $given, ')
           ..write('received: $received, ')
           ..write('givenGiftName: $givenGiftName, ')
+          ..write('givenGiftPrice: $givenGiftPrice, ')
           ..write('receivedGiftName: $receivedGiftName, ')
+          ..write('receivedGiftPrice: $receivedGiftPrice, ')
           ..write('memo: $memo, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1081,7 +1167,9 @@ class GiftData extends DataClass implements Insertable<GiftData> {
     given,
     received,
     givenGiftName,
+    givenGiftPrice,
     receivedGiftName,
+    receivedGiftPrice,
     memo,
     createdAt,
     updatedAt,
@@ -1096,7 +1184,9 @@ class GiftData extends DataClass implements Insertable<GiftData> {
           other.given == this.given &&
           other.received == this.received &&
           other.givenGiftName == this.givenGiftName &&
+          other.givenGiftPrice == this.givenGiftPrice &&
           other.receivedGiftName == this.receivedGiftName &&
+          other.receivedGiftPrice == this.receivedGiftPrice &&
           other.memo == this.memo &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -1109,7 +1199,9 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
   final Value<bool> given;
   final Value<bool> received;
   final Value<String?> givenGiftName;
+  final Value<int?> givenGiftPrice;
   final Value<String?> receivedGiftName;
+  final Value<int?> receivedGiftPrice;
   final Value<String?> memo;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1121,7 +1213,9 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
     this.given = const Value.absent(),
     this.received = const Value.absent(),
     this.givenGiftName = const Value.absent(),
+    this.givenGiftPrice = const Value.absent(),
     this.receivedGiftName = const Value.absent(),
+    this.receivedGiftPrice = const Value.absent(),
     this.memo = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1134,7 +1228,9 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
     this.given = const Value.absent(),
     this.received = const Value.absent(),
     this.givenGiftName = const Value.absent(),
+    this.givenGiftPrice = const Value.absent(),
     this.receivedGiftName = const Value.absent(),
+    this.receivedGiftPrice = const Value.absent(),
     this.memo = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -1151,7 +1247,9 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
     Expression<bool>? given,
     Expression<bool>? received,
     Expression<String>? givenGiftName,
+    Expression<int>? givenGiftPrice,
     Expression<String>? receivedGiftName,
+    Expression<int>? receivedGiftPrice,
     Expression<String>? memo,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1164,7 +1262,9 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
       if (given != null) 'given': given,
       if (received != null) 'received': received,
       if (givenGiftName != null) 'given_gift_name': givenGiftName,
+      if (givenGiftPrice != null) 'given_gift_price': givenGiftPrice,
       if (receivedGiftName != null) 'received_gift_name': receivedGiftName,
+      if (receivedGiftPrice != null) 'received_gift_price': receivedGiftPrice,
       if (memo != null) 'memo': memo,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1179,7 +1279,9 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
     Value<bool>? given,
     Value<bool>? received,
     Value<String?>? givenGiftName,
+    Value<int?>? givenGiftPrice,
     Value<String?>? receivedGiftName,
+    Value<int?>? receivedGiftPrice,
     Value<String?>? memo,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -1192,7 +1294,9 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
       given: given ?? this.given,
       received: received ?? this.received,
       givenGiftName: givenGiftName ?? this.givenGiftName,
+      givenGiftPrice: givenGiftPrice ?? this.givenGiftPrice,
       receivedGiftName: receivedGiftName ?? this.receivedGiftName,
+      receivedGiftPrice: receivedGiftPrice ?? this.receivedGiftPrice,
       memo: memo ?? this.memo,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1221,8 +1325,14 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
     if (givenGiftName.present) {
       map['given_gift_name'] = Variable<String>(givenGiftName.value);
     }
+    if (givenGiftPrice.present) {
+      map['given_gift_price'] = Variable<int>(givenGiftPrice.value);
+    }
     if (receivedGiftName.present) {
       map['received_gift_name'] = Variable<String>(receivedGiftName.value);
+    }
+    if (receivedGiftPrice.present) {
+      map['received_gift_price'] = Variable<int>(receivedGiftPrice.value);
     }
     if (memo.present) {
       map['memo'] = Variable<String>(memo.value);
@@ -1248,7 +1358,9 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
           ..write('given: $given, ')
           ..write('received: $received, ')
           ..write('givenGiftName: $givenGiftName, ')
+          ..write('givenGiftPrice: $givenGiftPrice, ')
           ..write('receivedGiftName: $receivedGiftName, ')
+          ..write('receivedGiftPrice: $receivedGiftPrice, ')
           ..write('memo: $memo, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -1679,7 +1791,9 @@ typedef $$GiftsTableCreateCompanionBuilder =
       Value<bool> given,
       Value<bool> received,
       Value<String?> givenGiftName,
+      Value<int?> givenGiftPrice,
       Value<String?> receivedGiftName,
+      Value<int?> receivedGiftPrice,
       Value<String?> memo,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -1693,7 +1807,9 @@ typedef $$GiftsTableUpdateCompanionBuilder =
       Value<bool> given,
       Value<bool> received,
       Value<String?> givenGiftName,
+      Value<int?> givenGiftPrice,
       Value<String?> receivedGiftName,
+      Value<int?> receivedGiftPrice,
       Value<String?> memo,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -1755,8 +1871,18 @@ class $$GiftsTableFilterComposer extends Composer<_$AppDatabase, $GiftsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get givenGiftPrice => $composableBuilder(
+    column: $table.givenGiftPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get receivedGiftName => $composableBuilder(
     column: $table.receivedGiftName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get receivedGiftPrice => $composableBuilder(
+    column: $table.receivedGiftPrice,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1833,8 +1959,18 @@ class $$GiftsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get givenGiftPrice => $composableBuilder(
+    column: $table.givenGiftPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get receivedGiftName => $composableBuilder(
     column: $table.receivedGiftName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get receivedGiftPrice => $composableBuilder(
+    column: $table.receivedGiftPrice,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1903,8 +2039,18 @@ class $$GiftsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get givenGiftPrice => $composableBuilder(
+    column: $table.givenGiftPrice,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get receivedGiftName => $composableBuilder(
     column: $table.receivedGiftName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get receivedGiftPrice => $composableBuilder(
+    column: $table.receivedGiftPrice,
     builder: (column) => column,
   );
 
@@ -1975,7 +2121,9 @@ class $$GiftsTableTableManager
                 Value<bool> given = const Value.absent(),
                 Value<bool> received = const Value.absent(),
                 Value<String?> givenGiftName = const Value.absent(),
+                Value<int?> givenGiftPrice = const Value.absent(),
                 Value<String?> receivedGiftName = const Value.absent(),
+                Value<int?> receivedGiftPrice = const Value.absent(),
                 Value<String?> memo = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -1987,7 +2135,9 @@ class $$GiftsTableTableManager
                 given: given,
                 received: received,
                 givenGiftName: givenGiftName,
+                givenGiftPrice: givenGiftPrice,
                 receivedGiftName: receivedGiftName,
+                receivedGiftPrice: receivedGiftPrice,
                 memo: memo,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -2001,7 +2151,9 @@ class $$GiftsTableTableManager
                 Value<bool> given = const Value.absent(),
                 Value<bool> received = const Value.absent(),
                 Value<String?> givenGiftName = const Value.absent(),
+                Value<int?> givenGiftPrice = const Value.absent(),
                 Value<String?> receivedGiftName = const Value.absent(),
+                Value<int?> receivedGiftPrice = const Value.absent(),
                 Value<String?> memo = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -2013,7 +2165,9 @@ class $$GiftsTableTableManager
                 given: given,
                 received: received,
                 givenGiftName: givenGiftName,
+                givenGiftPrice: givenGiftPrice,
                 receivedGiftName: receivedGiftName,
+                receivedGiftPrice: receivedGiftPrice,
                 memo: memo,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

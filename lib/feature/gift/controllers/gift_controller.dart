@@ -41,7 +41,9 @@ class GiftController extends GetxController {
     bool given = false,
     bool received = false,
     String? givenGiftName,
+    int? givenGiftPrice,
     String? receivedGiftName,
+    int? receivedGiftPrice,
     String? memo,
   }) async {
     await _repository.add(
@@ -50,7 +52,9 @@ class GiftController extends GetxController {
       given: given,
       received: received,
       givenGiftName: givenGiftName,
+      givenGiftPrice: givenGiftPrice,
       receivedGiftName: receivedGiftName,
+      receivedGiftPrice: receivedGiftPrice,
       memo: memo,
     );
     await loadGifts();

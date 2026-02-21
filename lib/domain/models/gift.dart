@@ -5,7 +5,9 @@ class Gift {
   final bool given;
   final bool received;
   final String? givenGiftName;
+  final int? givenGiftPrice;
   final String? receivedGiftName;
+  final int? receivedGiftPrice;
   final String? memo;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -17,7 +19,9 @@ class Gift {
     this.given = false,
     this.received = false,
     this.givenGiftName,
+    this.givenGiftPrice,
     this.receivedGiftName,
+    this.receivedGiftPrice,
     this.memo,
     required this.createdAt,
     required this.updatedAt,
@@ -30,7 +34,9 @@ class Gift {
     bool? given,
     bool? received,
     String? givenGiftName,
+    int? Function()? givenGiftPrice,
     String? receivedGiftName,
+    int? Function()? receivedGiftPrice,
     String? memo,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -42,7 +48,9 @@ class Gift {
       given: given ?? this.given,
       received: received ?? this.received,
       givenGiftName: givenGiftName ?? this.givenGiftName,
+      givenGiftPrice: givenGiftPrice != null ? givenGiftPrice() : this.givenGiftPrice,
       receivedGiftName: receivedGiftName ?? this.receivedGiftName,
+      receivedGiftPrice: receivedGiftPrice != null ? receivedGiftPrice() : this.receivedGiftPrice,
       memo: memo ?? this.memo,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

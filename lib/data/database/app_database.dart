@@ -34,7 +34,9 @@ class Gifts extends Table {
   BoolColumn get given => boolean().withDefault(const Constant(false))();
   BoolColumn get received => boolean().withDefault(const Constant(false))();
   TextColumn get givenGiftName => text().nullable()();
+  IntColumn get givenGiftPrice => integer().nullable()();
   TextColumn get receivedGiftName => text().nullable()();
+  IntColumn get receivedGiftPrice => integer().nullable()();
   TextColumn get memo => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();

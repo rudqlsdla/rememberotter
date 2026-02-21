@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:rememberotter/domain/models/gift.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
+import 'package:rememberotter/shared/utils/price_formatter.dart';
+import 'package:rememberotter/shared/widgets/input_amount_sheet.dart';
 import 'package:rememberotter/shared/widgets/year_picker_spinner.dart';
 
 class GiftFormSheet extends StatefulWidget {
@@ -43,6 +45,8 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
   bool _given = false;
   bool _received = false;
   bool _isEditing = false;
+  int? _givenGiftPrice;
+  int? _receivedGiftPrice;
 
   @override
   void initState() {
@@ -53,7 +57,9 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
       _given = widget.gift!.given;
       _received = widget.gift!.received;
       _givenGiftNameController.text = widget.gift!.givenGiftName ?? '';
+      _givenGiftPrice = widget.gift!.givenGiftPrice;
       _receivedGiftNameController.text = widget.gift!.receivedGiftName ?? '';
+      _receivedGiftPrice = widget.gift!.receivedGiftPrice;
       _memoController.text = widget.gift!.memo ?? '';
     } else {
       _selectedYear = DateTime.now().year;
@@ -73,13 +79,22 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
 
     final controller = Get.find<GiftController>();
 
+    final givenPrice = _given && _givenGiftPrice != null && _givenGiftPrice! > 0
+        ? _givenGiftPrice
+        : null;
+    final receivedPrice = _received && _receivedGiftPrice != null && _receivedGiftPrice! > 0
+        ? _receivedGiftPrice
+        : null;
+
     if (_isEditing) {
       final updated = widget.gift!.copyWith(
         year: _selectedYear,
         given: _given,
         received: _received,
         givenGiftName: _given ? _givenGiftNameController.text.trim() : null,
+        givenGiftPrice: () => givenPrice,
         receivedGiftName: _received ? _receivedGiftNameController.text.trim() : null,
+        receivedGiftPrice: () => receivedPrice,
         memo: _memoController.text.trim().isEmpty ? null : _memoController.text.trim(),
       );
       await controller.updateGift(updated);
@@ -90,7 +105,9 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
         given: _given,
         received: _received,
         givenGiftName: _given ? _givenGiftNameController.text.trim() : null,
+        givenGiftPrice: givenPrice,
         receivedGiftName: _received ? _receivedGiftNameController.text.trim() : null,
+        receivedGiftPrice: receivedPrice,
         memo: _memoController.text.trim().isEmpty ? null : _memoController.text.trim(),
       );
     }
@@ -323,6 +340,7 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
               onChanged: (value) {
                 setState(() {
                   _given = value ?? false;
+                  if (!_given) _givenGiftPrice = null;
                 });
               },
               activeColor: AppColors.primary,
@@ -340,22 +358,48 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
         if (_given)
           Padding(
             padding: const EdgeInsets.only(left: 8, top: 8),
-            child: TextFormField(
-              controller: _givenGiftNameController,
-              decoration: InputDecoration(
-                labelText: '준 선물 이름(선택)',
-                hintText: '예: 향수, 지갑',
-                filled: true,
-                fillColor: AppColors.surfaceVariant,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: TextFormField(
+                    controller: _givenGiftNameController,
+                    decoration: InputDecoration(
+                      labelText: '선물 이름(선택)',
+                      hintText: '예: 향수, 지갑',
+                      filled: true,
+                      fillColor: AppColors.surfaceVariant,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                      ),
+                    ),
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 2,
+                  child: _buildPriceField(
+                    price: _givenGiftPrice,
+                    hint: '금액(선택)',
+                    color: AppColors.primary,
+                    onTap: () async {
+                      final result = await InputAmountSheet.show(
+                        context,
+                        initialAmount: _givenGiftPrice ?? 0,
+                        title: '준 선물 금액',
+                      );
+                      if (result != null) {
+                        setState(() => _givenGiftPrice = result > 0 ? result : null);
+                      }
+                    },
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
       ],
@@ -373,6 +417,7 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
               onChanged: (value) {
                 setState(() {
                   _received = value ?? false;
+                  if (!_received) _receivedGiftPrice = null;
                 });
               },
               activeColor: AppColors.accent,
@@ -390,25 +435,92 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
         if (_received)
           Padding(
             padding: const EdgeInsets.only(left: 8, top: 8),
-            child: TextFormField(
-              controller: _receivedGiftNameController,
-              decoration: InputDecoration(
-                labelText: '받은 선물 이름(선택)',
-                hintText: '예: 케이크, 카드',
-                filled: true,
-                fillColor: AppColors.surfaceVariant,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: TextFormField(
+                    controller: _receivedGiftNameController,
+                    decoration: InputDecoration(
+                      labelText: '선물 이름(선택)',
+                      hintText: '예: 케이크, 카드',
+                      filled: true,
+                      fillColor: AppColors.surfaceVariant,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                      ),
+                    ),
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 2,
+                  child: _buildPriceField(
+                    price: _receivedGiftPrice,
+                    hint: '금액(선택)',
+                    color: AppColors.accent,
+                    onTap: () async {
+                      final result = await InputAmountSheet.show(
+                        context,
+                        initialAmount: _receivedGiftPrice ?? 0,
+                        title: '받은 선물 금액',
+                      );
+                      if (result != null) {
+                        setState(() => _receivedGiftPrice = result > 0 ? result : null);
+                      }
+                    },
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildPriceField({
+    required int? price,
+    required String hint,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    final hasValue = price != null && price > 0;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 56,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.monetization_on_outlined,
+              size: 18,
+              color: hasValue ? color : AppColors.textTertiary,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                hasValue ? PriceFormatter.formatWithUnit(price) : hint,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: hasValue ? AppColors.textPrimary : AppColors.textTertiary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
