@@ -27,24 +27,44 @@ class $AssetsImagesGen {
 class $AssetsImagesCommonGen {
   const $AssetsImagesCommonGen();
 
-  /// File path: assets/images/common/home.png
-  AssetGenImage get home =>
-      const AssetGenImage('assets/images/common/home.png');
+  /// File path: assets/images/common/icon_otter.png
+  AssetGenImage get iconOtter =>
+      const AssetGenImage('assets/images/common/icon_otter.png');
 
-  /// File path: assets/images/common/icon.png
-  AssetGenImage get icon =>
-      const AssetGenImage('assets/images/common/icon.png');
+  /// File path: assets/images/common/otter_celebrate.png
+  AssetGenImage get otterCelebrate =>
+      const AssetGenImage('assets/images/common/otter_celebrate.png');
 
-  /// File path: assets/images/common/otter.png
-  AssetGenImage get otter =>
-      const AssetGenImage('assets/images/common/otter.png');
+  /// File path: assets/images/common/otter_empty.png
+  AssetGenImage get otterEmpty =>
+      const AssetGenImage('assets/images/common/otter_empty.png');
+
+  /// File path: assets/images/common/otter_error.png
+  AssetGenImage get otterError =>
+      const AssetGenImage('assets/images/common/otter_error.png');
+
+  /// File path: assets/images/common/otter_gift.png
+  AssetGenImage get otterGift =>
+      const AssetGenImage('assets/images/common/otter_gift.png');
+
+  /// File path: assets/images/common/otter_wave.png
+  AssetGenImage get otterWave =>
+      const AssetGenImage('assets/images/common/otter_wave.png');
 
   /// File path: assets/images/common/placeholder.png
   AssetGenImage get placeholder =>
       const AssetGenImage('assets/images/common/placeholder.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [home, icon, otter, placeholder];
+  List<AssetGenImage> get values => [
+    iconOtter,
+    otterCelebrate,
+    otterEmpty,
+    otterError,
+    otterGift,
+    otterWave,
+    placeholder,
+  ];
 }
 
 class $AssetsImagesLogoGen {

@@ -60,8 +60,16 @@ enum OtterType {
     switch (this) {
       case OtterType.splash:
         return Assets.images.splash.splashOtter;
-      default:
-        return null;
+      case OtterType.empty:
+        return Assets.images.common.otterEmpty;
+      case OtterType.celebrate:
+        return Assets.images.common.otterCelebrate;
+      case OtterType.gift:
+        return Assets.images.common.otterGift;
+      case OtterType.error:
+        return Assets.images.common.otterError;
+      case OtterType.wave:
+        return Assets.images.common.otterWave;
     }
   }
 }

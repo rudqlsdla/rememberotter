@@ -281,7 +281,7 @@ class _SplashPageState extends State<SplashPage>
   Widget _buildOtterImage() {
     return Container(
       width: 200.w,
-      height: 260.w,
+      height: 230.w,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(40.r),
         boxShadow: [
