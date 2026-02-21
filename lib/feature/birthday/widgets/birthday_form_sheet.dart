@@ -42,7 +42,13 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
       _memoController.text = widget.birthday!.memo ?? '';
       _selectedDate = widget.birthday!.birthDate;
     } else {
-      _selectedDate = widget.initialDate ?? DateTime.now();
+      final date = widget.initialDate ?? DateTime.now();
+      final today = DateTime.now();
+      final isPast = DateTime(today.year, date.month, date.day)
+          .isBefore(DateTime(today.year, today.month, today.day)) ||
+          DateTime(today.year, date.month, date.day)
+          .isAtSameMomentAs(DateTime(today.year, today.month, today.day));
+      _selectedDate = DateTime(isPast ? date.year : date.year - 1, date.month, date.day);
     }
   }
 
