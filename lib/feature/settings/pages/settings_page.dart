@@ -313,6 +313,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
                 isSelected: _settingsService.useInternationalAge,
                 onTap: () {
                   setState(() => _settingsService.useInternationalAge = true);
+                  Get.find<BirthdayController>().birthdays.refresh();
                   Navigator.pop(context);
                 },
               ),
@@ -322,6 +323,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
                 isSelected: !_settingsService.useInternationalAge,
                 onTap: () {
                   setState(() => _settingsService.useInternationalAge = false);
+                  Get.find<BirthdayController>().birthdays.refresh();
                   Navigator.pop(context);
                 },
               ),
