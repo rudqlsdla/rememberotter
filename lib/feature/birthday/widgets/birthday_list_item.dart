@@ -32,18 +32,6 @@ class BirthdayListItem extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        leading: CircleAvatar(
-          radius: 24,
-          backgroundColor: isToday ? AppColors.accent : AppColors.primaryLight,
-          child: Text(
-            birthday.name.isNotEmpty ? birthday.name[0] : '?',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: isToday ? Colors.white : AppColors.primary,
-            ),
-          ),
-        ),
         title: Text(
           birthday.name,
           style: const TextStyle(

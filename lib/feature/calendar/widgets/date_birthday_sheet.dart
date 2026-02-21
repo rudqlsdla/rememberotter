@@ -158,18 +158,6 @@ class DateBirthdaySheet extends StatelessWidget {
         Get.toNamed(AppRoutes.birthdayDetail, arguments: birthday.id);
       },
       contentPadding: const EdgeInsets.symmetric(vertical: 4),
-      leading: CircleAvatar(
-        radius: 24,
-        backgroundColor: isToday ? AppColors.accent : AppColors.primaryLight,
-        child: Text(
-          birthday.name.isNotEmpty ? birthday.name[0] : '?',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: isToday ? Colors.white : AppColors.primary,
-          ),
-        ),
-      ),
       title: Text(
         birthday.name,
         style: const TextStyle(
