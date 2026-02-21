@@ -82,14 +82,18 @@ class BirthdayController extends GetxController {
       birthDate: birthDate,
       memo: memo,
     );
-    await _notificationService.scheduleBirthdayNotification(birthday);
+    try {
+      await _notificationService.scheduleBirthdayNotification(birthday);
+    } catch (_) {}
     await loadBirthdays();
   }
 
   /// 생일 수정
   Future<void> updateBirthday(Birthday birthday) async {
     await _repository.update(birthday);
-    await _notificationService.scheduleBirthdayNotification(birthday);
+    try {
+      await _notificationService.scheduleBirthdayNotification(birthday);
+    } catch (_) {}
     await loadBirthdays();
   }
 
@@ -116,7 +120,9 @@ class BirthdayController extends GetxController {
       );
     }
     await loadBirthdays();
-    await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
+    try {
+      await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
+    } catch (_) {}
   }
 
   /// 이름으로 검색 (로드된 리스트에서 필터링)
@@ -137,6 +143,8 @@ class BirthdayController extends GetxController {
       }
     }
     await loadBirthdays();
-    await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
+    try {
+      await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
+    } catch (_) {}
   }
 }
