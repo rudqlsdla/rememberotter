@@ -85,7 +85,7 @@ class DateBirthdaySheet extends StatelessWidget {
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
                   itemCount: birthdays.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1, indent: 48),
+                  separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final birthday = birthdays[index];
                     return _buildBirthdayItem(birthday);
@@ -100,7 +100,7 @@ class DateBirthdaySheet extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Get.back();
-                  BirthdayFormSheet.show();
+                  BirthdayFormSheet.show(initialDate: date);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,

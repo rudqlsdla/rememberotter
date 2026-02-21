@@ -7,12 +7,13 @@ import 'package:rememberotter/shared/widgets/date_picker_spinner.dart';
 
 class BirthdayFormSheet extends StatefulWidget {
   final Birthday? birthday;
+  final DateTime? initialDate;
 
-  const BirthdayFormSheet({super.key, this.birthday});
+  const BirthdayFormSheet({super.key, this.birthday, this.initialDate});
 
-  static Future<void> show({Birthday? birthday}) {
+  static Future<void> show({Birthday? birthday, DateTime? initialDate}) {
     return Get.bottomSheet(
-      BirthdayFormSheet(birthday: birthday),
+      BirthdayFormSheet(birthday: birthday, initialDate: initialDate),
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -41,7 +42,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
       _memoController.text = widget.birthday!.memo ?? '';
       _selectedDate = widget.birthday!.birthDate;
     } else {
-      _selectedDate = DateTime.now();
+      _selectedDate = widget.initialDate ?? DateTime.now();
     }
   }
 
