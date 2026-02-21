@@ -7,6 +7,7 @@ import 'package:rememberotter/feature/birthday/controllers/birthday_controller.d
 import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart';
 import 'package:rememberotter/feature/birthday/widgets/birthday_list_item.dart';
 import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
+import 'package:rememberotter/feature/gift/widgets/gift_statistics_sheet.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
 import 'package:rememberotter/shared/widgets/update_bottom_sheet.dart';
 
@@ -45,6 +46,11 @@ class _MainPageState extends State<MainPage> {
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
         actions: [
+          IconButton(
+            color: AppColors.textSecondary,
+            icon: const Icon(Icons.bar_chart_rounded),
+            onPressed: () => GiftStatisticsSheet.show(),
+          ),
           IconButton(
             color: AppColors.textSecondary,
             icon: const Icon(Icons.settings_rounded),
