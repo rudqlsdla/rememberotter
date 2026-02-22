@@ -296,34 +296,37 @@ class _ContactImportPageState extends State<ContactImportPage>
         // 전체 선택 헤더
         Obx(() {
           final selectedCount = _controller.selectedContactIds.length;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: Checkbox(
-                    value: _controller.isAllSelected,
-                    onChanged: (_) => _controller.toggleSelectAll(),
-                    activeColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+          return GestureDetector(
+            onTap: () => _controller.toggleSelectAll(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Checkbox(
+                      value: _controller.isAllSelected,
+                      onChanged: (_) => _controller.toggleSelectAll(),
+                      activeColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  selectedCount > 0
-                      ? '$selectedCount명 선택됨'
-                      : '생일 등록된 연락처 전체 선택 (${_controller.selectableCount}명)',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
+                  const SizedBox(width: 8),
+                  Text(
+                    selectedCount > 0
+                        ? '$selectedCount명 선택됨'
+                        : '생일 등록된 연락처 전체 선택 (${_controller.selectableCount}명)',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         }),

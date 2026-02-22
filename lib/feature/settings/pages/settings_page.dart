@@ -374,7 +374,6 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
       ),
       body: ListView(
         children: [
-          const SizedBox(height: 16),
           // 알림 설정 섹션
           _buildSectionHeader('알림'),
           _buildSettingTile(

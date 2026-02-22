@@ -333,27 +333,35 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Checkbox(
-              value: _given,
-              onChanged: (value) {
-                setState(() {
-                  _given = value ?? false;
-                  if (!_given) _givenGiftPrice = null;
-                });
-              },
-              activeColor: AppColors.primary,
-            ),
-            const Text(
-              '선물을 줬어요',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _given = !_given;
+              if (!_given) _givenGiftPrice = null;
+            });
+          },
+          child: Row(
+            children: [
+              Checkbox(
+                value: _given,
+                onChanged: (value) {
+                  setState(() {
+                    _given = value ?? false;
+                    if (!_given) _givenGiftPrice = null;
+                  });
+                },
+                activeColor: AppColors.primary,
               ),
-            ),
-          ],
+              const Text(
+                '선물을 줬어요',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
         ),
         if (_given)
           Padding(
@@ -410,27 +418,35 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Checkbox(
-              value: _received,
-              onChanged: (value) {
-                setState(() {
-                  _received = value ?? false;
-                  if (!_received) _receivedGiftPrice = null;
-                });
-              },
-              activeColor: AppColors.accent,
-            ),
-            const Text(
-              '선물을 받았어요',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _received = !_received;
+              if (!_received) _receivedGiftPrice = null;
+            });
+          },
+          child: Row(
+            children: [
+              Checkbox(
+                value: _received,
+                onChanged: (value) {
+                  setState(() {
+                    _received = value ?? false;
+                    if (!_received) _receivedGiftPrice = null;
+                  });
+                },
+                activeColor: AppColors.accent,
               ),
-            ),
-          ],
+              const Text(
+                '선물을 받았어요',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
         ),
         if (_received)
           Padding(
