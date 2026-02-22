@@ -8,12 +8,14 @@ import 'package:rememberotter/app/app_bindings.dart';
 import 'package:rememberotter/app/app_pages.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/data/database/app_database.dart';
+import 'package:rememberotter/data/database/seed_data.dart';
 import 'package:rememberotter/firebase_options.dart';
 import 'package:rememberotter/gen/fonts.gen.dart';
 import 'package:rememberotter/shared/log/logger.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
+import 'package:rememberotter/shared/services/shopping_link_service.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
@@ -31,6 +33,10 @@ void main() async {
   await RemoteConfigService().initialize();
   logger.i('RemoteConfig 초기화 완료');
 
+  // ─── Shopping Link 초기화 (Firestore) ──────────────────────────────────
+  await ShoppingLinkService().initialize();
+  logger.i('ShoppingLinkService 초기화 완료');
+
   // ─── Settings 초기화 ────────────────────────────────────────────────────
   await SettingsService().initialize();
   logger.i('Settings 초기화 완료');
@@ -38,6 +44,9 @@ void main() async {
   // ─── 데이터베이스 초기화 ──────────────────────────────────────────────────
   AppDatabase.instance;
   logger.i('데이터베이스 초기화 완료');
+
+  // ─── 더미 데이터 (테스트용, 배포 전 제거) ─────────────────────────────────
+  await seedDummyData();
 
   // ─── 알림 초기화 ──────────────────────────────────────────────────────
   await NotificationService().initialize();
