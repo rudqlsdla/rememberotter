@@ -6,6 +6,7 @@ class Birthday {
   final DateTime birthDate;
   final String? memo;
   final String? profileImage;
+  final String? groupId;
   final bool isLunarCalendar;
   final bool notificationEnabled;
   final int notificationDaysBefore;
@@ -18,6 +19,7 @@ class Birthday {
     required this.birthDate,
     this.memo,
     this.profileImage,
+    this.groupId,
     this.isLunarCalendar = false,
     this.notificationEnabled = true,
     this.notificationDaysBefore = 1,
@@ -31,6 +33,7 @@ class Birthday {
     DateTime? birthDate,
     String? memo,
     String? profileImage,
+    String? Function()? groupId,
     bool? isLunarCalendar,
     bool? notificationEnabled,
     int? notificationDaysBefore,
@@ -43,6 +46,7 @@ class Birthday {
       birthDate: birthDate ?? this.birthDate,
       memo: memo ?? this.memo,
       profileImage: profileImage ?? this.profileImage,
+      groupId: groupId != null ? groupId() : this.groupId,
       isLunarCalendar: isLunarCalendar ?? this.isLunarCalendar,
       notificationEnabled: notificationEnabled ?? this.notificationEnabled,
       notificationDaysBefore: notificationDaysBefore ?? this.notificationDaysBefore,

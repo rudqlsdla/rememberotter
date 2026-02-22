@@ -4,6 +4,7 @@ import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
 import 'package:rememberotter/feature/gift/widgets/gift_form_sheet.dart';
 import 'package:rememberotter/feature/gift/widgets/gift_list_item.dart';
+import 'package:rememberotter/feature/gift/widgets/shopping_link_section.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
 
 class GiftHistorySection extends StatelessWidget {
@@ -26,8 +27,9 @@ class GiftHistorySection extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const ShoppingLinkSection(),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

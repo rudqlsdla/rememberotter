@@ -5,6 +5,7 @@ import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart';
+import 'package:rememberotter/feature/group/controllers/group_controller.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
 
 class DateBirthdaySheet extends StatelessWidget {
@@ -152,20 +153,46 @@ class DateBirthdaySheet extends StatelessWidget {
     final daysUntil = birthday.daysUntilBirthday;
     final isToday = daysUntil == 0;
 
+    final group = Get.find<GroupController>().getGroupById(birthday.groupId);
+
     return ListTile(
       onTap: () {
         Get.back();
         Get.toNamed(AppRoutes.birthdayDetail, arguments: birthday.id);
       },
       contentPadding: const EdgeInsets.symmetric(vertical: 4),
-      title: Text(
-        birthday.name,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary,
-        ),
-      ),
+      title: group != null
+          ? Row(
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: group.color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    birthday.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : Text(
+              birthday.name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
       subtitle: Text(
         '${birthday.birthDate.year}년생${birthday.ageText != null ? ' (${birthday.ageText})' : ''}',
         style: const TextStyle(

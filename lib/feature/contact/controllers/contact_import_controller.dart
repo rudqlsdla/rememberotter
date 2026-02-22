@@ -181,14 +181,14 @@ class ContactImportController extends GetxController {
         .where((c) => selectedContactIds.contains(c.id))
         .toList();
 
-    final List<({String name, DateTime birthDate})> toImport = [];
+    final List<({String name, DateTime birthDate, String? groupId})> toImport = [];
 
     for (final contact in selectedContacts) {
       final birthday = getBirthday(contact);
       if (birthday == null) continue;
       if (isAlreadyImported(contact)) continue;
 
-      toImport.add((name: contact.displayName, birthDate: birthday));
+      toImport.add((name: contact.displayName, birthDate: birthday, groupId: null));
     }
 
     if (toImport.isEmpty) return 0;

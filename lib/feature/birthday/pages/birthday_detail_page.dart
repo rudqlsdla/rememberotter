@@ -5,6 +5,7 @@ import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart';
 import 'package:rememberotter/feature/gift/widgets/gift_history_section.dart';
+import 'package:rememberotter/feature/group/controllers/group_controller.dart';
 
 class BirthdayDetailPage extends StatelessWidget {
   const BirthdayDetailPage({super.key});
@@ -236,6 +237,20 @@ class BirthdayDetailPage extends StatelessWidget {
             label: '나이',
             value: birthday.ageText ?? '-',
           ),
+          if (birthday.groupId != null) ...[
+            const SizedBox(height: 12),
+            Builder(
+              builder: (context) {
+                final group = Get.find<GroupController>().getGroupById(birthday.groupId);
+                return _buildInfoRow(
+                  icon: Icons.folder_outlined,
+                  label: '그룹',
+                  value: group?.name ?? '-',
+                  valueColor: group?.color,
+                );
+              },
+            ),
+          ],
           if (birthday.memo != null && birthday.memo!.isNotEmpty) ...[
             const SizedBox(height: 12),
             _buildInfoRow(
@@ -253,6 +268,7 @@ class BirthdayDetailPage extends StatelessWidget {
     required IconData icon,
     required String label,
     required String value,
+    Color? valueColor,
   }) {
     return Row(
       children: [
@@ -268,10 +284,10 @@ class BirthdayDetailPage extends StatelessWidget {
         const Spacer(),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
+            color: valueColor ?? AppColors.textPrimary,
           ),
           textAlign: TextAlign.end,
         ),

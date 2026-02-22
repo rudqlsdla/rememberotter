@@ -3,6 +3,415 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
+class $GroupsTable extends Groups with TableInfo<$GroupsTable, GroupData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GroupsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorValueMeta = const VerificationMeta(
+    'colorValue',
+  );
+  @override
+  late final GeneratedColumn<int> colorValue = GeneratedColumn<int>(
+    'color_value',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    colorValue,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'groups';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GroupData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color_value')) {
+      context.handle(
+        _colorValueMeta,
+        colorValue.isAcceptableOrUnknown(data['color_value']!, _colorValueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_colorValueMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GroupData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GroupData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      colorValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}color_value'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $GroupsTable createAlias(String alias) {
+    return $GroupsTable(attachedDatabase, alias);
+  }
+}
+
+class GroupData extends DataClass implements Insertable<GroupData> {
+  final String id;
+  final String name;
+  final int colorValue;
+  final int sortOrder;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const GroupData({
+    required this.id,
+    required this.name,
+    required this.colorValue,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['color_value'] = Variable<int>(colorValue);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  GroupsCompanion toCompanion(bool nullToAbsent) {
+    return GroupsCompanion(
+      id: Value(id),
+      name: Value(name),
+      colorValue: Value(colorValue),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory GroupData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GroupData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      colorValue: serializer.fromJson<int>(json['colorValue']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'colorValue': serializer.toJson<int>(colorValue),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  GroupData copyWith({
+    String? id,
+    String? name,
+    int? colorValue,
+    int? sortOrder,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => GroupData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    colorValue: colorValue ?? this.colorValue,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  GroupData copyWithCompanion(GroupsCompanion data) {
+    return GroupData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      colorValue: data.colorValue.present
+          ? data.colorValue.value
+          : this.colorValue,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GroupData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('colorValue: $colorValue, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, colorValue, sortOrder, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GroupData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.colorValue == this.colorValue &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class GroupsCompanion extends UpdateCompanion<GroupData> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<int> colorValue;
+  final Value<int> sortOrder;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const GroupsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.colorValue = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  GroupsCompanion.insert({
+    required String id,
+    required String name,
+    required int colorValue,
+    required int sortOrder,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       colorValue = Value(colorValue),
+       sortOrder = Value(sortOrder),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<GroupData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<int>? colorValue,
+    Expression<int>? sortOrder,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (colorValue != null) 'color_value': colorValue,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  GroupsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<int>? colorValue,
+    Value<int>? sortOrder,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return GroupsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      colorValue: colorValue ?? this.colorValue,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (colorValue.present) {
+      map['color_value'] = Variable<int>(colorValue.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GroupsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('colorValue: $colorValue, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $BirthdaysTable extends Birthdays
     with TableInfo<$BirthdaysTable, BirthdayData> {
   @override
@@ -57,6 +466,20 @@ class $BirthdaysTable extends Birthdays
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
+  );
+  static const VerificationMeta _groupIdMeta = const VerificationMeta(
+    'groupId',
+  );
+  @override
+  late final GeneratedColumn<String> groupId = GeneratedColumn<String>(
+    'group_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES "groups" (id)',
+    ),
   );
   static const VerificationMeta _isLunarCalendarMeta = const VerificationMeta(
     'isLunarCalendar',
@@ -127,6 +550,7 @@ class $BirthdaysTable extends Birthdays
     birthDate,
     memo,
     profileImage,
+    groupId,
     isLunarCalendar,
     notificationEnabled,
     notificationDaysBefore,
@@ -179,6 +603,12 @@ class $BirthdaysTable extends Birthdays
           data['profile_image']!,
           _profileImageMeta,
         ),
+      );
+    }
+    if (data.containsKey('group_id')) {
+      context.handle(
+        _groupIdMeta,
+        groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta),
       );
     }
     if (data.containsKey('is_lunar_calendar')) {
@@ -253,6 +683,10 @@ class $BirthdaysTable extends Birthdays
         DriftSqlType.string,
         data['${effectivePrefix}profile_image'],
       ),
+      groupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}group_id'],
+      ),
       isLunarCalendar: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_lunar_calendar'],
@@ -288,6 +722,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
   final DateTime birthDate;
   final String? memo;
   final String? profileImage;
+  final String? groupId;
   final bool isLunarCalendar;
   final bool notificationEnabled;
   final int notificationDaysBefore;
@@ -299,6 +734,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     required this.birthDate,
     this.memo,
     this.profileImage,
+    this.groupId,
     required this.isLunarCalendar,
     required this.notificationEnabled,
     required this.notificationDaysBefore,
@@ -317,6 +753,9 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     if (!nullToAbsent || profileImage != null) {
       map['profile_image'] = Variable<String>(profileImage);
     }
+    if (!nullToAbsent || groupId != null) {
+      map['group_id'] = Variable<String>(groupId);
+    }
     map['is_lunar_calendar'] = Variable<bool>(isLunarCalendar);
     map['notification_enabled'] = Variable<bool>(notificationEnabled);
     map['notification_days_before'] = Variable<int>(notificationDaysBefore);
@@ -334,6 +773,9 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
       profileImage: profileImage == null && nullToAbsent
           ? const Value.absent()
           : Value(profileImage),
+      groupId: groupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(groupId),
       isLunarCalendar: Value(isLunarCalendar),
       notificationEnabled: Value(notificationEnabled),
       notificationDaysBefore: Value(notificationDaysBefore),
@@ -353,6 +795,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
       birthDate: serializer.fromJson<DateTime>(json['birthDate']),
       memo: serializer.fromJson<String?>(json['memo']),
       profileImage: serializer.fromJson<String?>(json['profileImage']),
+      groupId: serializer.fromJson<String?>(json['groupId']),
       isLunarCalendar: serializer.fromJson<bool>(json['isLunarCalendar']),
       notificationEnabled: serializer.fromJson<bool>(
         json['notificationEnabled'],
@@ -373,6 +816,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
       'birthDate': serializer.toJson<DateTime>(birthDate),
       'memo': serializer.toJson<String?>(memo),
       'profileImage': serializer.toJson<String?>(profileImage),
+      'groupId': serializer.toJson<String?>(groupId),
       'isLunarCalendar': serializer.toJson<bool>(isLunarCalendar),
       'notificationEnabled': serializer.toJson<bool>(notificationEnabled),
       'notificationDaysBefore': serializer.toJson<int>(notificationDaysBefore),
@@ -387,6 +831,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     DateTime? birthDate,
     Value<String?> memo = const Value.absent(),
     Value<String?> profileImage = const Value.absent(),
+    Value<String?> groupId = const Value.absent(),
     bool? isLunarCalendar,
     bool? notificationEnabled,
     int? notificationDaysBefore,
@@ -398,6 +843,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     birthDate: birthDate ?? this.birthDate,
     memo: memo.present ? memo.value : this.memo,
     profileImage: profileImage.present ? profileImage.value : this.profileImage,
+    groupId: groupId.present ? groupId.value : this.groupId,
     isLunarCalendar: isLunarCalendar ?? this.isLunarCalendar,
     notificationEnabled: notificationEnabled ?? this.notificationEnabled,
     notificationDaysBefore:
@@ -414,6 +860,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
       profileImage: data.profileImage.present
           ? data.profileImage.value
           : this.profileImage,
+      groupId: data.groupId.present ? data.groupId.value : this.groupId,
       isLunarCalendar: data.isLunarCalendar.present
           ? data.isLunarCalendar.value
           : this.isLunarCalendar,
@@ -436,6 +883,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
           ..write('birthDate: $birthDate, ')
           ..write('memo: $memo, ')
           ..write('profileImage: $profileImage, ')
+          ..write('groupId: $groupId, ')
           ..write('isLunarCalendar: $isLunarCalendar, ')
           ..write('notificationEnabled: $notificationEnabled, ')
           ..write('notificationDaysBefore: $notificationDaysBefore, ')
@@ -452,6 +900,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     birthDate,
     memo,
     profileImage,
+    groupId,
     isLunarCalendar,
     notificationEnabled,
     notificationDaysBefore,
@@ -467,6 +916,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
           other.birthDate == this.birthDate &&
           other.memo == this.memo &&
           other.profileImage == this.profileImage &&
+          other.groupId == this.groupId &&
           other.isLunarCalendar == this.isLunarCalendar &&
           other.notificationEnabled == this.notificationEnabled &&
           other.notificationDaysBefore == this.notificationDaysBefore &&
@@ -480,6 +930,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
   final Value<DateTime> birthDate;
   final Value<String?> memo;
   final Value<String?> profileImage;
+  final Value<String?> groupId;
   final Value<bool> isLunarCalendar;
   final Value<bool> notificationEnabled;
   final Value<int> notificationDaysBefore;
@@ -492,6 +943,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     this.birthDate = const Value.absent(),
     this.memo = const Value.absent(),
     this.profileImage = const Value.absent(),
+    this.groupId = const Value.absent(),
     this.isLunarCalendar = const Value.absent(),
     this.notificationEnabled = const Value.absent(),
     this.notificationDaysBefore = const Value.absent(),
@@ -505,6 +957,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     required DateTime birthDate,
     this.memo = const Value.absent(),
     this.profileImage = const Value.absent(),
+    this.groupId = const Value.absent(),
     this.isLunarCalendar = const Value.absent(),
     this.notificationEnabled = const Value.absent(),
     this.notificationDaysBefore = const Value.absent(),
@@ -522,6 +975,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     Expression<DateTime>? birthDate,
     Expression<String>? memo,
     Expression<String>? profileImage,
+    Expression<String>? groupId,
     Expression<bool>? isLunarCalendar,
     Expression<bool>? notificationEnabled,
     Expression<int>? notificationDaysBefore,
@@ -535,6 +989,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
       if (birthDate != null) 'birth_date': birthDate,
       if (memo != null) 'memo': memo,
       if (profileImage != null) 'profile_image': profileImage,
+      if (groupId != null) 'group_id': groupId,
       if (isLunarCalendar != null) 'is_lunar_calendar': isLunarCalendar,
       if (notificationEnabled != null)
         'notification_enabled': notificationEnabled,
@@ -552,6 +1007,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     Value<DateTime>? birthDate,
     Value<String?>? memo,
     Value<String?>? profileImage,
+    Value<String?>? groupId,
     Value<bool>? isLunarCalendar,
     Value<bool>? notificationEnabled,
     Value<int>? notificationDaysBefore,
@@ -565,6 +1021,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
       birthDate: birthDate ?? this.birthDate,
       memo: memo ?? this.memo,
       profileImage: profileImage ?? this.profileImage,
+      groupId: groupId ?? this.groupId,
       isLunarCalendar: isLunarCalendar ?? this.isLunarCalendar,
       notificationEnabled: notificationEnabled ?? this.notificationEnabled,
       notificationDaysBefore:
@@ -592,6 +1049,9 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     }
     if (profileImage.present) {
       map['profile_image'] = Variable<String>(profileImage.value);
+    }
+    if (groupId.present) {
+      map['group_id'] = Variable<String>(groupId.value);
     }
     if (isLunarCalendar.present) {
       map['is_lunar_calendar'] = Variable<bool>(isLunarCalendar.value);
@@ -624,6 +1084,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
           ..write('birthDate: $birthDate, ')
           ..write('memo: $memo, ')
           ..write('profileImage: $profileImage, ')
+          ..write('groupId: $groupId, ')
           ..write('isLunarCalendar: $isLunarCalendar, ')
           ..write('notificationEnabled: $notificationEnabled, ')
           ..write('notificationDaysBefore: $notificationDaysBefore, ')
@@ -1373,15 +1834,336 @@ class GiftsCompanion extends UpdateCompanion<GiftData> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $GroupsTable groups = $GroupsTable(this);
   late final $BirthdaysTable birthdays = $BirthdaysTable(this);
   late final $GiftsTable gifts = $GiftsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [birthdays, gifts];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    groups,
+    birthdays,
+    gifts,
+  ];
 }
 
+typedef $$GroupsTableCreateCompanionBuilder =
+    GroupsCompanion Function({
+      required String id,
+      required String name,
+      required int colorValue,
+      required int sortOrder,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$GroupsTableUpdateCompanionBuilder =
+    GroupsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<int> colorValue,
+      Value<int> sortOrder,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$GroupsTableReferences
+    extends BaseReferences<_$AppDatabase, $GroupsTable, GroupData> {
+  $$GroupsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$BirthdaysTable, List<BirthdayData>>
+  _birthdaysRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.birthdays,
+    aliasName: $_aliasNameGenerator(db.groups.id, db.birthdays.groupId),
+  );
+
+  $$BirthdaysTableProcessedTableManager get birthdaysRefs {
+    final manager = $$BirthdaysTableTableManager(
+      $_db,
+      $_db.birthdays,
+    ).filter((f) => f.groupId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_birthdaysRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$GroupsTableFilterComposer
+    extends Composer<_$AppDatabase, $GroupsTable> {
+  $$GroupsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get colorValue => $composableBuilder(
+    column: $table.colorValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> birthdaysRefs(
+    Expression<bool> Function($$BirthdaysTableFilterComposer f) f,
+  ) {
+    final $$BirthdaysTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.birthdays,
+      getReferencedColumn: (t) => t.groupId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BirthdaysTableFilterComposer(
+            $db: $db,
+            $table: $db.birthdays,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$GroupsTableOrderingComposer
+    extends Composer<_$AppDatabase, $GroupsTable> {
+  $$GroupsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get colorValue => $composableBuilder(
+    column: $table.colorValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GroupsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $GroupsTable> {
+  $$GroupsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get colorValue => $composableBuilder(
+    column: $table.colorValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> birthdaysRefs<T extends Object>(
+    Expression<T> Function($$BirthdaysTableAnnotationComposer a) f,
+  ) {
+    final $$BirthdaysTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.birthdays,
+      getReferencedColumn: (t) => t.groupId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BirthdaysTableAnnotationComposer(
+            $db: $db,
+            $table: $db.birthdays,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$GroupsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $GroupsTable,
+          GroupData,
+          $$GroupsTableFilterComposer,
+          $$GroupsTableOrderingComposer,
+          $$GroupsTableAnnotationComposer,
+          $$GroupsTableCreateCompanionBuilder,
+          $$GroupsTableUpdateCompanionBuilder,
+          (GroupData, $$GroupsTableReferences),
+          GroupData,
+          PrefetchHooks Function({bool birthdaysRefs})
+        > {
+  $$GroupsTableTableManager(_$AppDatabase db, $GroupsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GroupsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GroupsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GroupsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> colorValue = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => GroupsCompanion(
+                id: id,
+                name: name,
+                colorValue: colorValue,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required int colorValue,
+                required int sortOrder,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => GroupsCompanion.insert(
+                id: id,
+                name: name,
+                colorValue: colorValue,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) =>
+                    (e.readTable(table), $$GroupsTableReferences(db, table, e)),
+              )
+              .toList(),
+          prefetchHooksCallback: ({birthdaysRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (birthdaysRefs) db.birthdays],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (birthdaysRefs)
+                    await $_getPrefetchedData<
+                      GroupData,
+                      $GroupsTable,
+                      BirthdayData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$GroupsTableReferences
+                          ._birthdaysRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$GroupsTableReferences(db, table, p0).birthdaysRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.groupId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$GroupsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $GroupsTable,
+      GroupData,
+      $$GroupsTableFilterComposer,
+      $$GroupsTableOrderingComposer,
+      $$GroupsTableAnnotationComposer,
+      $$GroupsTableCreateCompanionBuilder,
+      $$GroupsTableUpdateCompanionBuilder,
+      (GroupData, $$GroupsTableReferences),
+      GroupData,
+      PrefetchHooks Function({bool birthdaysRefs})
+    >;
 typedef $$BirthdaysTableCreateCompanionBuilder =
     BirthdaysCompanion Function({
       required String id,
@@ -1389,6 +2171,7 @@ typedef $$BirthdaysTableCreateCompanionBuilder =
       required DateTime birthDate,
       Value<String?> memo,
       Value<String?> profileImage,
+      Value<String?> groupId,
       Value<bool> isLunarCalendar,
       Value<bool> notificationEnabled,
       Value<int> notificationDaysBefore,
@@ -1403,6 +2186,7 @@ typedef $$BirthdaysTableUpdateCompanionBuilder =
       Value<DateTime> birthDate,
       Value<String?> memo,
       Value<String?> profileImage,
+      Value<String?> groupId,
       Value<bool> isLunarCalendar,
       Value<bool> notificationEnabled,
       Value<int> notificationDaysBefore,
@@ -1414,6 +2198,24 @@ typedef $$BirthdaysTableUpdateCompanionBuilder =
 final class $$BirthdaysTableReferences
     extends BaseReferences<_$AppDatabase, $BirthdaysTable, BirthdayData> {
   $$BirthdaysTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $GroupsTable _groupIdTable(_$AppDatabase db) => db.groups.createAlias(
+    $_aliasNameGenerator(db.birthdays.groupId, db.groups.id),
+  );
+
+  $$GroupsTableProcessedTableManager? get groupId {
+    final $_column = $_itemColumn<String>('group_id');
+    if ($_column == null) return null;
+    final manager = $$GroupsTableTableManager(
+      $_db,
+      $_db.groups,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_groupIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
 
   static MultiTypedResultKey<$GiftsTable, List<GiftData>> _giftsRefsTable(
     _$AppDatabase db,
@@ -1493,6 +2295,29 @@ class $$BirthdaysTableFilterComposer
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$GroupsTableFilterComposer get groupId {
+    final $$GroupsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.groups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GroupsTableFilterComposer(
+            $db: $db,
+            $table: $db.groups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   Expression<bool> giftsRefs(
     Expression<bool> Function($$GiftsTableFilterComposer f) f,
@@ -1578,6 +2403,29 @@ class $$BirthdaysTableOrderingComposer
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$GroupsTableOrderingComposer get groupId {
+    final $$GroupsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.groups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GroupsTableOrderingComposer(
+            $db: $db,
+            $table: $db.groups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$BirthdaysTableAnnotationComposer
@@ -1627,6 +2475,29 @@ class $$BirthdaysTableAnnotationComposer
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
+  $$GroupsTableAnnotationComposer get groupId {
+    final $$GroupsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.groups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GroupsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.groups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   Expression<T> giftsRefs<T extends Object>(
     Expression<T> Function($$GiftsTableAnnotationComposer a) f,
   ) {
@@ -1666,7 +2537,7 @@ class $$BirthdaysTableTableManager
           $$BirthdaysTableUpdateCompanionBuilder,
           (BirthdayData, $$BirthdaysTableReferences),
           BirthdayData,
-          PrefetchHooks Function({bool giftsRefs})
+          PrefetchHooks Function({bool groupId, bool giftsRefs})
         > {
   $$BirthdaysTableTableManager(_$AppDatabase db, $BirthdaysTable table)
     : super(
@@ -1686,6 +2557,7 @@ class $$BirthdaysTableTableManager
                 Value<DateTime> birthDate = const Value.absent(),
                 Value<String?> memo = const Value.absent(),
                 Value<String?> profileImage = const Value.absent(),
+                Value<String?> groupId = const Value.absent(),
                 Value<bool> isLunarCalendar = const Value.absent(),
                 Value<bool> notificationEnabled = const Value.absent(),
                 Value<int> notificationDaysBefore = const Value.absent(),
@@ -1698,6 +2570,7 @@ class $$BirthdaysTableTableManager
                 birthDate: birthDate,
                 memo: memo,
                 profileImage: profileImage,
+                groupId: groupId,
                 isLunarCalendar: isLunarCalendar,
                 notificationEnabled: notificationEnabled,
                 notificationDaysBefore: notificationDaysBefore,
@@ -1712,6 +2585,7 @@ class $$BirthdaysTableTableManager
                 required DateTime birthDate,
                 Value<String?> memo = const Value.absent(),
                 Value<String?> profileImage = const Value.absent(),
+                Value<String?> groupId = const Value.absent(),
                 Value<bool> isLunarCalendar = const Value.absent(),
                 Value<bool> notificationEnabled = const Value.absent(),
                 Value<int> notificationDaysBefore = const Value.absent(),
@@ -1724,6 +2598,7 @@ class $$BirthdaysTableTableManager
                 birthDate: birthDate,
                 memo: memo,
                 profileImage: profileImage,
+                groupId: groupId,
                 isLunarCalendar: isLunarCalendar,
                 notificationEnabled: notificationEnabled,
                 notificationDaysBefore: notificationDaysBefore,
@@ -1739,11 +2614,42 @@ class $$BirthdaysTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({giftsRefs = false}) {
+          prefetchHooksCallback: ({groupId = false, giftsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [if (giftsRefs) db.gifts],
-              addJoins: null,
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (groupId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.groupId,
+                                referencedTable: $$BirthdaysTableReferences
+                                    ._groupIdTable(db),
+                                referencedColumn: $$BirthdaysTableReferences
+                                    ._groupIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (giftsRefs)
@@ -1781,7 +2687,7 @@ typedef $$BirthdaysTableProcessedTableManager =
       $$BirthdaysTableUpdateCompanionBuilder,
       (BirthdayData, $$BirthdaysTableReferences),
       BirthdayData,
-      PrefetchHooks Function({bool giftsRefs})
+      PrefetchHooks Function({bool groupId, bool giftsRefs})
     >;
 typedef $$GiftsTableCreateCompanionBuilder =
     GiftsCompanion Function({
@@ -2242,6 +3148,8 @@ typedef $$GiftsTableProcessedTableManager =
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
+  $$GroupsTableTableManager get groups =>
+      $$GroupsTableTableManager(_db, _db.groups);
   $$BirthdaysTableTableManager get birthdays =>
       $$BirthdaysTableTableManager(_db, _db.birthdays);
   $$GiftsTableTableManager get gifts =>

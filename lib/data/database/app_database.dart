@@ -9,6 +9,19 @@ part 'app_database.g.dart';
 
 // ─────────────── 테이블 정의 ───────────────
 
+@DataClassName('GroupData')
+class Groups extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  IntColumn get colorValue => integer()();
+  IntColumn get sortOrder => integer()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DataClassName('BirthdayData')
 class Birthdays extends Table {
   TextColumn get id => text()();
@@ -16,6 +29,7 @@ class Birthdays extends Table {
   DateTimeColumn get birthDate => dateTime()();
   TextColumn get memo => text().nullable()();
   TextColumn get profileImage => text().nullable()();
+  TextColumn get groupId => text().nullable().references(Groups, #id)();
   BoolColumn get isLunarCalendar => boolean().withDefault(const Constant(false))();
   BoolColumn get notificationEnabled => boolean().withDefault(const Constant(true))();
   IntColumn get notificationDaysBefore => integer().withDefault(const Constant(1))();
@@ -47,7 +61,7 @@ class Gifts extends Table {
 
 // ─────────────── 데이터베이스 ───────────────
 
-@DriftDatabase(tables: [Birthdays, Gifts])
+@DriftDatabase(tables: [Birthdays, Gifts, Groups])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._() : super(_openConnection());
 
@@ -61,11 +75,32 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           await m.createAll();
+          await _insertDefaultGroups();
         },
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
         },
       );
+
+  Future<void> _insertDefaultGroups() async {
+    final now = DateTime.now();
+    final defaults = [
+      ('family', '가족', 0xFFEF4444, 0),
+      ('friends', '친구', 0xFF3B82F6, 1),
+      ('work', '직장', 0xFF10B981, 2),
+      ('etc', '기타', 0xFF9CA3AF, 3),
+    ];
+    for (final (id, name, color, order) in defaults) {
+      await into(groups).insert(GroupsCompanion.insert(
+        id: id,
+        name: name,
+        colorValue: color,
+        sortOrder: order,
+        createdAt: now,
+        updatedAt: now,
+      ));
+    }
+  }
 }
 
 LazyDatabase _openConnection() {

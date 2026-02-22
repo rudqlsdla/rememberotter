@@ -8,4 +8,5 @@ abstract class AppRoutes {
   static const String ossLicenses = '/settings/oss-licenses';
   static const String contactImport = '/contact/import';
   static const String onboardingContactImport = '/onboarding/contact-import';
+  static const String groupManagement = '/settings/groups';
 }

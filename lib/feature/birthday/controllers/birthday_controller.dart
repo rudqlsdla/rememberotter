@@ -14,6 +14,10 @@ class BirthdayController extends GetxController {
   final RxList<Birthday> selectedDateBirthdays = <Birthday>[].obs;
   final RxBool isLoaded = false.obs;
 
+  /// 그룹 필터 상태 (null: 전체, 'ungrouped': 미분류, 그 외: groupId)
+  final Rxn<String> selectedGroupFilter = Rxn<String>();
+  final RxBool showUngroupedOnly = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -76,11 +80,13 @@ class BirthdayController extends GetxController {
     required String name,
     required DateTime birthDate,
     String? memo,
+    String? groupId,
   }) async {
     final birthday = await _repository.add(
       name: name,
       birthDate: birthDate,
       memo: memo,
+      groupId: groupId,
     );
     try {
       await _notificationService.scheduleBirthdayNotification(birthday);
@@ -111,12 +117,13 @@ class BirthdayController extends GetxController {
 
   /// 생일 일괄 추가 (연락처 가져오기용)
   Future<void> addBirthdayBatch(
-    List<({String name, DateTime birthDate})> items,
+    List<({String name, DateTime birthDate, String? groupId})> items,
   ) async {
     for (final item in items) {
       await _repository.add(
         name: item.name,
         birthDate: item.birthDate,
+        groupId: item.groupId,
       );
     }
     await loadBirthdays();
@@ -132,6 +139,28 @@ class BirthdayController extends GetxController {
     return birthdays
         .where((b) => b.name.toLowerCase().contains(lowerQuery))
         .toList();
+  }
+
+  /// 그룹 필터 적용된 생일 목록
+  List<Birthday> get filteredBirthdays {
+    if (showUngroupedOnly.value) {
+      return birthdays.where((b) => b.groupId == null).toList();
+    }
+    final groupId = selectedGroupFilter.value;
+    if (groupId == null) return birthdays.toList();
+    return birthdays.where((b) => b.groupId == groupId).toList();
+  }
+
+  /// 그룹 필터 선택
+  void selectGroupFilter(String? groupId) {
+    showUngroupedOnly.value = false;
+    selectedGroupFilter.value = groupId;
+  }
+
+  /// 미분류 필터 선택
+  void selectUngroupedFilter() {
+    selectedGroupFilter.value = null;
+    showUngroupedOnly.value = !showUngroupedOnly.value;
   }
 
   /// 모든 생일의 알림 일수 일괄 업데이트

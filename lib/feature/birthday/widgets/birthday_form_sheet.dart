@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
+import 'package:rememberotter/feature/group/controllers/group_controller.dart';
 import 'package:rememberotter/shared/widgets/date_picker_spinner.dart';
 
 class BirthdayFormSheet extends StatefulWidget {
@@ -31,6 +32,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
   final _nameController = TextEditingController();
   final _memoController = TextEditingController();
   late DateTime _selectedDate;
+  String? _selectedGroupId;
   bool _isEditing = false;
 
   @override
@@ -41,6 +43,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
       _nameController.text = widget.birthday!.name;
       _memoController.text = widget.birthday!.memo ?? '';
       _selectedDate = widget.birthday!.birthDate;
+      _selectedGroupId = widget.birthday!.groupId;
     } else {
       final date = widget.initialDate ?? DateTime.now();
       final today = DateTime.now();
@@ -138,6 +141,82 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
     );
   }
 
+  void _selectGroup() {
+    final groupController = Get.find<GroupController>();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  '그룹 선택',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              const Divider(height: 1),
+              // 미분류 옵션
+              ListTile(
+                leading: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceVariant,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.border),
+                  ),
+                ),
+                title: const Text('미분류'),
+                trailing: _selectedGroupId == null
+                    ? const Icon(Icons.check, color: AppColors.primary)
+                    : null,
+                onTap: () {
+                  setState(() => _selectedGroupId = null);
+                  Navigator.pop(context);
+                },
+              ),
+              // 그룹 목록
+              ...groupController.groups.map((group) {
+                final isSelected = _selectedGroupId == group.id;
+                return ListTile(
+                  leading: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: group.color,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  title: Text(group.name),
+                  trailing: isSelected
+                      ? const Icon(Icons.check, color: AppColors.primary)
+                      : null,
+                  onTap: () {
+                    setState(() => _selectedGroupId = group.id);
+                    Navigator.pop(context);
+                  },
+                );
+              }),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -148,6 +227,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
         name: _nameController.text.trim(),
         birthDate: _selectedDate,
         memo: _memoController.text.trim().isEmpty ? null : _memoController.text.trim(),
+        groupId: () => _selectedGroupId,
       );
       await controller.updateBirthday(updated);
     } else {
@@ -155,6 +235,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
         name: _nameController.text.trim(),
         birthDate: _selectedDate,
         memo: _memoController.text.trim().isEmpty ? null : _memoController.text.trim(),
+        groupId: _selectedGroupId,
       );
     }
 
@@ -275,6 +356,69 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // 그룹 선택
+              GestureDetector(
+                onTap: _selectGroup,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.folder_outlined, color: AppColors.textSecondary),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '그룹',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Builder(
+                            builder: (context) {
+                              final groupController = Get.find<GroupController>();
+                              final group = groupController.getGroupById(_selectedGroupId);
+                              return Row(
+                                children: [
+                                  if (group != null) ...[
+                                    Container(
+                                      width: 12,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        color: group.color,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                  ],
+                                  Text(
+                                    group?.name ?? '미분류',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.chevron_right, color: AppColors.textTertiary),
+                    ],
                   ),
                 ),
               ),

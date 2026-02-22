@@ -8,6 +8,7 @@ import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart'
 import 'package:rememberotter/feature/birthday/widgets/birthday_list_item.dart';
 import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
 import 'package:rememberotter/feature/gift/widgets/gift_statistics_sheet.dart';
+import 'package:rememberotter/feature/group/controllers/group_controller.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
 import 'package:rememberotter/shared/widgets/update_bottom_sheet.dart';
 
@@ -120,9 +121,9 @@ class _FriendsPage extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        final birthdays = controller.birthdays;
+        final allBirthdays = controller.birthdays;
 
-        if (birthdays.isEmpty) {
+        if (allBirthdays.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -167,23 +168,142 @@ class _FriendsPage extends StatelessWidget {
           );
         }
 
-        return ListView.separated(
-          padding: const EdgeInsets.only(top: 8, bottom: 80),
-          itemCount: birthdays.length,
-          separatorBuilder: (_, __) => const Divider(height: 1),
-          itemBuilder: (context, index) {
-            final birthday = birthdays[index];
-            return BirthdayListItem(
-              birthday: birthday,
-              onTap: () => Get.toNamed(
-                AppRoutes.birthdayDetail,
-                arguments: birthday.id,
-              ),
-              onDelete: () => controller.deleteBirthday(birthday.id),
-            );
-          },
+        final filteredBirthdays = controller.filteredBirthdays;
+
+        return Column(
+          children: [
+            // 그룹 필터 칩 바
+            _buildGroupFilterBar(controller),
+            // 생일 목록
+            Expanded(
+              child: filteredBirthdays.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const OtterImage(type: OtterType.empty, size: 80),
+                          const SizedBox(height: 16),
+                          const Text(
+                            '이 그룹에 등록된 생일이 없어요',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.only(top: 8, bottom: 80),
+                      itemCount: filteredBirthdays.length,
+                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final birthday = filteredBirthdays[index];
+                        return BirthdayListItem(
+                          birthday: birthday,
+                          onTap: () => Get.toNamed(
+                            AppRoutes.birthdayDetail,
+                            arguments: birthday.id,
+                          ),
+                          onDelete: () => controller.deleteBirthday(birthday.id),
+                        );
+                      },
+                    ),
+            ),
+          ],
         );
       },
+    );
+  }
+
+  Widget _buildGroupFilterBar(BirthdayController controller) {
+    final groupController = Get.find<GroupController>();
+
+    return Obx(() {
+      final groups = groupController.groups;
+      final selectedGroupId = controller.selectedGroupFilter.value;
+      final showUngrouped = controller.showUngroupedOnly.value;
+      final isAllSelected = selectedGroupId == null && !showUngrouped;
+
+      return SizedBox(
+        height: 48,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          children: [
+            // 전체 칩
+            _buildFilterChip(
+              label: '전체',
+              isSelected: isAllSelected,
+              onTap: () => controller.selectGroupFilter(null),
+            ),
+            const SizedBox(width: 8),
+            // 그룹별 칩
+            ...groups.map((group) {
+              final isSelected = selectedGroupId == group.id && !showUngrouped;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: _buildFilterChip(
+                  label: group.name,
+                  isSelected: isSelected,
+                  color: group.color,
+                  onTap: () => controller.selectGroupFilter(group.id),
+                ),
+              );
+            }),
+            // 미분류 칩
+            _buildFilterChip(
+              label: '미분류',
+              isSelected: showUngrouped,
+              onTap: () => controller.selectUngroupedFilter(),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildFilterChip({
+    required String label,
+    required bool isSelected,
+    Color? color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (color ?? AppColors.primary)
+              : AppColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!isSelected && color != null) ...[
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: isSelected ? Colors.white : AppColors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

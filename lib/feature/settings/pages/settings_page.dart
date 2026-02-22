@@ -408,6 +408,16 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
           ),
           const Divider(height: 32),
 
+          // 그룹 섹션
+          _buildSectionHeader('그룹'),
+          _buildSettingTile(
+            icon: Icons.folder_outlined,
+            title: '그룹 관리',
+            subtitle: '생일을 그룹별로 분류하고 관리할 수 있어요',
+            onTap: () => Get.toNamed(AppRoutes.groupManagement),
+          ),
+          const Divider(height: 32),
+
           // 데이터 섹션
           _buildSectionHeader('데이터'),
           _buildSettingTile(
