@@ -45,9 +45,6 @@ void main() async {
   AppDatabase.instance;
   logger.i('데이터베이스 초기화 완료');
 
-  // ─── 더미 데이터 (테스트용, 배포 전 제거) ─────────────────────────────────
-  await seedDummyData();
-
   // ─── 알림 초기화 ──────────────────────────────────────────────────────
   await NotificationService().initialize();
   logger.i('알림 서비스 초기화 완료');
@@ -56,6 +53,9 @@ void main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+
+  // ─── 더미 데이터 (테스트용, 배포 전 제거) ─────────────────────────────────
+  // await seedDummyData();
 
   runApp(const MyApp());
 }
