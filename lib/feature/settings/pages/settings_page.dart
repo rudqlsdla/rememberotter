@@ -75,33 +75,31 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
       return;
     }
 
-    if (_permissionStatus!.isPermanentlyDenied) {
-      // 영구 거부 상태면 설정 화면으로 이동
+    // 권한 재요청 시도 (Android에서는 다이얼로그가 다시 뜰 수 있음)
+    final granted = await _notificationService.requestPermission();
+    await _checkPermission();
+
+    if (granted) {
+      // 알림 재스케줄링
+      final controller = Get.find<BirthdayController>();
+      await _notificationService
+          .rescheduleAllBirthdayNotifications(controller.birthdays);
+
+      Get.snackbar(
+        '알림 권한',
+        '알림이 활성화되었습니다',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.success,
+        colorText: Colors.white,
+      );
+    } else {
+      // iOS: 한 번 거부하면 request()로는 다이얼로그가 뜨지 않으므로 설정으로 이동
       final opened = await _notificationService.openSettings();
       if (!opened) {
         Get.snackbar(
           '설정',
           '설정 앱을 열 수 없습니다',
           snackPosition: SnackPosition.BOTTOM,
-        );
-      }
-    } else {
-      // 권한 요청
-      final granted = await _notificationService.requestPermission();
-      await _checkPermission();
-
-      if (granted) {
-        // 알림 재스케줄링
-        final controller = Get.find<BirthdayController>();
-        await _notificationService
-            .rescheduleAllBirthdayNotifications(controller.birthdays);
-
-        Get.snackbar(
-          '알림 권한',
-          '알림이 활성화되었습니다',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: AppColors.success,
-          colorText: Colors.white,
         );
       }
     }
@@ -113,10 +111,8 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
     }
     if (_permissionStatus!.isGranted) {
       return '알림이 활성화되어 있어요';
-    } else if (_permissionStatus!.isPermanentlyDenied) {
-      return '설정에서 알림을 활성화해주세요';
     } else {
-      return '생일 알림을 받으려면 권한이 필요해요';
+      return '생일 알림을 받으려면 알림 권한이 필요해요';
     }
   }
 
