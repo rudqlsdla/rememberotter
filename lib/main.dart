@@ -8,7 +8,6 @@ import 'package:rememberotter/app/app_bindings.dart';
 import 'package:rememberotter/app/app_pages.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/data/database/app_database.dart';
-import 'package:rememberotter/data/database/seed_data.dart';
 import 'package:rememberotter/firebase_options.dart';
 import 'package:rememberotter/gen/fonts.gen.dart';
 import 'package:rememberotter/shared/log/logger.dart';
