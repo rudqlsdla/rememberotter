@@ -131,14 +131,16 @@ class ContactImportController extends GetxController {
 
   /// 권한 재요청
   Future<void> retryPermission() async {
-    final permanentlyDenied = await _contactService.isPermissionPermanentlyDenied();
-
-    if (permanentlyDenied) {
-      await _contactService.openSettings();
+    // 권한 재요청 시도 (Android에서는 다이얼로그가 다시 뜰 수 있음)
+    final granted = await _contactService.requestPermission();
+    if (granted) {
+      hasPermission.value = true;
+      await _loadContacts();
       return;
     }
 
-    await _loadContacts();
+    // iOS: 한 번 거부하면 request()로는 다이얼로그가 뜨지 않으므로 설정으로 이동
+    await _contactService.openSettings();
   }
 
   /// 앱 포커스 복귀 시 권한 재확인
