@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
+import 'package:rememberotter/shared/widgets/otter_image.dart';
 import 'package:rememberotter/feature/settings/widgets/feedback_sheet.dart';
 import 'package:rememberotter/shared/widgets/time_picker_spinner.dart';
 
@@ -27,6 +28,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
   late int _notificationDaysBefore;
   late TimeOfDay _notificationTime;
   String _appVersion = '';
+  int _easterEggTapCount = 0;
 
   @override
   void initState() {
@@ -358,6 +360,101 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
     );
   }
 
+  void _handleEasterEggTap() {
+    _easterEggTapCount++;
+    if (_easterEggTapCount >= 3) {
+      _easterEggTapCount = 0;
+      _showEasterEggDialog();
+    }
+  }
+
+  void _showEasterEggDialog() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'easter-egg',
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return const SizedBox.shrink();
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final curvedAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.elasticOut,
+        );
+        return ScaleTransition(
+          scale: curvedAnimation,
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                const OtterImage(type: OtterType.celebrate, size: 120),
+                const SizedBox(height: 20),
+                const Text(
+                  '짜잔! 개발자 해달 등장!',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  '해달은 소중한 돌을 평생 간직해요.\n'
+                  '이 앱도 당신의 소중한 사람들을\n'
+                  '평생 기억해드릴게요!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                    height: 1.6,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Made with \u2764 by 기억해달 팀',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text(
+                      '고마워, 해달!',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -454,6 +551,8 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
             icon: Icons.pets,
             title: '기억해달',
             subtitle: '해달이 소중한 돌을 간직하듯, 소중한 생일을 간직해드려요',
+            onTap: _handleEasterEggTap,
+            trailing: const SizedBox.shrink(),
           ),
         ],
       ),
