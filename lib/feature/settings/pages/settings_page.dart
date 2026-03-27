@@ -517,9 +517,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
 
   Future<void> _openUrl(String urlString) async {
     final url = Uri.parse(urlString);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.inAppBrowserView);
-    }
+    await launchUrl(url, mode: LaunchMode.inAppBrowserView);
   }
 
   Widget _buildSectionHeader(String title) {
