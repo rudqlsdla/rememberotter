@@ -147,7 +147,7 @@ class _FeedbackSheetState extends State<FeedbackSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SafeArea(child: const SizedBox.shrink()),
         ],
       ),
     );

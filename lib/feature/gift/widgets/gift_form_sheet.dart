@@ -201,7 +201,7 @@ class _GiftFormSheetState extends State<GiftFormSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SafeArea(child: const SizedBox.shrink()),
             ],
           ),
         ),

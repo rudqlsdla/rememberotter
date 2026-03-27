@@ -195,7 +195,7 @@ class _GroupFormSheetState extends State<GroupFormSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SafeArea(child: const SizedBox.shrink()),
           ],
         ),
       ),

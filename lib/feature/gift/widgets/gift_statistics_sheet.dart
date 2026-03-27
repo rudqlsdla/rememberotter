@@ -109,15 +109,17 @@ class _GiftStatisticsSheetState extends State<GiftStatisticsSheet> {
                 ),
               ),
               const Divider(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: YearPickerSpinner(
-                    height: 150,
-                    year: _selectedYear,
-                    onChanged: (year) {
-                      tempYear = year;
-                    },
+              SafeArea(
+                child: Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: YearPickerSpinner(
+                      height: 150,
+                      year: _selectedYear,
+                      onChanged: (year) {
+                        tempYear = year;
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -251,15 +253,17 @@ class _GiftStatisticsSheetState extends State<GiftStatisticsSheet> {
                 ),
               ),
               const Divider(height: 1),
-              Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.only(bottom: 24),
-                  itemCount: gifts.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    return _buildGiftItem(gifts[index]);
-                  },
+              SafeArea(
+                child: Flexible(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(bottom: 24),
+                    itemCount: gifts.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      return _buildGiftItem(gifts[index]);
+                    },
+                  ),
                 ),
               ),
             ],

@@ -196,15 +196,17 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
               ),
               const Divider(),
               // Time Picker
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: TimePickerSpinner(
-                    height: 150,
-                    time: _notificationTime,
-                    onChanged: (time) {
-                      tempTime = time;
-                    },
+              SafeArea(
+                child: Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: TimePickerSpinner(
+                      height: 150,
+                      time: _notificationTime,
+                      onChanged: (time) {
+                        tempTime = time;
+                      },
+                    ),
                   ),
                 ),
               ),

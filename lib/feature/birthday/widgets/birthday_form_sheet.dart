@@ -447,7 +447,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SafeArea(child: const SizedBox.shrink()),
             ],
           ),
         ),

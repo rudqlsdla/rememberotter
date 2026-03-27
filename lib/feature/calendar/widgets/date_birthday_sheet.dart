@@ -120,7 +120,7 @@ class DateBirthdaySheet extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SafeArea(child: const SizedBox.shrink()),
           ],
         ),
       ),
