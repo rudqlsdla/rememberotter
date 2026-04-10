@@ -178,6 +178,16 @@ class AnalyticsService {
     logger.d('[Analytics] easter_egg_found');
   }
 
+  // ── 홈 화면 위젯 ──
+
+  void logWidgetUpdate({required int count}) {
+    _analytics.logEvent(
+      name: 'widget_update',
+      parameters: {'count': count},
+    );
+    logger.d('[Analytics] widget_update: count=$count');
+  }
+
   // ── User Property ──
 
   void setUserBirthdayCount(int count) {

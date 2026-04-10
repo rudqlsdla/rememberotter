@@ -74,7 +74,7 @@ AnalyticsService().logSettingsChange(setting: 'notification_time', value: '09:00
 
 ## 3. 현재 구현된 이벤트 목록
 
-### 이벤트 전체 목록 (22개)
+### 이벤트 전체 목록 (23개)
 
 | 이벤트명 | 파라미터 | 삽입 위치 |
 |---------|---------|----------|
@@ -100,6 +100,7 @@ AnalyticsService().logSettingsChange(setting: 'notification_time', value: '09:00
 | `settings_change` | `setting`: String, `value`: String | settings_page.dart |
 | `notification_tap` | — | notification_service.dart |
 | `easter_egg_found` | — | settings_page.dart |
+| `widget_update` | `count`: int | widget_service.dart |
 
 ### User Property (1개)
 

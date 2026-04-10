@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:home_widget/home_widget.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
+import 'package:rememberotter/shared/services/error_reporting_service.dart';
 
 class WidgetService {
   static final WidgetService _instance = WidgetService._internal();
@@ -52,8 +54,10 @@ class WidgetService {
       }
 
       logger.d('위젯 데이터 업데이트 완료: ${top3.length}개');
-    } catch (e) {
+      AnalyticsService().logWidgetUpdate(count: top3.length);
+    } catch (e, stack) {
       logger.e('위젯 데이터 업데이트 실패: $e');
+      ErrorReportingService().reportError(e, stack);
     }
   }
 }
