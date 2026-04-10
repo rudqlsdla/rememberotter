@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ellipsize="end"
-        android:fontFamily="@font/maplestory_bold"
+        android:fontFamily="sans-serif-medium"
         android:maxLines="1"
         android:textColor="#111827"
         android:textSize="14sp" />
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:background="@drawable/badge_primary"
-        android:fontFamily="@font/maplestory_bold"
+        android:fontFamily="sans-serif-medium"
         android:paddingStart="6dp"
         android:paddingTop="2dp"
         android:paddingEnd="6dp"

@@ -48,6 +48,7 @@ class BirthdayWidgetProvider : AppWidgetProvider() {
             minHeight < 60 && minWidth >= 200 -> buildInlineWideView(context, birthdays)
             minHeight < 60 -> buildInlineView(context, birthdays)
             minWidth >= 200 -> buildMediumView(context, birthdays)
+            minHeight < 110 -> buildCompactView(context, birthdays)
             else -> buildSmallView(context, birthdays)
         }
 
@@ -87,6 +88,30 @@ class BirthdayWidgetProvider : AppWidgetProvider() {
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    // ───── Compact (2x1) ─────
+
+    private fun buildCompactView(context: Context, birthdays: List<BirthdayData>): RemoteViews {
+        val views = RemoteViews(context.packageName, R.layout.birthday_widget_compact)
+        val b = birthdays.first()
+
+        views.setTextViewText(R.id.compact_name, b.name)
+        views.setTextViewText(R.id.compact_date, "${b.month}월 ${b.day}일")
+        views.setTextViewText(R.id.compact_dday, b.ddayText)
+        views.setInt(
+            R.id.compact_dday, "setBackgroundResource",
+            if (b.daysUntil <= 1) R.drawable.badge_accent else R.drawable.badge_primary
+        )
+
+        if (b.ageText.isNotEmpty()) {
+            views.setTextViewText(R.id.compact_age, b.ageText)
+            views.setViewVisibility(R.id.compact_age, View.VISIBLE)
+        } else {
+            views.setViewVisibility(R.id.compact_age, View.GONE)
+        }
+
+        return views
     }
 
     // ───── Empty View ─────

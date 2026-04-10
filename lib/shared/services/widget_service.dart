@@ -50,7 +50,8 @@ class WidgetService {
       if (Platform.isIOS) {
         await HomeWidget.updateWidget(iOSName: _iOSWidgetName);
       } else if (Platform.isAndroid) {
-        await HomeWidget.updateWidget(androidName: _androidWidgetProvider);
+        await HomeWidget.updateWidget(
+            qualifiedAndroidName: _androidWidgetProvider);
       }
 
       logger.d('위젯 데이터 업데이트 완료: ${top3.length}개');

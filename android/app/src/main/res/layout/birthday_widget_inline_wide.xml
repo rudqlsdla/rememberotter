@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ellipsize="end"
-            android:fontFamily="@font/maplestory_bold"
+            android:fontFamily="sans-serif-medium"
             android:maxLines="1"
             android:textColor="#111827"
             android:textSize="13sp" />
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:background="@drawable/badge_primary"
-            android:fontFamily="@font/maplestory_bold"
+            android:fontFamily="sans-serif-medium"
             android:paddingStart="6dp"
             android:paddingTop="2dp"
             android:paddingEnd="6dp"
@@ -57,7 +57,7 @@
     </LinearLayout>
 
     <!-- Divider -->
-    <View
+    <FrameLayout
         android:id="@+id/inline_wide_divider"
         android:layout_width="1dp"
         android:layout_height="20dp"
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ellipsize="end"
-            android:fontFamily="@font/maplestory_bold"
+            android:fontFamily="sans-serif-medium"
             android:maxLines="1"
             android:textColor="#111827"
             android:textSize="13sp" />
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:background="@drawable/badge_primary"
-            android:fontFamily="@font/maplestory_bold"
+            android:fontFamily="sans-serif-medium"
             android:paddingStart="6dp"
             android:paddingTop="2dp"
             android:paddingEnd="6dp"

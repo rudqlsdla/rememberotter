@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_background"
     android:orientation="vertical"
-    android:padding="14dp">
+    android:padding="10dp">
 
     <!-- Header -->
     <LinearLayout
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="8dp">
+        android:paddingBottom="2dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:fontFamily="@font/maplestory_bold"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/widget_header"
             android:textColor="#B8A3E6"
             android:textSize="13sp" />
@@ -39,8 +39,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp">
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="@font/maplestory_bold"
+                android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:textColor="#111827"
                 android:textSize="15sp" />
@@ -68,7 +68,7 @@
                     android:id="@+id/row1_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/maplestory_light"
+                    android:fontFamily="sans-serif"
                     android:textColor="#6B7280"
                     android:textSize="12sp" />
 
@@ -77,7 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:fontFamily="@font/maplestory_light"
+                    android:fontFamily="sans-serif"
                     android:textColor="#9CA3AF"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/badge_primary"
-            android:fontFamily="@font/maplestory_bold"
+            android:fontFamily="sans-serif-medium"
             android:paddingStart="8dp"
             android:paddingTop="4dp"
             android:paddingEnd="8dp"
@@ -98,7 +98,7 @@
     </LinearLayout>
 
     <!-- Divider 1 -->
-    <View
+    <FrameLayout
         android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -129,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="@font/maplestory_bold"
+                android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:textColor="#111827"
                 android:textSize="15sp" />
@@ -144,7 +144,7 @@
                     android:id="@+id/row2_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/maplestory_light"
+                    android:fontFamily="sans-serif"
                     android:textColor="#6B7280"
                     android:textSize="12sp" />
 
@@ -153,7 +153,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:fontFamily="@font/maplestory_light"
+                    android:fontFamily="sans-serif"
                     android:textColor="#9CA3AF"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -164,7 +164,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/badge_primary"
-            android:fontFamily="@font/maplestory_bold"
+            android:fontFamily="sans-serif-medium"
             android:paddingStart="8dp"
             android:paddingTop="4dp"
             android:paddingEnd="8dp"
@@ -174,7 +174,7 @@
     </LinearLayout>
 
     <!-- Divider 2 -->
-    <View
+    <FrameLayout
         android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -205,7 +205,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="@font/maplestory_bold"
+                android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:textColor="#111827"
                 android:textSize="15sp" />
@@ -220,7 +220,7 @@
                     android:id="@+id/row3_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/maplestory_light"
+                    android:fontFamily="sans-serif"
                     android:textColor="#6B7280"
                     android:textSize="12sp" />
 
@@ -229,7 +229,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:fontFamily="@font/maplestory_light"
+                    android:fontFamily="sans-serif"
                     android:textColor="#9CA3AF"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -240,7 +240,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/badge_primary"
-            android:fontFamily="@font/maplestory_bold"
+            android:fontFamily="sans-serif-medium"
             android:paddingStart="8dp"
             android:paddingTop="4dp"
             android:paddingEnd="8dp"
