@@ -1,7 +1,7 @@
 name: rememberotter
 description: "기억해달 프로젝트"
 publish_to: 'none'
-version: 1.1.0+9
+version: 1.1.0+10
 
 environment:
   sdk: ^3.8.1
