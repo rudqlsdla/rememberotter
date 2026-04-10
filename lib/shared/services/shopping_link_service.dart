@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/error_reporting_service.dart';
 
 /// Firestore에서 쇼핑 링크를 관리하는 서비스
 class ShoppingLinkService {
@@ -48,8 +49,9 @@ class ShoppingLinkService {
       }
 
       logger.i('ShoppingLinkService 초기화 완료');
-    } catch (e) {
+    } catch (e, stack) {
       logger.e('ShoppingLinkService 초기화 실패 (기본값 사용): $e');
+      ErrorReportingService().reportError(e, stack);
     }
   }
 }

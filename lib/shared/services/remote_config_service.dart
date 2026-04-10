@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/error_reporting_service.dart';
 
 /// 업데이트 상태
 enum UpdateStatus {
@@ -44,8 +45,9 @@ class RemoteConfigService {
 
       await _remoteConfig.fetchAndActivate();
       logger.i('RemoteConfig 초기화 완료');
-    } catch (e) {
+    } catch (e, stack) {
       logger.e('RemoteConfig 초기화 실패: $e');
+      ErrorReportingService().reportError(e, stack);
     }
   }
 
@@ -73,8 +75,9 @@ class RemoteConfigService {
 
       updateSheetShown = false;
       logger.i('업데이트 상태: $_updateStatus');
-    } catch (e) {
+    } catch (e, stack) {
       logger.e('버전 체크 실패: $e');
+      ErrorReportingService().reportError(e, stack);
       _updateStatus = UpdateStatus.none;
     }
   }

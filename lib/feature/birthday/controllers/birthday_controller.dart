@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/domain/repositories/birthday_repository.dart';
 import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
+import 'package:rememberotter/shared/log/logger.dart';
 import 'package:rememberotter/shared/services/analytics_service.dart';
+import 'package:rememberotter/shared/services/error_reporting_service.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 
 class BirthdayController extends GetxController {
@@ -93,7 +95,10 @@ class BirthdayController extends GetxController {
     );
     try {
       await _notificationService.scheduleBirthdayNotification(birthday);
-    } catch (_) {}
+    } catch (e, stack) {
+      logger.w('알림 스케줄링 실패: $e');
+      ErrorReportingService().reportError(e, stack);
+    }
     await loadBirthdays();
     _analyticsService.logBirthdayAdd();
   }
@@ -103,7 +108,10 @@ class BirthdayController extends GetxController {
     await _repository.update(birthday);
     try {
       await _notificationService.scheduleBirthdayNotification(birthday);
-    } catch (_) {}
+    } catch (e, stack) {
+      logger.w('알림 스케줄링 실패: $e');
+      ErrorReportingService().reportError(e, stack);
+    }
     await loadBirthdays();
     _analyticsService.logBirthdayUpdate();
   }
@@ -136,7 +144,10 @@ class BirthdayController extends GetxController {
     _analyticsService.logBirthdayBatchAdd(count: items.length);
     try {
       await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
-    } catch (_) {}
+    } catch (e, stack) {
+      logger.w('알림 스케줄링 실패: $e');
+      ErrorReportingService().reportError(e, stack);
+    }
   }
 
   /// 이름으로 검색 (로드된 리스트에서 필터링)
@@ -183,6 +194,9 @@ class BirthdayController extends GetxController {
     await loadBirthdays();
     try {
       await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
-    } catch (_) {}
+    } catch (e, stack) {
+      logger.w('알림 스케줄링 실패: $e');
+      ErrorReportingService().reportError(e, stack);
+    }
   }
 }

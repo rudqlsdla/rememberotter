@@ -5,6 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/error_reporting_service.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
 
 class FeedbackService {
@@ -47,8 +48,9 @@ class FeedbackService {
         logger.e('피드백 전송 실패: ${response.statusCode} ${response.body}');
         return false;
       }
-    } catch (e) {
+    } catch (e, stack) {
       logger.e('피드백 전송 에러: $e');
+      ErrorReportingService().reportError(e, stack);
       return false;
     }
   }

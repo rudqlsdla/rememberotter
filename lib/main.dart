@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:rememberotter/data/database/app_database.dart';
 import 'package:rememberotter/firebase_options.dart';
 import 'package:rememberotter/gen/fonts.gen.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/error_reporting_service.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
@@ -21,6 +24,19 @@ final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<v
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   logger.i('앱 시작');
+
+  // ─── Flutter 프레임워크 에러 핸들러 (동기 에러) ──────────────────────────
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    ErrorReportingService().reportError(details.exception, details.stack);
+  };
+
+  // ─── 비동기 에러 핸들러 ─────────────────────────────────────────────────
+  PlatformDispatcher.instance.onError = (error, stack) {
+    logger.e('Uncaught error: $error');
+    ErrorReportingService().reportError(error, stack);
+    return true;
+  };
 
   // ─── Firebase 초기화 ────────────────────────────────────────────────────
   await Firebase.initializeApp(
