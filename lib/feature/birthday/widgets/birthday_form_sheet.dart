@@ -4,6 +4,7 @@ import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/feature/group/controllers/group_controller.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/widgets/date_picker_spinner.dart';
 
 class BirthdayFormSheet extends StatefulWidget {
@@ -13,6 +14,7 @@ class BirthdayFormSheet extends StatefulWidget {
   const BirthdayFormSheet({super.key, this.birthday, this.initialDate});
 
   static Future<void> show({Birthday? birthday, DateTime? initialDate}) {
+    AnalyticsService().logBirthdayFormOpen(mode: birthday != null ? 'edit' : 'add');
     return Get.bottomSheet(
       BirthdayFormSheet(birthday: birthday, initialDate: initialDate),
       isScrollControlled: true,

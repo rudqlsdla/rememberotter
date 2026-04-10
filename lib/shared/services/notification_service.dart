@@ -7,6 +7,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/shared/log/logger.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
 
 class NotificationService {
@@ -64,6 +65,7 @@ class NotificationService {
 
   void _onNotificationTapped(NotificationResponse response) {
     logger.i('알림 탭: ${response.payload}');
+    AnalyticsService().logNotificationTap();
 
     final birthdayId = response.payload;
     if (birthdayId != null && birthdayId.isNotEmpty) {

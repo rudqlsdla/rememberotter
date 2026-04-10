@@ -6,6 +6,7 @@ import 'package:rememberotter/app/app_constants.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
@@ -173,6 +174,11 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
                         });
                         Navigator.pop(context);
 
+                        AnalyticsService().logSettingsChange(
+                          setting: 'notification_time',
+                          value: '${tempTime.hour}:${tempTime.minute.toString().padLeft(2, '0')}',
+                        );
+
                         // 알림 재스케줄링
                         final controller = Get.find<BirthdayController>();
                         await _notificationService
@@ -263,6 +269,11 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
                     });
                     Navigator.pop(context);
 
+                    AnalyticsService().logSettingsChange(
+                      setting: 'notification_days',
+                      value: days.toString(),
+                    );
+
                     // 기존 생일 데이터도 일괄 업데이트
                     final controller = Get.find<BirthdayController>();
                     await controller.updateAllNotificationDaysBefore(days);
@@ -314,6 +325,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
                 onTap: () {
                   setState(() => _settingsService.useInternationalAge = true);
                   Get.find<BirthdayController>().birthdays.refresh();
+                  AnalyticsService().logSettingsChange(setting: 'age_display', value: 'international');
                   Navigator.pop(context);
                 },
               ),
@@ -324,6 +336,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
                 onTap: () {
                   setState(() => _settingsService.useInternationalAge = false);
                   Get.find<BirthdayController>().birthdays.refresh();
+                  AnalyticsService().logSettingsChange(setting: 'age_display', value: 'year');
                   Navigator.pop(context);
                 },
               ),
@@ -369,6 +382,7 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
   }
 
   void _showEasterEggDialog() {
+    AnalyticsService().logEasterEggFound();
     showGeneralDialog(
       context: context,
       barrierDismissible: true,

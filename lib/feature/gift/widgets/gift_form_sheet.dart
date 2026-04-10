@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rememberotter/domain/models/gift.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/utils/price_formatter.dart';
 import 'package:rememberotter/shared/widgets/input_amount_sheet.dart';
 import 'package:rememberotter/shared/widgets/year_picker_spinner.dart';
@@ -21,6 +22,7 @@ class GiftFormSheet extends StatefulWidget {
     required String birthdayId,
     Gift? gift,
   }) {
+    AnalyticsService().logGiftFormOpen(mode: gift != null ? 'edit' : 'add');
     return Get.bottomSheet(
       GiftFormSheet(birthdayId: birthdayId, gift: gift),
       isScrollControlled: true,

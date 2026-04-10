@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,11 +28,13 @@ class NotificationConsentPage extends StatelessWidget {
     final notificationService = NotificationService();
     await notificationService.requestPermission();
     await markConsentShown();
+    AnalyticsService().logOnboardingNotification(allowed: true);
     Get.offAllNamed(AppRoutes.onboardingContactImport);
   }
 
   Future<void> _onSkip() async {
     await markConsentShown();
+    AnalyticsService().logOnboardingNotification(allowed: false);
     Get.offAllNamed(AppRoutes.onboardingContactImport);
   }
 

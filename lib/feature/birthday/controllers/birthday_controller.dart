@@ -2,11 +2,13 @@ import 'package:get/get.dart';
 import 'package:rememberotter/domain/models/birthday.dart';
 import 'package:rememberotter/domain/repositories/birthday_repository.dart';
 import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 
 class BirthdayController extends GetxController {
   final BirthdayRepository _repository = BirthdayRepository();
   final NotificationService _notificationService = NotificationService();
+  final AnalyticsService _analyticsService = AnalyticsService();
 
   final RxList<Birthday> birthdays = <Birthday>[].obs;
   final RxList<Birthday> upcomingBirthdays = <Birthday>[].obs;
@@ -38,6 +40,7 @@ class BirthdayController extends GetxController {
         all.where((b) => b.daysUntilBirthday <= 30).toList();
     _updateSelectedDateBirthdays();
     _scheduleAllNotifications();
+    _analyticsService.setUserBirthdayCount(all.length);
     isLoaded.value = true;
   }
 
@@ -92,6 +95,7 @@ class BirthdayController extends GetxController {
       await _notificationService.scheduleBirthdayNotification(birthday);
     } catch (_) {}
     await loadBirthdays();
+    _analyticsService.logBirthdayAdd();
   }
 
   /// 생일 수정
@@ -101,6 +105,7 @@ class BirthdayController extends GetxController {
       await _notificationService.scheduleBirthdayNotification(birthday);
     } catch (_) {}
     await loadBirthdays();
+    _analyticsService.logBirthdayUpdate();
   }
 
   /// 생일 삭제 (관련 선물 기록도 함께 삭제)
@@ -113,6 +118,7 @@ class BirthdayController extends GetxController {
     }
     await _repository.delete(id);
     await loadBirthdays();
+    _analyticsService.logBirthdayDelete();
   }
 
   /// 생일 일괄 추가 (연락처 가져오기용)
@@ -127,6 +133,7 @@ class BirthdayController extends GetxController {
       );
     }
     await loadBirthdays();
+    _analyticsService.logBirthdayBatchAdd(count: items.length);
     try {
       await _notificationService.rescheduleAllBirthdayNotifications(birthdays);
     } catch (_) {}
@@ -136,9 +143,11 @@ class BirthdayController extends GetxController {
   List<Birthday> searchBirthdays(String query) {
     if (query.isEmpty) return birthdays.toList();
     final lowerQuery = query.toLowerCase();
-    return birthdays
+    final results = birthdays
         .where((b) => b.name.toLowerCase().contains(lowerQuery))
         .toList();
+    _analyticsService.logBirthdaySearch(resultCount: results.length);
+    return results;
   }
 
   /// 그룹 필터 적용된 생일 목록

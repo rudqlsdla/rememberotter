@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:rememberotter/domain/models/gift.dart';
 import 'package:rememberotter/domain/repositories/gift_repository.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 
 class GiftController extends GetxController {
   final GiftRepository _repository = GiftRepository();
+  final AnalyticsService _analyticsService = AnalyticsService();
 
   final RxList<Gift> gifts = <Gift>[].obs;
   final RxMap<String, List<Gift>> giftsByBirthdayId = <String, List<Gift>>{}.obs;
@@ -58,18 +60,21 @@ class GiftController extends GetxController {
       memo: memo,
     );
     await loadGifts();
+    _analyticsService.logGiftAdd();
   }
 
   /// 선물 기록 수정
   Future<void> updateGift(Gift gift) async {
     await _repository.update(gift);
     await loadGifts();
+    _analyticsService.logGiftUpdate();
   }
 
   /// 선물 기록 삭제
   Future<void> deleteGift(String id) async {
     await _repository.delete(id);
     await loadGifts();
+    _analyticsService.logGiftDelete();
   }
 
   /// Birthday 삭제 시 관련 선물 기록 모두 삭제

@@ -9,6 +9,7 @@ import 'package:rememberotter/feature/birthday/widgets/birthday_list_item.dart';
 import 'package:rememberotter/feature/calendar/pages/calendar_page.dart';
 import 'package:rememberotter/feature/gift/widgets/gift_statistics_sheet.dart';
 import 'package:rememberotter/feature/group/controllers/group_controller.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
 import 'package:rememberotter/shared/widgets/update_bottom_sheet.dart';
 
@@ -50,7 +51,10 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             color: AppColors.textSecondary,
             icon: const Icon(Icons.bar_chart_rounded),
-            onPressed: () => GiftStatisticsSheet.show(),
+            onPressed: () {
+              AnalyticsService().logGiftStatsOpen();
+              GiftStatisticsSheet.show();
+            },
           ),
           IconButton(
             color: AppColors.textSecondary,
@@ -89,6 +93,7 @@ class _MainPageState extends State<MainPage> {
           unselectedItemColor: AppColors.textSecondary,
           onTap: (index) {
             HapticFeedback.selectionClick();
+            AnalyticsService().logTabSwitch(tab: index == 0 ? 'calendar' : 'friends');
             setState(() {
               _currentIndex = index;
             });

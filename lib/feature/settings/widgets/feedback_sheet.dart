@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/services/feedback_service.dart';
 
 class FeedbackSheet extends StatefulWidget {
   const FeedbackSheet({super.key});
 
   static Future<void> show() {
+    AnalyticsService().logFeedbackFormOpen();
     return Get.bottomSheet(
       const FeedbackSheet(),
       isScrollControlled: true,
@@ -39,6 +41,7 @@ class _FeedbackSheetState extends State<FeedbackSheet> {
     setState(() => _isSending = true);
 
     final success = await _feedbackService.sendFeedback(content);
+    AnalyticsService().logFeedbackSend(success: success);
 
     setState(() => _isSending = false);
 

@@ -4,6 +4,7 @@ import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/contact/controllers/contact_import_controller.dart';
 import 'package:rememberotter/feature/contact/widgets/contact_list_item.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/services/contact_service.dart';
 import 'package:rememberotter/shared/widgets/date_picker_spinner.dart';
 import 'package:rememberotter/shared/widgets/otter_image.dart';
@@ -48,11 +49,13 @@ class _ContactImportOnboardingPageState
 
   Future<void> _onRequestPermission() async {
     final granted = await _contactService.requestPermission();
+    AnalyticsService().logContactPermissionResult(granted: granted);
     if (granted) {
       _controller = Get.put(ContactImportController());
       _showContactList.value = true;
     } else {
       // 권한 거부 시 메인으로 이동
+      AnalyticsService().logOnboardingContactImport(skipped: true);
       _goToMain();
     }
   }
@@ -60,6 +63,7 @@ class _ContactImportOnboardingPageState
   Future<void> _handleImport() async {
     if (_controller == null) return;
     final count = await _controller!.importSelected();
+    AnalyticsService().logOnboardingContactImport(skipped: false, count: count);
     _goToMain();
     if (count > 0) {
       Get.snackbar(
@@ -248,7 +252,10 @@ class _ContactImportOnboardingPageState
             ),
             const SizedBox(height: 12),
             TextButton(
-              onPressed: _goToMain,
+              onPressed: () {
+                AnalyticsService().logOnboardingContactImport(skipped: true);
+                _goToMain();
+              },
               child: const Text(
                 '나중에 할게요',
                 style: TextStyle(

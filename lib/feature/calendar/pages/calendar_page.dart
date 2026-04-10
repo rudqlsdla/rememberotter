@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/feature/calendar/widgets/date_birthday_sheet.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/feature/calendar/widgets/month_calendar_widget.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -97,6 +98,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   void _onDaySelected(DateTime day) {
     HapticFeedback.selectionClick();
+    AnalyticsService().logCalendarDateSelect();
     setState(() {
       _selectedDay = day;
     });

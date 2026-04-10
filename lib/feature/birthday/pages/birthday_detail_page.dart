@@ -6,6 +6,7 @@ import 'package:rememberotter/feature/birthday/controllers/birthday_controller.d
 import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart';
 import 'package:rememberotter/feature/gift/widgets/gift_history_section.dart';
 import 'package:rememberotter/feature/group/controllers/group_controller.dart';
+import 'package:rememberotter/shared/services/analytics_service.dart';
 
 class BirthdayDetailPage extends StatelessWidget {
   const BirthdayDetailPage({super.key});
@@ -14,6 +15,7 @@ class BirthdayDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final String birthdayId = Get.arguments as String;
     final birthdayController = Get.find<BirthdayController>();
+    AnalyticsService().logBirthdayDetailView();
 
     return Scaffold(
       backgroundColor: AppColors.background,
