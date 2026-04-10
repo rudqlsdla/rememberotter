@@ -24,6 +24,8 @@ class _CalendarPageState extends State<CalendarPage> {
   // 범위 제한: 과거/미래 각 5년 (60개월)
   static const int _monthRange = 60;
 
+  Worker? _birthdayWorker;
+
   @override
   void initState() {
     super.initState();
@@ -31,13 +33,14 @@ class _CalendarPageState extends State<CalendarPage> {
 
     // 생일 데이터 변경 시 캘린더 갱신
     final controller = Get.find<BirthdayController>();
-    ever(controller.birthdays, (_) {
+    _birthdayWorker = ever(controller.birthdays, (_) {
       if (mounted) setState(() {});
     });
   }
 
   @override
   void dispose() {
+    _birthdayWorker?.dispose();
     _scrollController.dispose();
     super.dispose();
   }
