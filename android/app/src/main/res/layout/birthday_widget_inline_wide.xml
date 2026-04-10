@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="14dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="14dp"
+    android:paddingBottom="8dp">
+
+    <!-- Header -->
+    <ImageView
+        android:id="@+id/inline_wide_header"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/icon_otter"
+        android:contentDescription="@string/widget_name" />
+
+    <!-- Item 1 -->
+    <LinearLayout
+        android:id="@+id/inline_wide_item1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp">
+
+        <TextView
+            android:id="@+id/inline_wide_name1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/maplestory_bold"
+            android:maxLines="1"
+            android:textColor="#111827"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/inline_wide_dday1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/badge_primary"
+            android:fontFamily="@font/maplestory_bold"
+            android:paddingStart="6dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="2dp"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:id="@+id/inline_wide_divider"
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#E5E7EB"
+        android:visibility="gone" />
+
+    <!-- Item 2 -->
+    <LinearLayout
+        android:id="@+id/inline_wide_item2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/inline_wide_name2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/maplestory_bold"
+            android:maxLines="1"
+            android:textColor="#111827"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/inline_wide_dday2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/badge_primary"
+            android:fontFamily="@font/maplestory_bold"
+            android:paddingStart="6dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="2dp"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

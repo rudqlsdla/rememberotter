@@ -6,11 +6,13 @@ import 'package:rememberotter/shared/log/logger.dart';
 import 'package:rememberotter/shared/services/analytics_service.dart';
 import 'package:rememberotter/shared/services/error_reporting_service.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
+import 'package:rememberotter/shared/services/widget_service.dart';
 
 class BirthdayController extends GetxController {
   final BirthdayRepository _repository = BirthdayRepository();
   final NotificationService _notificationService = NotificationService();
   final AnalyticsService _analyticsService = AnalyticsService();
+  final WidgetService _widgetService = WidgetService();
 
   final RxList<Birthday> birthdays = <Birthday>[].obs;
   final RxList<Birthday> upcomingBirthdays = <Birthday>[].obs;
@@ -42,6 +44,7 @@ class BirthdayController extends GetxController {
         all.where((b) => b.daysUntilBirthday <= 30).toList();
     _updateSelectedDateBirthdays();
     _scheduleAllNotifications();
+    _widgetService.updateWidgetData(all);
     _analyticsService.setUserBirthdayCount(all.length);
     isLoaded.value = true;
   }

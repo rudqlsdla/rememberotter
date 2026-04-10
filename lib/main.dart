@@ -18,6 +18,7 @@ import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
 import 'package:rememberotter/shared/services/settings_service.dart';
 import 'package:rememberotter/shared/services/shopping_link_service.dart';
+import 'package:rememberotter/shared/services/widget_service.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
@@ -63,6 +64,10 @@ void main() async {
   // ─── 알림 초기화 ──────────────────────────────────────────────────────
   await NotificationService().initialize();
   logger.i('알림 서비스 초기화 완료');
+
+  // ─── 홈 화면 위젯 초기화 ──────────────────────────────────────────────
+  await WidgetService().initialize();
+  logger.i('위젯 서비스 초기화 완료');
 
   // ─── Orientation ──────────────────────────────────────────────────────
   await SystemChrome.setPreferredOrientations([

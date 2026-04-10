@@ -56,6 +56,9 @@ dependencies:
   # ─────────────── URL 런처 ───────────────
   url_launcher: ^6.3.1
 
+  # ─────────────── 홈 화면 위젯 ───────────────
+  home_widget: ^0.7.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
