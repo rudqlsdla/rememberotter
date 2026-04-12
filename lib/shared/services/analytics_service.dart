@@ -188,6 +188,35 @@ class AnalyticsService {
     logger.d('[Analytics] widget_update: count=$count');
   }
 
+  // ── 백업/복원 ──
+
+  void logBackupExport({required bool success, int birthdayCount = 0}) {
+    _analytics.logEvent(
+      name: 'backup_export',
+      parameters: {
+        'success': success.toString(),
+        'birthday_count': birthdayCount,
+      },
+    );
+    logger.d('[Analytics] backup_export: success=$success, birthday_count=$birthdayCount');
+  }
+
+  void logBackupRestore({
+    required bool success,
+    required String mode,
+    int birthdayCount = 0,
+  }) {
+    _analytics.logEvent(
+      name: 'backup_restore',
+      parameters: {
+        'success': success.toString(),
+        'mode': mode,
+        'birthday_count': birthdayCount,
+      },
+    );
+    logger.d('[Analytics] backup_restore: success=$success, mode=$mode, birthday_count=$birthdayCount');
+  }
+
   // ── User Property ──
 
   void setUserBirthdayCount(int count) {

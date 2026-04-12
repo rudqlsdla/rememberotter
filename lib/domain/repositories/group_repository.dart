@@ -71,6 +71,15 @@ class GroupRepository {
     await (_db.delete(_db.groups)..where((t) => t.id.equals(id))).go();
   }
 
+  /// 모든 그룹 삭제
+  Future<void> deleteAll() async {
+    // 모든 생일의 groupId를 null로 설정
+    await _db.update(_db.birthdays).write(
+      const BirthdaysCompanion(groupId: Value(null)),
+    );
+    await _db.delete(_db.groups).go();
+  }
+
   /// 정렬 순서 일괄 업데이트
   Future<void> updateSortOrders(List<Group> groups) async {
     await _db.transaction(() async {

@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -5,8 +6,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rememberotter/app/app_constants.dart';
 import 'package:rememberotter/app/app_routes.dart';
 import 'package:rememberotter/design_system/variable/app_colors.dart';
+import 'package:rememberotter/domain/models/backup_data.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
+import 'package:rememberotter/feature/gift/controllers/gift_controller.dart';
+import 'package:rememberotter/feature/group/controllers/group_controller.dart';
 import 'package:rememberotter/shared/services/analytics_service.dart';
+import 'package:rememberotter/shared/services/backup_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rememberotter/shared/services/notification_service.dart';
 import 'package:rememberotter/shared/services/remote_config_service.dart';
@@ -373,6 +378,397 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
     );
   }
 
+  // ── 백업/복원 ──
+
+  Future<void> _handleExportBackup() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          '데이터 백업',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        content: const Text(
+          '현재 저장된 모든 데이터를 파일로 내보내요.\n내보낸 파일은 다른 기기에서 복원할 수 있어요.',
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+            height: 1.5,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              '취소',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              '백업하기',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    // 로딩 표시
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      ),
+    );
+
+    final birthdayCount = Get.find<BirthdayController>().birthdays.length;
+    final success = await BackupService().exportBackup();
+
+    if (mounted) Navigator.pop(context); // 로딩 닫기
+
+    AnalyticsService().logBackupExport(
+      success: success,
+      birthdayCount: birthdayCount,
+    );
+
+    if (success) {
+      Get.snackbar(
+        '백업 완료',
+        '백업 파일이 생성되었어요',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.success,
+        colorText: Colors.white,
+      );
+    } else {
+      Get.snackbar(
+        '백업 실패',
+        '백업 파일 생성 중 오류가 발생했어요',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> _handleRestoreBackup() async {
+    // 파일 선택
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
+
+    if (result == null || result.files.isEmpty) return;
+
+    final filePath = result.files.single.path;
+    if (filePath == null || !mounted) return;
+
+    // 유효성 검증
+    final validation = await BackupService().validateBackupFile(filePath);
+
+    if (!validation.isValid) {
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Row(
+            children: [
+              Icon(Icons.error_outline, color: AppColors.error),
+              SizedBox(width: 8),
+              Text(
+                '파일 오류',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            validation.errorMessage ?? '알 수 없는 오류가 발생했어요',
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                '확인',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    // 미리보기 다이얼로그
+    if (!mounted) return;
+    final metadata = validation.metadata!;
+    final restoreMode = await _showRestorePreviewDialog(metadata);
+
+    if (restoreMode == null || !mounted) return;
+
+    // 덮어쓰기 시 추가 경고
+    if (restoreMode == RestoreMode.overwrite) {
+      final proceed = await _showOverwriteWarningDialog();
+      if (proceed != true || !mounted) return;
+    }
+
+    // 로딩 표시
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      ),
+    );
+
+    final result2 = await BackupService().restoreBackup(filePath, restoreMode);
+
+    if (mounted) Navigator.pop(context); // 로딩 닫기
+
+    // 컨트롤러 리로드
+    if (result2.success) {
+      if (Get.isRegistered<GroupController>()) {
+        await Get.find<GroupController>().loadGroups();
+      }
+      if (Get.isRegistered<BirthdayController>()) {
+        await Get.find<BirthdayController>().loadBirthdays();
+      }
+      if (Get.isRegistered<GiftController>()) {
+        await Get.find<GiftController>().loadGifts();
+      }
+    }
+
+    AnalyticsService().logBackupRestore(
+      success: result2.success,
+      mode: restoreMode == RestoreMode.overwrite ? 'overwrite' : 'merge',
+      birthdayCount: metadata.birthdayCount,
+    );
+
+    Get.snackbar(
+      result2.success ? '복원 완료' : '복원 실패',
+      result2.message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: result2.success ? AppColors.success : AppColors.error,
+      colorText: Colors.white,
+    );
+  }
+
+  Future<RestoreMode?> _showRestorePreviewDialog(BackupMetadata metadata) async {
+    return showDialog<RestoreMode>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          '백업 파일 정보',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildPreviewRow('생일', '${metadata.birthdayCount}건'),
+            const SizedBox(height: 8),
+            _buildPreviewRow('선물', '${metadata.giftCount}건'),
+            const SizedBox(height: 8),
+            _buildPreviewRow('그룹', '${metadata.groupCount}건'),
+            const SizedBox(height: 8),
+            _buildPreviewRow('백업 날짜', _formatBackupDate(metadata.createdAt)),
+            const SizedBox(height: 8),
+            _buildPreviewRow('앱 버전', metadata.appVersion),
+            const SizedBox(height: 20),
+            const Text(
+              '복원 방식을 선택해주세요',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pop(context, RestoreMode.merge),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              child: const Column(
+                children: [
+                  Text(
+                    '병합하기',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    '기존 데이터 유지 + 새 데이터 추가',
+                    style: TextStyle(fontSize: 11),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pop(context, RestoreMode.overwrite),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.error,
+                side: const BorderSide(color: AppColors.error),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              child: const Column(
+                children: [
+                  Text(
+                    '덮어쓰기',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    '기존 데이터 삭제 후 백업 데이터로 교체',
+                    style: TextStyle(fontSize: 11),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<bool?> _showOverwriteWarningDialog() async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: AppColors.warning),
+            SizedBox(width: 8),
+            Text(
+              '주의',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+        content: const Text(
+          '덮어쓰기를 선택하면 현재 저장된 모든 데이터가 삭제되고 백업 데이터로 교체돼요.\n\n중요한 데이터가 있다면 먼저 백업을 해주세요.',
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+            height: 1.5,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, false);
+              _handleExportBackup();
+            },
+            child: const Text(
+              '먼저 백업하기',
+              style: TextStyle(color: AppColors.primary),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              '바로 복원',
+              style: TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPreviewRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _formatBackupDate(String isoDate) {
+    try {
+      final date = DateTime.parse(isoDate).toLocal();
+      return '${date.year}.${date.month.toString().padLeft(2, '0')}.${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+    } catch (_) {
+      return isoDate;
+    }
+  }
+
   void _handleEasterEggTap() {
     _easterEggTapCount++;
     if (_easterEggTapCount >= 3) {
@@ -533,6 +929,18 @@ class _SettingsPageState extends State<SettingsPage> with WidgetsBindingObserver
             title: '연락처에서 가져오기',
             subtitle: '연락처에 저장된 생일을 가져올 수 있어요',
             onTap: () => Get.toNamed(AppRoutes.contactImport),
+          ),
+          _buildSettingTile(
+            icon: Icons.upload_file_outlined,
+            title: '데이터 백업하기',
+            subtitle: '생일과 선물 데이터를 파일로 내보내요',
+            onTap: _handleExportBackup,
+          ),
+          _buildSettingTile(
+            icon: Icons.download_outlined,
+            title: '데이터 복원하기',
+            subtitle: '백업 파일에서 데이터를 가져와요',
+            onTap: _handleRestoreBackup,
           ),
           const Divider(height: 32),
 
