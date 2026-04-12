@@ -57,3 +57,6 @@ app.*.map.json
 
 # Unused platforms
 linux/
+
+# Deployment credentials
+.deploy_credentials
