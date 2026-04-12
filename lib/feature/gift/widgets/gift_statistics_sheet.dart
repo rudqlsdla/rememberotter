@@ -109,8 +109,8 @@ class _GiftStatisticsSheetState extends State<GiftStatisticsSheet> {
                 ),
               ),
               const Divider(),
-              SafeArea(
-                child: Expanded(
+              Expanded(
+                child: SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: YearPickerSpinner(
@@ -253,8 +253,8 @@ class _GiftStatisticsSheetState extends State<GiftStatisticsSheet> {
                 ),
               ),
               const Divider(height: 1),
-              SafeArea(
-                child: Flexible(
+              Flexible(
+                child: SafeArea(
                   child: ListView.separated(
                     shrinkWrap: true,
                     padding: const EdgeInsets.only(bottom: 24),
