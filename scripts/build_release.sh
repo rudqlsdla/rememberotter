@@ -14,18 +14,20 @@ cd "$PROJECT_ROOT"
 # ──────────────────────────────────────────
 # 플래그 파싱
 # ──────────────────────────────────────────
-NO_UPLOAD=false
 SKIP_IOS=false
 SKIP_ANDROID=false
+UPLOAD_IOS=false
+UPLOAD_ANDROID=false
 
 for arg in "$@"; do
   case $arg in
-    --no-upload)   NO_UPLOAD=true ;;
-    --skip-ios)    SKIP_IOS=true ;;
-    --skip-android) SKIP_ANDROID=true ;;
+    --skip-ios)       SKIP_IOS=true ;;
+    --skip-android)   SKIP_ANDROID=true ;;
+    --upload-ios)     UPLOAD_IOS=true ;;
+    --upload-android) UPLOAD_ANDROID=true ;;
     *)
       log_error "알 수 없는 플래그: $arg"
-      echo "사용법: ./scripts/build_release.sh [--no-upload] [--skip-ios] [--skip-android]"
+      echo "사용법: ./scripts/build_release.sh [--skip-ios] [--skip-android] [--upload-ios] [--upload-android]"
       exit 1
       ;;
   esac
@@ -87,32 +89,42 @@ else
 fi
 
 # ──────────────────────────────────────────
-# 업로드
+# 업로드 (병렬)
 # ──────────────────────────────────────────
-if [[ "$NO_UPLOAD" == true ]]; then
-  log_info "업로드 건너뜀 (--no-upload)"
-  echo ""
-  log_success "빌드 완료!"
-  exit 0
-fi
-
 echo ""
 
-# App Store 업로드
-if [[ "$SKIP_IOS" == false && -n "$IPA_PATH" ]]; then
-  read -p "$(echo -e "${YELLOW}App Store에 업로드할까요?${NC} (y/N): ")" UPLOAD_IOS
-  if [[ "$UPLOAD_IOS" =~ ^[Yy]$ ]]; then
-    "$SCRIPT_DIR/upload_appstore.sh" "$IPA_PATH"
-  fi
+UPLOAD_PIDS=()
+UPLOAD_FAILED=false
+
+# App Store 업로드 (백그라운드)
+if [[ "$UPLOAD_IOS" == true && -n "$IPA_PATH" ]]; then
+  log_info "App Store 업로드 시작 (백그라운드)..."
+  "$SCRIPT_DIR/upload_appstore.sh" "$IPA_PATH" &
+  UPLOAD_PIDS+=("$!:appstore")
 fi
 
-# Play Store 업로드
-if [[ "$SKIP_ANDROID" == false && -n "$AAB_PATH" ]]; then
-  read -p "$(echo -e "${YELLOW}Play Store에 업로드할까요?${NC} (y/N): ")" UPLOAD_ANDROID
-  if [[ "$UPLOAD_ANDROID" =~ ^[Yy]$ ]]; then
-    "$SCRIPT_DIR/upload_playstore.sh" "$AAB_PATH"
-  fi
+# Play Store 업로드 (백그라운드)
+if [[ "$UPLOAD_ANDROID" == true && -n "$AAB_PATH" ]]; then
+  log_info "Play Store 업로드 시작 (백그라운드)..."
+  "$SCRIPT_DIR/upload_playstore.sh" "$AAB_PATH" &
+  UPLOAD_PIDS+=("$!:playstore")
 fi
+
+# 업로드 완료 대기
+for entry in "${UPLOAD_PIDS[@]}"; do
+  PID="${entry%%:*}"
+  NAME="${entry##*:}"
+  if wait "$PID"; then
+    log_success "$NAME 업로드 완료"
+  else
+    log_error "$NAME 업로드 실패"
+    UPLOAD_FAILED=true
+  fi
+done
 
 echo ""
+if [[ "$UPLOAD_FAILED" == true ]]; then
+  log_error "일부 업로드가 실패했습니다."
+  exit 1
+fi
 log_success "모든 빌드 작업이 완료되었습니다!"

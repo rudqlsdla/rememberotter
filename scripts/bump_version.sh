@@ -76,6 +76,21 @@ if [[ "$DO_BUILD" =~ ^[Yy]$ ]]; then
 
   read -p "$(echo -e "${YELLOW}빌드 후 스토어 업로드?${NC} (y/N): ")" DO_UPLOAD
   DO_UPLOAD="${DO_UPLOAD:-n}"
+
+  if [[ "$DO_UPLOAD" =~ ^[Yy]$ ]]; then
+    DO_UPLOAD_IOS="n"
+    DO_UPLOAD_ANDROID="n"
+
+    if [[ "$DO_IOS" =~ ^[Yy]$ ]]; then
+      read -p "$(echo -e "${YELLOW}App Store 업로드?${NC} (Y/n): ")" DO_UPLOAD_IOS
+      DO_UPLOAD_IOS="${DO_UPLOAD_IOS:-y}"
+    fi
+
+    if [[ "$DO_ANDROID" =~ ^[Yy]$ ]]; then
+      read -p "$(echo -e "${YELLOW}Play Store 업로드?${NC} (Y/n): ")" DO_UPLOAD_ANDROID
+      DO_UPLOAD_ANDROID="${DO_UPLOAD_ANDROID:-y}"
+    fi
+  fi
 fi
 
 # ──────────────────────────────────────────
@@ -189,8 +204,13 @@ if [[ "$DO_BUILD" =~ ^[Yy]$ ]]; then
     BUILD_FLAGS="$BUILD_FLAGS --skip-android"
   fi
 
-  if ! [[ "$DO_UPLOAD" =~ ^[Yy]$ ]]; then
-    BUILD_FLAGS="$BUILD_FLAGS --no-upload"
+  if [[ "$DO_UPLOAD" =~ ^[Yy]$ ]]; then
+    if [[ "$DO_UPLOAD_IOS" =~ ^[Yy]$ ]]; then
+      BUILD_FLAGS="$BUILD_FLAGS --upload-ios"
+    fi
+    if [[ "$DO_UPLOAD_ANDROID" =~ ^[Yy]$ ]]; then
+      BUILD_FLAGS="$BUILD_FLAGS --upload-android"
+    fi
   fi
 
   log_info "빌드 시작..."
