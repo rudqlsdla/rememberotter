@@ -32,6 +32,8 @@
 	<true/>
 	<key>NSContactsUsageDescription</key>
 	<string>연락처에서 생일 정보를 가져오기 위해 접근 권한이 필요합니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>백업 파일을 저장하거나 가져오기 위해 접근 권한이 필요합니다.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
