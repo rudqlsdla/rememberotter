@@ -5,7 +5,9 @@
       "Edit",
       "Write",
       "WebSearch",
-      "WebFetch(*)"
+      "WebFetch(*)",
+      "Bash(mv /Users/groonui/project/flutter/rememberotter/.claude/tasks/error-logging-checklist/checklist.md /Users/groonui/project/flutter/rememberotter/docs/error_logging_checklist.md)",
+      "Bash(rm -r /Users/groonui/project/flutter/rememberotter/.claude/tasks/error-logging-checklist)"
     ]
   }
 }

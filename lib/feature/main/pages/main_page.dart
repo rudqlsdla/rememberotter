@@ -210,7 +210,6 @@ class _FriendsPage extends StatelessWidget {
                             AppRoutes.birthdayDetail,
                             arguments: birthday.id,
                           ),
-                          onDelete: () => controller.deleteBirthday(birthday.id),
                         );
                       },
                     ),
