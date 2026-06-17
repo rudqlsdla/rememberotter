@@ -7,6 +7,8 @@ import 'package:rememberotter/feature/birthday/widgets/birthday_form_sheet.dart'
 import 'package:rememberotter/feature/gift/widgets/gift_history_section.dart';
 import 'package:rememberotter/feature/group/controllers/group_controller.dart';
 import 'package:rememberotter/shared/services/analytics_service.dart';
+import 'package:rememberotter/shared/services/error_reporting_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BirthdayDetailPage extends StatelessWidget {
   const BirthdayDetailPage({super.key});
@@ -170,6 +172,32 @@ class BirthdayDetailPage extends StatelessWidget {
     );
   }
 
+  Future<void> _callBirthday(Birthday birthday) async {
+    final phone = birthday.phoneNumber?.trim();
+    if (phone == null || phone.isEmpty) {
+      Get.snackbar(
+        '전화번호 없음',
+        '전화번호를 등록해주세요',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      BirthdayFormSheet.show(birthday: birthday);
+      return;
+    }
+    try {
+      final uri = Uri(scheme: 'tel', path: phone);
+      final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!ok) throw '전화 앱 실행 실패: $phone';
+      AnalyticsService().logBirthdayCall();
+    } catch (e, stack) {
+      Get.snackbar(
+        '전화 실패',
+        '전화를 걸 수 없어요',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      ErrorReportingService().reportError(e, stack);
+    }
+  }
+
   Widget _buildProfileSection(Birthday birthday) {
     final daysUntil = birthday.daysUntilBirthday;
     final isToday = daysUntil == 0;
@@ -203,6 +231,23 @@ class BirthdayDetailPage extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: isToday ? Colors.white : AppColors.primary,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _callBirthday(birthday),
+              icon: const Icon(Icons.phone_outlined, size: 20),
+              label: const Text('전화 걸기'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ),
@@ -242,6 +287,14 @@ class BirthdayDetailPage extends StatelessWidget {
             label: '나이',
             value: birthday.ageText ?? '-',
           ),
+          if (birthday.phoneNumber != null && birthday.phoneNumber!.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            _buildInfoRow(
+              icon: Icons.phone_outlined,
+              label: '전화번호',
+              value: birthday.phoneNumber!,
+            ),
+          ],
           if (birthday.groupId != null) ...[
             const SizedBox(height: 12),
             Builder(
