@@ -98,6 +98,17 @@ void main() {
     });
   });
 
+  group('오늘이 생일이면 D-0', () {
+    test('양력 생일 당일은 daysUntilBirthday == 0 (365 아님)', () {
+      final now = DateTime.now();
+      final todayB = Birthday(
+        id: 'x', name: 'n', birthDate: DateTime(2000, now.month, now.day),
+        isLunarCalendar: false, createdAt: DateTime(2020),
+        updatedAt: DateTime(2020));
+      expect(todayB.daysUntilBirthday, 0);
+    });
+  });
+
   group('지원 범위 밖 fallback', () {
     test('범위 밖 연도는 입력값을 양력으로 fallback (예외 없음)', () {
       final solar = LunarConverter.lunarToSolar(2100, 3, 15);

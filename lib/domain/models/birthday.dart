@@ -97,13 +97,13 @@ class Birthday {
     return s.month == date.month && s.day == date.day;
   }
 
-  /// 다음 생일까지 남은 일수
+  /// 다음 생일까지 남은 일수 (오늘이 생일이면 0)
   int get daysUntilBirthday {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     for (var y = now.year; y <= now.year + 2; y++) {
       final s = solarOccurrenceInYear(y);
-      if (s.isAfter(today)) return s.difference(today).inDays;
+      if (!s.isBefore(today)) return s.difference(today).inDays;
     }
     return solarOccurrenceInYear(now.year + 1).difference(today).inDays;
   }
