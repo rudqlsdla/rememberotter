@@ -105,6 +105,32 @@ void main() {
     });
   });
 
+  group('양력 2월 29일(윤일) 생일 캘린더 매칭', () {
+    Birthday leapDay() => Birthday(
+          id: 'x', name: 'n', birthDate: DateTime(2000, 2, 29),
+          isLunarCalendar: false, createdAt: DateTime(2020),
+          updatedAt: DateTime(2020));
+
+    test('평년(2026)엔 3월 1일에 매칭, 2월 28일엔 안 함', () {
+      expect(leapDay().fallsOnSolarDate(DateTime(2026, 3, 1)), isTrue);
+      expect(leapDay().fallsOnSolarDate(DateTime(2026, 2, 28)), isFalse);
+    });
+
+    test('윤년(2028)엔 2월 29일에 매칭', () {
+      expect(leapDay().fallsOnSolarDate(DateTime(2028, 2, 29)), isTrue);
+      expect(leapDay().fallsOnSolarDate(DateTime(2028, 3, 1)), isFalse);
+    });
+
+    test('일반 양력 생일은 매년 같은 월/일에 매칭(회귀)', () {
+      final b = Birthday(
+        id: 'x', name: 'n', birthDate: DateTime(1990, 5, 5),
+        isLunarCalendar: false, createdAt: DateTime(2020),
+        updatedAt: DateTime(2020));
+      expect(b.fallsOnSolarDate(DateTime(2026, 5, 5)), isTrue);
+      expect(b.fallsOnSolarDate(DateTime(2026, 5, 6)), isFalse);
+    });
+  });
+
   group('오늘이 생일이면 D-0', () {
     test('양력 생일 당일은 daysUntilBirthday == 0 (365 아님)', () {
       final now = DateTime.now();

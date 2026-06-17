@@ -88,11 +88,11 @@ class Birthday {
     return solarOccurrenceInYear(now.year + 1);
   }
 
-  /// date(연·월·일)가 이 생일의 그 해 양력 발생일과 같은 날인지
+  /// date(연·월·일)가 이 생일의 그 해 양력 발생일과 같은 날인지.
+  ///
+  /// 양력·음력 모두 발생일(solarOccurrenceInYear)로 비교한다. 이렇게 해야
+  /// 양력 2월 29일생이 평년에 3월 1일로 표시되는 D-day와 캘린더가 일치한다.
   bool fallsOnSolarDate(DateTime date) {
-    if (!isLunarCalendar) {
-      return birthDate.month == date.month && birthDate.day == date.day;
-    }
     final s = solarOccurrenceInYear(date.year);
     return s.month == date.month && s.day == date.day;
   }
