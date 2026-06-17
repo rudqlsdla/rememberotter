@@ -116,6 +116,29 @@ void main() {
     });
   });
 
+  group('존재하지 않는 음력일 검증 (isValidLunarDate)', () {
+    test('음2026/2월·12월은 29일까지 → 30일은 무효', () {
+      expect(LunarConverter.lunarMonthLength(2026, 2), 29);
+      expect(LunarConverter.lunarMonthLength(2026, 12), 29);
+      expect(LunarConverter.isValidLunarDate(2026, 2, 29), isTrue);
+      expect(LunarConverter.isValidLunarDate(2026, 2, 30), isFalse);
+      expect(LunarConverter.isValidLunarDate(2026, 12, 30), isFalse);
+    });
+
+    test('대월(30일 있는 달)은 30일 유효 — 음2026/1월', () {
+      expect(LunarConverter.lunarMonthLength(2026, 1), 30);
+      expect(LunarConverter.isValidLunarDate(2026, 1, 30), isTrue);
+    });
+
+    test('범위/평범한 날짜', () {
+      expect(LunarConverter.isValidLunarDate(2026, 3, 15), isTrue);
+      expect(LunarConverter.isValidLunarDate(2026, 0, 1), isFalse);
+      expect(LunarConverter.isValidLunarDate(2026, 13, 1), isFalse);
+      expect(LunarConverter.isValidLunarDate(2026, 5, 0), isFalse);
+      expect(LunarConverter.isValidLunarDate(2026, 5, 31), isFalse);
+    });
+  });
+
   group('지원 범위 밖 fallback', () {
     test('범위 밖 연도는 입력값을 양력으로 fallback (예외 없음)', () {
       final solar = LunarConverter.lunarToSolar(2100, 3, 15);

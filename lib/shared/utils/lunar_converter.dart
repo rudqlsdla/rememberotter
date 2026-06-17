@@ -33,4 +33,32 @@ class LunarConverter {
       return solar;
     }
   }
+
+  /// 음력 (year, month) 평달의 일수 (29 또는 30).
+  ///
+  /// 평달 다음 경계를 기준으로 계산하되, 해당 월에 윤달이 있으면
+  /// 윤달 시작을 경계로 삼아 평달 길이만 잰다.
+  static int lunarMonthLength(int year, int month) {
+    final start = lunarToSolar(year, month, 1);
+    DateTime next;
+    try {
+      // 윤달이 존재하면 평달 다음은 윤달 (없으면 RangeError)
+      next = LunarSolarConverter.convertLunarDateToSolar(
+        LunarDate(year, month, 1, isLeapMonth: true),
+      );
+    } catch (_) {
+      next = month < 12
+          ? lunarToSolar(year, month + 1, 1)
+          : lunarToSolar(year + 1, 1, 1);
+    }
+    final len = next.difference(start).inDays;
+    // 비정상 값(범위 밖 등)이면 30으로 간주해 차단하지 않는다.
+    return (len == 29 || len == 30) ? len : 30;
+  }
+
+  /// 음력 (year, month, day)가 해당 연도에 실제 존재하는 평달 날짜인지.
+  static bool isValidLunarDate(int year, int month, int day) {
+    if (month < 1 || month > 12 || day < 1 || day > 30) return false;
+    return day <= lunarMonthLength(year, month);
+  }
 }

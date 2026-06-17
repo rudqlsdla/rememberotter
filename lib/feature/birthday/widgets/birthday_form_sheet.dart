@@ -284,6 +284,18 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
+    // 존재하지 않는 음력일(예: 평년의 음력 12/30) 저장 차단
+    if (_isLunar &&
+        !LunarConverter.isValidLunarDate(
+            _selectedDate.year, _selectedDate.month, _selectedDate.day)) {
+      Get.snackbar(
+        '날짜 확인',
+        '음력 ${_selectedDate.year}년 ${_selectedDate.month}월 ${_selectedDate.day}일은 없는 날짜예요. 다른 날짜를 선택해주세요.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     final controller = Get.find<BirthdayController>();
 
     if (_isEditing) {
