@@ -34,6 +34,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _memoController = TextEditingController();
+  final _phoneController = TextEditingController();
   late DateTime _selectedDate;
   String? _selectedGroupId;
   bool _isEditing = false;
@@ -46,6 +47,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
     if (_isEditing) {
       _nameController.text = widget.birthday!.name;
       _memoController.text = widget.birthday!.memo ?? '';
+      _phoneController.text = widget.birthday!.phoneNumber ?? '';
       _selectedDate = widget.birthday!.birthDate;
       _selectedGroupId = widget.birthday!.groupId;
       _isLunar = widget.birthday!.isLunarCalendar;
@@ -64,6 +66,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
   void dispose() {
     _nameController.dispose();
     _memoController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -297,6 +300,8 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
     }
 
     final controller = Get.find<BirthdayController>();
+    final phone = _phoneController.text.trim();
+    final phoneOrNull = phone.isEmpty ? null : phone;
 
     if (_isEditing) {
       final updated = widget.birthday!.copyWith(
@@ -304,6 +309,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
         birthDate: _selectedDate,
         memo: _memoController.text.trim().isEmpty ? null : _memoController.text.trim(),
         groupId: () => _selectedGroupId,
+        phoneNumber: () => phoneOrNull,
         isLunarCalendar: _isLunar,
       );
       await controller.updateBirthday(updated);
@@ -313,6 +319,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
         birthDate: _selectedDate,
         memo: _memoController.text.trim().isEmpty ? null : _memoController.text.trim(),
         groupId: _selectedGroupId,
+        phoneNumber: phoneOrNull,
         isLunar: _isLunar,
       );
     }
@@ -449,6 +456,27 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
                 decoration: InputDecoration(
                   labelText: '메모 (선택)',
                   hintText: '메모를 입력하세요',
+                  filled: true,
+                  fillColor: AppColors.surfaceVariant,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // 전화번호 입력
+              TextFormField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  labelText: '전화번호 (선택)',
+                  hintText: '전화번호를 입력하세요',
                   filled: true,
                   fillColor: AppColors.surfaceVariant,
                   border: OutlineInputBorder(
