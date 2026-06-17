@@ -81,7 +81,20 @@
 **`lib/shared/services/analytics_service.dart`**
 - `logBirthdayCall()` 이벤트 메서드 추가 (기존 이벤트 로깅 패턴 따름)
 
-### 5. 개인정보 처리방침
+### 5. 백업 (JSON 내보내기/복원)
+
+> CLAUDE.md에는 백업이 "미구현"으로 적혀 있으나 실제로는 `BackupService`로 구현되어 있음. (CLAUDE.md는 별도로 갱신 필요 — 이번 작업 범위 밖, 사용자에게 보고)
+
+**`lib/shared/services/backup_service.dart`**
+- **내보내기**: `BirthdayData.toJson()` 사용 → 재생성 후 phoneNumber 자동 포함. **수정 불필요**
+- **복원 (필수 수정)**: `restoreBackup()`의 `BirthdaysCompanion.insert(...)`가 필드를 명시 나열함. **overwrite·merge 두 분기 모두**에 `phoneNumber: Value(row.phoneNumber)` 추가. (누락 시 복원 때 전화번호 유실)
+- **`_currentSchemaVersion`은 1로 유지** — nullable 필드 추가는 앞뒤 호환. 올리면 구버전 앱이 신규 백업을 통째로 거부하게 되어 UX 악화
+
+**호환성 검증 (사람이 작성한 백업 데이터로 확인)**
+- 구버전 백업(phoneNumber 키 없음) → 신규 앱 복원: `BirthdayData.fromJson`에서 키 부재 → `null` (nullable이라 안전)
+- 신규 백업 → 구버전 앱 복원: 구버전은 phoneNumber 키 무시, 나머지 정상 복원 (전화번호만 유실, 허용 가능)
+
+### 6. 개인정보 처리방침
 
 **`docs/privacy_policy.md`**
 - 제2조 1항 표: "연락처 생일 가져오기" 수집 항목을 `이름, 생년월일` → `이름, 생년월일, 전화번호`로 수정
@@ -114,5 +127,7 @@
 3. 기존 DB 업그레이드(schema 1→2): 앱 정상 실행, 기존 생일 유지, 번호 null
 4. 연락처 가져오기: 번호 있는 연락처 가져오면 전화번호 저장됨
 5. 상세 페이지: 번호 有 → 전화 앱 호출 / 번호 無 → 안내 후 수정 폼
-6. 개인정보 처리방침 문구 일관성 확인
+6. 백업 내보내기 → 복원(overwrite·merge): 전화번호 보존 확인
+7. 구버전 백업(phoneNumber 키 없는 JSON) 복원: 에러 없이 번호 null로 복원
+8. 개인정보 처리방침 문구 일관성 확인
 ```
