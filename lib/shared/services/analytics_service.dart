@@ -91,6 +91,11 @@ class AnalyticsService {
     logger.d('[Analytics] birthday_detail_view');
   }
 
+  void logBirthdayCall() {
+    _analytics.logEvent(name: 'birthday_call');
+    logger.d('[Analytics] birthday_call');
+  }
+
   // ── 선물 CRUD ──
 
   void logGiftFormOpen({required String mode}) {
