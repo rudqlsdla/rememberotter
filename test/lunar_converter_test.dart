@@ -77,6 +77,27 @@ void main() {
     });
   });
 
+  group('나이 계산 — 연나이는 띠(음력 연도), 만나이는 양력 출생연도', () {
+    Birthday solar(DateTime d) => Birthday(
+          id: 'x', name: 'n', birthDate: d, createdAt: DateTime(2020),
+          updatedAt: DateTime(2020));
+
+    test('섣달(음력 1990/12/30)의 실제 양력 출생연도는 1991', () {
+      expect(LunarConverter.lunarToSolar(1990, 12, 30).year, 1991);
+    });
+
+    test('연나이는 입력한 음력 연도(1990) 기준 — 띠/생년 관습', () {
+      final lunarB = _lunar(12, 30); // 음력 1990년
+      final solar1990 = solar(DateTime(1990, 6, 1));
+      expect(lunarB.yearAge, solar1990.yearAge); // 둘 다 올해 - 1990
+    });
+
+    test('섣달 출생자는 만나이 < 연나이 (만나이만 양력 출생연도 1991 보정)', () {
+      final lunarB = _lunar(12, 30);
+      expect(lunarB.age! < lunarB.yearAge!, isTrue);
+    });
+  });
+
   group('지원 범위 밖 fallback', () {
     test('범위 밖 연도는 입력값을 양력으로 fallback (예외 없음)', () {
       final solar = LunarConverter.lunarToSolar(2100, 3, 15);

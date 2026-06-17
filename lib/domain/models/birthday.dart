@@ -108,21 +108,26 @@ class Birthday {
     return solarOccurrenceInYear(now.year + 1).difference(today).inDays;
   }
 
-  /// 만나이 계산
+  /// 출생 양력 날짜 (음력이면 변환). 나이 계산 기준.
+  DateTime get _solarBirthDate => isLunarCalendar
+      ? _solarFromLunarYear(birthDate.year)
+      : birthDate;
+
+  /// 만나이 계산 (양력 출생 연도 기준, 올해 생일 경과 여부로 보정)
   int? get age {
     final now = DateTime.now();
-    int age = now.year - birthDate.year;
-    if (now.month < birthDate.month ||
-        (now.month == birthDate.month && now.day < birthDate.day)) {
+    final today = DateTime(now.year, now.month, now.day);
+    int age = now.year - _solarBirthDate.year;
+    if (today.isBefore(thisYearBirthday)) {
       age--;
     }
     return age;
   }
 
-  /// 연나이 계산 (올해 연도 - 출생 연도)
+  /// 연나이 계산 (올해 연도 - 출생 연도).
+  /// 음력은 입력한 음력 연도(띠/생년 관습)를 그대로 사용한다.
   int? get yearAge {
-    final now = DateTime.now();
-    return now.year - birthDate.year;
+    return DateTime.now().year - birthDate.year;
   }
 
   /// 설정에 따른 나이 텍스트 (예: "만 25세" 또는 "25세")
