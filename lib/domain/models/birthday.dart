@@ -65,7 +65,11 @@ class Birthday {
   /// 직전 음력 연도에서 넘어온 날짜를 보정해 반환한다.
   DateTime solarOccurrenceInYear(int solarYear) {
     if (!isLunarCalendar) {
-      return DateTime(solarYear, birthDate.month, birthDate.day);
+      // 2월 29일생은 평년엔 그 달 마지막날(2월 28일)에 발생. 다음달로
+      // 넘기지 않도록 일(day)을 해당 월의 마지막 유효일로 clamp 한다.
+      final lastDay = DateTime(solarYear, birthDate.month + 1, 0).day;
+      final day = birthDate.day > lastDay ? lastDay : birthDate.day;
+      return DateTime(solarYear, birthDate.month, day);
     }
     final current = _solarFromLunarYear(solarYear);
     if (current.year == solarYear) return current;

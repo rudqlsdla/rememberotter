@@ -111,9 +111,9 @@ void main() {
           isLunarCalendar: false, createdAt: DateTime(2020),
           updatedAt: DateTime(2020));
 
-    test('평년(2026)엔 3월 1일에 매칭, 2월 28일엔 안 함', () {
-      expect(leapDay().fallsOnSolarDate(DateTime(2026, 3, 1)), isTrue);
-      expect(leapDay().fallsOnSolarDate(DateTime(2026, 2, 28)), isFalse);
+    test('평년(2026)엔 2월 28일에 매칭, 3월 1일엔 안 함', () {
+      expect(leapDay().fallsOnSolarDate(DateTime(2026, 2, 28)), isTrue);
+      expect(leapDay().fallsOnSolarDate(DateTime(2026, 3, 1)), isFalse);
     });
 
     test('윤년(2028)엔 2월 29일에 매칭', () {
