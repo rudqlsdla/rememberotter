@@ -233,7 +233,7 @@ SplashPage → (최초 실행 시) NotificationConsentPage → ContactImportOnbo
 | memo | TEXT? | |
 | profileImage | TEXT? | 미구현 |
 | groupId | TEXT? | → Groups.id |
-| isLunarCalendar | BOOL | deprecated, 호환성 유지 |
+| isLunarCalendar | BOOL | 음력 생일 여부 (true면 birthDate를 음력 Y/M/D로 저장) |
 | notificationEnabled | BOOL | 기본 true |
 | notificationDaysBefore | INT | 기본 1 |
 | createdAt | DATETIME | |
@@ -392,6 +392,7 @@ divider: #F3F4F6
 ## 구현 완료 기능
 
 - [x] 생일 CRUD + 무한 스크롤 캘린더 + D-day/나이 계산
+- [x] 음력 생일 (양/음 구분, 평달 기준 매년 양력 변환, 양↔음 입력 변환, `lib/shared/utils/lunar_converter.dart`)
 - [x] 그룹 기능 (가족/친구/직장/기타 기본 제공, 커스텀 추가, 색상/순서, 필터링)
 - [x] 선물 CRUD + 연도별 히스토리 + 준/받은 구분 + **금액 기록** + **통계 시트**
 - [x] 쇼핑 링크 추천 (네이버/카카오/쿠팡, Firestore 관리)
@@ -412,4 +413,3 @@ divider: #F3F4F6
 - [ ] 프로필 이미지 업로드 (DB 필드 있음)
 - [ ] 다크모드
 - [ ] iCloud/Google Drive 백업
-- [ ] 음력 생일 (DB 필드 있음, UI 없음)

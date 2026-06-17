@@ -45,6 +45,7 @@ class BirthdayRepository {
     String? memo,
     String? profileImage,
     String? groupId,
+    bool isLunar = false,
     bool notificationEnabled = true,
     int notificationDaysBefore = 1,
   }) async {
@@ -57,6 +58,7 @@ class BirthdayRepository {
       memo: Value(memo),
       profileImage: Value(profileImage),
       groupId: Value(groupId),
+      isLunarCalendar: Value(isLunar),
       notificationEnabled: Value(notificationEnabled),
       notificationDaysBefore: Value(notificationDaysBefore),
       createdAt: now,
@@ -69,6 +71,7 @@ class BirthdayRepository {
       memo: memo,
       profileImage: profileImage,
       groupId: groupId,
+      isLunarCalendar: isLunar,
       notificationEnabled: notificationEnabled,
       notificationDaysBefore: notificationDaysBefore,
       createdAt: now,

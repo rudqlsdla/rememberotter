@@ -32,12 +32,15 @@ class WidgetService {
 
       final top3 = sorted.take(3).toList();
 
-      final jsonList = top3.map((b) => {
-        'name': b.name,
-        'daysUntil': b.daysUntilBirthday,
-        'month': b.birthDate.month,
-        'day': b.birthDate.day,
-        'ageText': b.ageText ?? '',
+      final jsonList = top3.map((b) {
+        final solar = b.nextSolarBirthday;
+        return {
+          'name': b.name,
+          'daysUntil': b.daysUntilBirthday,
+          'month': solar.month,
+          'day': solar.day,
+          'ageText': b.ageText ?? '',
+        };
       }).toList();
 
       final jsonString = jsonEncode(jsonList);

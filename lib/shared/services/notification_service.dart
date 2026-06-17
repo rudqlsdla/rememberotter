@@ -102,7 +102,7 @@ class NotificationService {
       return;
     }
 
-    var nextBirthday = _getNextBirthday(birthday.birthDate);
+    var nextBirthday = birthday.nextSolarBirthday;
     var notificationDate = nextBirthday.subtract(
       Duration(days: birthday.notificationDaysBefore),
     );
@@ -119,7 +119,7 @@ class NotificationService {
 
     // 이미 지난 시간이면 내년 생일 기준으로 재계산
     if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
-      nextBirthday = DateTime(nextBirthday.year + 1, nextBirthday.month, nextBirthday.day);
+      nextBirthday = birthday.solarOccurrenceInYear(nextBirthday.year + 1);
       notificationDate = nextBirthday.subtract(
         Duration(days: birthday.notificationDaysBefore),
       );
@@ -211,19 +211,6 @@ class NotificationService {
     }
 
     logger.i('${toSchedule.length}/${enabledBirthdays.length}개 생일 알림 스케줄링 완료');
-  }
-
-  /// 다음 생일 날짜 계산
-  DateTime _getNextBirthday(DateTime birthDate) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    var nextBirthday = DateTime(now.year, birthDate.month, birthDate.day);
-
-    if (nextBirthday.isBefore(today)) {
-      nextBirthday = DateTime(now.year + 1, birthDate.month, birthDate.day);
-    }
-
-    return nextBirthday;
   }
 
   /// 예정된 알림 목록 확인 (디버그용)

@@ -1,4 +1,5 @@
 import 'package:rememberotter/shared/services/settings_service.dart';
+import 'package:rememberotter/shared/utils/lunar_converter.dart';
 
 class Birthday {
   final String id;
@@ -55,23 +56,56 @@ class Birthday {
     );
   }
 
-  /// 올해 생일 날짜 반환
-  DateTime get thisYearBirthday {
+  /// 음력 출생 월·일을 주어진 음력 연도 기준으로 양력 변환
+  DateTime _solarFromLunarYear(int lunarYear) =>
+      LunarConverter.lunarToSolar(lunarYear, birthDate.month, birthDate.day);
+
+  /// 주어진 양력 연도(solarYear) 안에서의 양력 발생일.
+  /// 음력 11·12월처럼 발생일이 다음 양력 연도로 넘어가는 경우,
+  /// 직전 음력 연도에서 넘어온 날짜를 보정해 반환한다.
+  DateTime solarOccurrenceInYear(int solarYear) {
+    if (!isLunarCalendar) {
+      return DateTime(solarYear, birthDate.month, birthDate.day);
+    }
+    final current = _solarFromLunarYear(solarYear);
+    if (current.year == solarYear) return current;
+    final prev = _solarFromLunarYear(solarYear - 1);
+    if (prev.year == solarYear) return prev;
+    return current;
+  }
+
+  /// 올해 양력 생일 날짜
+  DateTime get thisYearBirthday => solarOccurrenceInYear(DateTime.now().year);
+
+  /// 다음(오늘 포함) 양력 생일 날짜
+  DateTime get nextSolarBirthday {
     final now = DateTime.now();
-    return DateTime(now.year, birthDate.month, birthDate.day);
+    final today = DateTime(now.year, now.month, now.day);
+    for (var y = now.year; y <= now.year + 2; y++) {
+      final s = solarOccurrenceInYear(y);
+      if (!s.isBefore(today)) return s;
+    }
+    return solarOccurrenceInYear(now.year + 1);
+  }
+
+  /// date(연·월·일)가 이 생일의 그 해 양력 발생일과 같은 날인지
+  bool fallsOnSolarDate(DateTime date) {
+    if (!isLunarCalendar) {
+      return birthDate.month == date.month && birthDate.day == date.day;
+    }
+    final s = solarOccurrenceInYear(date.year);
+    return s.month == date.month && s.day == date.day;
   }
 
   /// 다음 생일까지 남은 일수
   int get daysUntilBirthday {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    var nextBirthday = DateTime(now.year, birthDate.month, birthDate.day);
-
-    if (nextBirthday.isBefore(today) || nextBirthday.isAtSameMomentAs(today)) {
-      nextBirthday = DateTime(now.year + 1, birthDate.month, birthDate.day);
+    for (var y = now.year; y <= now.year + 2; y++) {
+      final s = solarOccurrenceInYear(y);
+      if (s.isAfter(today)) return s.difference(today).inDays;
     }
-
-    return nextBirthday.difference(today).inDays;
+    return solarOccurrenceInYear(now.year + 1).difference(today).inDays;
   }
 
   /// 만나이 계산

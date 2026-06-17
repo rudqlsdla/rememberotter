@@ -58,9 +58,7 @@ class BirthdayController extends GetxController {
   /// 선택된 날짜의 생일 업데이트 (로드된 리스트에서 필터링)
   void _updateSelectedDateBirthdays() {
     selectedDateBirthdays.value = birthdays
-        .where((b) =>
-            b.birthDate.month == selectedDate.value.month &&
-            b.birthDate.day == selectedDate.value.day)
+        .where((b) => b.fallsOnSolarDate(selectedDate.value))
         .toList();
   }
 
@@ -71,16 +69,12 @@ class BirthdayController extends GetxController {
 
   /// 특정 날짜에 생일이 있는지 확인
   bool hasBirthdayOnDate(DateTime date) {
-    return birthdays.any(
-      (b) => b.birthDate.month == date.month && b.birthDate.day == date.day,
-    );
+    return birthdays.any((b) => b.fallsOnSolarDate(date));
   }
 
   /// 특정 날짜의 생일 목록
   List<Birthday> getBirthdaysOnDate(DateTime date) {
-    return birthdays
-        .where((b) => b.birthDate.month == date.month && b.birthDate.day == date.day)
-        .toList();
+    return birthdays.where((b) => b.fallsOnSolarDate(date)).toList();
   }
 
   /// 생일 추가
@@ -89,12 +83,14 @@ class BirthdayController extends GetxController {
     required DateTime birthDate,
     String? memo,
     String? groupId,
+    bool isLunar = false,
   }) async {
     final birthday = await _repository.add(
       name: name,
       birthDate: birthDate,
       memo: memo,
       groupId: groupId,
+      isLunar: isLunar,
     );
     try {
       await _notificationService.scheduleBirthdayNotification(birthday);

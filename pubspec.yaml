@@ -62,6 +62,7 @@ dependencies:
 
   # ─────────────── 홈 화면 위젯 ───────────────
   home_widget: ^0.7.0
+  korean_lunar_utils: ^1.0.1
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,7 @@ import 'package:rememberotter/design_system/variable/app_colors.dart';
 import 'package:rememberotter/feature/birthday/controllers/birthday_controller.dart';
 import 'package:rememberotter/feature/group/controllers/group_controller.dart';
 import 'package:rememberotter/shared/services/analytics_service.dart';
+import 'package:rememberotter/shared/utils/lunar_converter.dart';
 import 'package:rememberotter/shared/widgets/date_picker_spinner.dart';
 
 class BirthdayFormSheet extends StatefulWidget {
@@ -36,6 +37,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
   late DateTime _selectedDate;
   String? _selectedGroupId;
   bool _isEditing = false;
+  bool _isLunar = false;
 
   @override
   void initState() {
@@ -46,6 +48,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
       _memoController.text = widget.birthday!.memo ?? '';
       _selectedDate = widget.birthday!.birthDate;
       _selectedGroupId = widget.birthday!.groupId;
+      _isLunar = widget.birthday!.isLunarCalendar;
     } else {
       final date = widget.initialDate ?? DateTime.now();
       final today = DateTime.now();
@@ -95,9 +98,9 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
                         ),
                       ),
                     ),
-                    const Text(
-                      '생년월일',
-                      style: TextStyle(
+                    Text(
+                      _isLunar ? '음력 생년월일' : '양력 생년월일',
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimary,
@@ -140,6 +143,65 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
           ),
         );
       },
+    );
+  }
+
+  /// 양력/음력 전환 — 보유한 날짜를 반대 달력으로 변환해 '같은 실제 날'을 유지
+  void _setCalendar(bool lunar) {
+    if (lunar == _isLunar) return;
+    setState(() {
+      _selectedDate = lunar
+          ? LunarConverter.solarToLunar(_selectedDate)
+          : LunarConverter.lunarToSolar(
+              _selectedDate.year, _selectedDate.month, _selectedDate.day);
+      _isLunar = lunar;
+    });
+  }
+
+  /// 선택한 날짜의 반대 달력 표기 문구
+  String get _convertedDateLabel {
+    if (_isLunar) {
+      // 모델의 발생일 보정 로직 재사용 (섣달이 다음 해로 넘어가는 경우 포함)
+      final preview = Birthday(
+        id: '',
+        name: '',
+        birthDate: _selectedDate,
+        isLunarCalendar: true,
+        createdAt: _selectedDate,
+        updatedAt: _selectedDate,
+      );
+      final solar = preview.nextSolarBirthday;
+      return '양력 ${solar.year}년 ${solar.month}월 ${solar.day}일';
+    }
+    final lunar = LunarConverter.solarToLunar(_selectedDate);
+    return '음력 ${lunar.year}년 ${lunar.month}월 ${lunar.day}일';
+  }
+
+  Widget _buildCalendarTypeButton(String label, bool lunar) {
+    final selected = _isLunar == lunar;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _setCalendar(lunar),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: selected ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: selected
+                ? [BoxShadow(color: AppColors.op(Colors.black, 0.05), blurRadius: 4)]
+                : null,
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+              color: selected ? AppColors.primary : AppColors.textSecondary,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -230,6 +292,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
         birthDate: _selectedDate,
         memo: _memoController.text.trim().isEmpty ? null : _memoController.text.trim(),
         groupId: () => _selectedGroupId,
+        isLunarCalendar: _isLunar,
       );
       await controller.updateBirthday(updated);
     } else {
@@ -238,6 +301,7 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
         birthDate: _selectedDate,
         memo: _memoController.text.trim().isEmpty ? null : _memoController.text.trim(),
         groupId: _selectedGroupId,
+        isLunar: _isLunar,
       );
     }
 
@@ -300,6 +364,22 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
               ),
               const SizedBox(height: 16),
 
+              // 양력 / 음력 선택
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceVariant,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    _buildCalendarTypeButton('양력', false),
+                    _buildCalendarTypeButton('음력', true),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
               // 생년월일 선택
               GestureDetector(
                 onTap: _selectDate,
@@ -316,9 +396,9 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            '생년월일',
-                            style: TextStyle(
+                          Text(
+                            _isLunar ? '음력 생년월일' : '양력 생년월일',
+                            style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.textSecondary,
                             ),
@@ -330,6 +410,14 @@ class _BirthdayFormSheetState extends State<BirthdayFormSheet> {
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            _convertedDateLabel,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textTertiary,
                             ),
                           ),
                         ],
