@@ -32,6 +32,13 @@ void main() {
       expect(solar.day, 17);
     });
 
+    test('음력 2026-02-29 → 2026-04-16 (DateTime 정규화 버그 회귀)', () {
+      final solar = LunarConverter.lunarToSolar(2026, 2, 29);
+      expect(solar.year, 2026);
+      expect(solar.month, 4);
+      expect(solar.day, 16); // DateTime 입력이면 4/17로 틀림
+    });
+
     test('같은 음력 생일이 해마다 다른 양력 날짜로 변환된다', () {
       final y2025 = LunarConverter.lunarToSolar(2025, 3, 15);
       final y2026 = LunarConverter.lunarToSolar(2026, 3, 15);

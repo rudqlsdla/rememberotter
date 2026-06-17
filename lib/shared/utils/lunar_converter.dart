@@ -9,9 +9,15 @@ class LunarConverter {
   LunarConverter._();
 
   /// 음력(평달) 연·월·일 → 해당 양력 날짜.
+  ///
+  /// 정수 기반 [LunarDate]로 입력한다. `DateTime(year, month, day)`를 쓰면
+  /// 음력 2월 29·30일처럼 양력에 없는 날짜가 생성 단계에서 정규화돼
+  /// 잘못된 음력 날짜로 변환되므로 사용하지 않는다.
   static DateTime lunarToSolar(int year, int month, int day) {
     try {
-      return LunarSolarConverter.convertLunarToSolar(DateTime(year, month, day));
+      return LunarSolarConverter.convertLunarDateToSolar(
+        LunarDate(year, month, day),
+      );
     } catch (_) {
       return DateTime(year, month, day);
     }
