@@ -83,6 +83,7 @@ class BirthdayController extends GetxController {
     required DateTime birthDate,
     String? memo,
     String? groupId,
+    String? phoneNumber,
     bool isLunar = false,
   }) async {
     final birthday = await _repository.add(
@@ -90,6 +91,7 @@ class BirthdayController extends GetxController {
       birthDate: birthDate,
       memo: memo,
       groupId: groupId,
+      phoneNumber: phoneNumber,
       isLunar: isLunar,
     );
     try {
@@ -130,13 +132,14 @@ class BirthdayController extends GetxController {
 
   /// 생일 일괄 추가 (연락처 가져오기용)
   Future<void> addBirthdayBatch(
-    List<({String name, DateTime birthDate, String? groupId})> items,
+    List<({String name, DateTime birthDate, String? groupId, String? phoneNumber})> items,
   ) async {
     for (final item in items) {
       await _repository.add(
         name: item.name,
         birthDate: item.birthDate,
         groupId: item.groupId,
+        phoneNumber: item.phoneNumber,
       );
     }
     await loadBirthdays();
