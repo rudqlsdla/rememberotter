@@ -60,3 +60,7 @@ linux/
 
 # Deployment credentials
 .deploy_credentials
+
+# Claude Code
+.claude/
+otter_reference_sheet.png
