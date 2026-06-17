@@ -233,7 +233,7 @@ class BirthdayDetailPage extends StatelessWidget {
             label: '생년월일',
             value: birthday.isLunarCalendar
                 ? '음력 ${birthday.birthDate.year}년 ${birthday.birthDate.month}월 ${birthday.birthDate.day}일'
-                  '\n(양력 ${birthday.nextSolarBirthday.year}년 ${birthday.nextSolarBirthday.month}월 ${birthday.nextSolarBirthday.day}일)'
+                  '\n(양력 ${birthday.solarBirthDate.year}년 ${birthday.solarBirthDate.month}월 ${birthday.solarBirthDate.day}일)'
                 : '${birthday.birthDate.year}년 ${birthday.birthDate.month}월 ${birthday.birthDate.day}일',
           ),
           const SizedBox(height: 12),

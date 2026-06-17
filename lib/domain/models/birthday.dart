@@ -108,8 +108,8 @@ class Birthday {
     return solarOccurrenceInYear(now.year + 1).difference(today).inDays;
   }
 
-  /// 출생 양력 날짜 (음력이면 변환). 나이 계산 기준.
-  DateTime get _solarBirthDate => isLunarCalendar
+  /// 출생 양력 날짜 (음력이면 출생 음력일을 양력으로 변환). 나이 계산·표시 기준.
+  DateTime get solarBirthDate => isLunarCalendar
       ? _solarFromLunarYear(birthDate.year)
       : birthDate;
 
@@ -117,7 +117,7 @@ class Birthday {
   int? get age {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    int age = now.year - _solarBirthDate.year;
+    int age = now.year - solarBirthDate.year;
     if (today.isBefore(thisYearBirthday)) {
       age--;
     }
