@@ -184,7 +184,8 @@ class BirthdayDetailPage extends StatelessWidget {
       return;
     }
     try {
-      final uri = Uri(scheme: 'tel', path: phone);
+      final dialNumber = phone.replaceAll(RegExp(r'[^\d+*#]'), '');
+      final uri = Uri(scheme: 'tel', path: dialNumber);
       final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
       if (!ok) throw '전화 앱 실행 실패: $phone';
       AnalyticsService().logBirthdayCall();
