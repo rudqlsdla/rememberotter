@@ -191,6 +191,39 @@ class BirthdayDetailPage extends StatelessWidget {
     }
   }
 
+  /// 전화번호 행 — 번호를 primary 컬러로 표시하고 행 전체를 탭하면 발신
+  Widget _buildPhoneRow(Birthday birthday) {
+    return InkWell(
+      onTap: () => _callBirthday(birthday),
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            const Icon(Icons.phone_outlined, size: 20, color: AppColors.textSecondary),
+            const SizedBox(width: 12),
+            const Text(
+              '전화번호',
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            ),
+            const Spacer(),
+            Text(
+              birthday.phoneNumber!,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+              textAlign: TextAlign.end,
+            ),
+            const SizedBox(width: 4),
+            const Icon(Icons.chevron_right, size: 18, color: AppColors.primary),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildProfileSection(Birthday birthday) {
     final daysUntil = birthday.daysUntilBirthday;
     final isToday = daysUntil == 0;
@@ -265,40 +298,7 @@ class BirthdayDetailPage extends StatelessWidget {
           ),
           if (birthday.phoneNumber != null && birthday.phoneNumber!.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(Icons.phone_outlined, size: 20, color: AppColors.textSecondary),
-                const SizedBox(width: 12),
-                const Text(
-                  '전화번호',
-                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                ),
-                const Spacer(),
-                Text(
-                  birthday.phoneNumber!,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
-                  ),
-                  textAlign: TextAlign.end,
-                ),
-                const SizedBox(width: 8),
-                // 전화 걸기 버튼
-                InkWell(
-                  onTap: () => _callBirthday(birthday),
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: AppColors.primaryLight,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.phone, size: 18, color: AppColors.primary),
-                  ),
-                ),
-              ],
-            ),
+            _buildPhoneRow(birthday),
           ],
           if (birthday.groupId != null) ...[
             const SizedBox(height: 12),
