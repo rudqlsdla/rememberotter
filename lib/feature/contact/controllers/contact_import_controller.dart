@@ -77,6 +77,11 @@ class ContactImportController extends GetxController {
     return DateTime(year, birthdayEvent.month, birthdayEvent.day);
   }
 
+  /// 연락처의 첫 번째 전화번호 (없으면 null)
+  String? getPhone(Contact contact) {
+    return contact.phones.firstOrNull?.number;
+  }
+
   /// 연락처에 생일 정보가 있는지 확인
   bool hasContactBirthday(Contact contact) {
     return contact.events.any((e) => e.label == EventLabel.birthday);
@@ -183,14 +188,19 @@ class ContactImportController extends GetxController {
         .where((c) => selectedContactIds.contains(c.id))
         .toList();
 
-    final List<({String name, DateTime birthDate, String? groupId})> toImport = [];
+    final List<({String name, DateTime birthDate, String? groupId, String? phoneNumber})> toImport = [];
 
     for (final contact in selectedContacts) {
       final birthday = getBirthday(contact);
       if (birthday == null) continue;
       if (isAlreadyImported(contact)) continue;
 
-      toImport.add((name: contact.displayName, birthDate: birthday, groupId: null));
+      toImport.add((
+        name: contact.displayName,
+        birthDate: birthday,
+        groupId: null,
+        phoneNumber: getPhone(contact),
+      ));
     }
 
     if (toImport.isEmpty) return 0;
