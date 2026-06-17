@@ -174,15 +174,7 @@ class BirthdayDetailPage extends StatelessWidget {
 
   Future<void> _callBirthday(Birthday birthday) async {
     final phone = birthday.phoneNumber?.trim();
-    if (phone == null || phone.isEmpty) {
-      Get.snackbar(
-        '전화번호 없음',
-        '전화번호를 등록해주세요',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      BirthdayFormSheet.show(birthday: birthday);
-      return;
-    }
+    if (phone == null || phone.isEmpty) return;
     try {
       final dialNumber = phone.replaceAll(RegExp(r'[^\d+*#]'), '');
       final uri = Uri(scheme: 'tel', path: dialNumber);
@@ -235,23 +227,6 @@ class BirthdayDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _callBirthday(birthday),
-              icon: const Icon(Icons.phone_outlined, size: 20),
-              label: const Text('전화 걸기'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -290,10 +265,39 @@ class BirthdayDetailPage extends StatelessWidget {
           ),
           if (birthday.phoneNumber != null && birthday.phoneNumber!.isNotEmpty) ...[
             const SizedBox(height: 12),
-            _buildInfoRow(
-              icon: Icons.phone_outlined,
-              label: '전화번호',
-              value: birthday.phoneNumber!,
+            Row(
+              children: [
+                const Icon(Icons.phone_outlined, size: 20, color: AppColors.textSecondary),
+                const SizedBox(width: 12),
+                const Text(
+                  '전화번호',
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                ),
+                const Spacer(),
+                Text(
+                  birthday.phoneNumber!,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                  ),
+                  textAlign: TextAlign.end,
+                ),
+                const SizedBox(width: 8),
+                // 전화 걸기 버튼
+                InkWell(
+                  onTap: () => _callBirthday(birthday),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: AppColors.primaryLight,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.phone, size: 18, color: AppColors.primary),
+                  ),
+                ),
+              ],
             ),
           ],
           if (birthday.groupId != null) ...[
