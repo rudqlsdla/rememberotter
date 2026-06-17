@@ -521,6 +521,17 @@ class $BirthdaysTable extends Birthdays
     requiredDuringInsert: false,
     defaultValue: const Constant(1),
   );
+  static const VerificationMeta _phoneNumberMeta = const VerificationMeta(
+    'phoneNumber',
+  );
+  @override
+  late final GeneratedColumn<String> phoneNumber = GeneratedColumn<String>(
+    'phone_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -554,6 +565,7 @@ class $BirthdaysTable extends Birthdays
     isLunarCalendar,
     notificationEnabled,
     notificationDaysBefore,
+    phoneNumber,
     createdAt,
     updatedAt,
   ];
@@ -638,6 +650,15 @@ class $BirthdaysTable extends Birthdays
         ),
       );
     }
+    if (data.containsKey('phone_number')) {
+      context.handle(
+        _phoneNumberMeta,
+        phoneNumber.isAcceptableOrUnknown(
+          data['phone_number']!,
+          _phoneNumberMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -699,6 +720,10 @@ class $BirthdaysTable extends Birthdays
         DriftSqlType.int,
         data['${effectivePrefix}notification_days_before'],
       )!,
+      phoneNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone_number'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -726,6 +751,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
   final bool isLunarCalendar;
   final bool notificationEnabled;
   final int notificationDaysBefore;
+  final String? phoneNumber;
   final DateTime createdAt;
   final DateTime updatedAt;
   const BirthdayData({
@@ -738,6 +764,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     required this.isLunarCalendar,
     required this.notificationEnabled,
     required this.notificationDaysBefore,
+    this.phoneNumber,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -759,6 +786,9 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     map['is_lunar_calendar'] = Variable<bool>(isLunarCalendar);
     map['notification_enabled'] = Variable<bool>(notificationEnabled);
     map['notification_days_before'] = Variable<int>(notificationDaysBefore);
+    if (!nullToAbsent || phoneNumber != null) {
+      map['phone_number'] = Variable<String>(phoneNumber);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -779,6 +809,9 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
       isLunarCalendar: Value(isLunarCalendar),
       notificationEnabled: Value(notificationEnabled),
       notificationDaysBefore: Value(notificationDaysBefore),
+      phoneNumber: phoneNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phoneNumber),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -803,6 +836,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
       notificationDaysBefore: serializer.fromJson<int>(
         json['notificationDaysBefore'],
       ),
+      phoneNumber: serializer.fromJson<String?>(json['phoneNumber']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -820,6 +854,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
       'isLunarCalendar': serializer.toJson<bool>(isLunarCalendar),
       'notificationEnabled': serializer.toJson<bool>(notificationEnabled),
       'notificationDaysBefore': serializer.toJson<int>(notificationDaysBefore),
+      'phoneNumber': serializer.toJson<String?>(phoneNumber),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -835,6 +870,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     bool? isLunarCalendar,
     bool? notificationEnabled,
     int? notificationDaysBefore,
+    Value<String?> phoneNumber = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => BirthdayData(
@@ -848,6 +884,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     notificationEnabled: notificationEnabled ?? this.notificationEnabled,
     notificationDaysBefore:
         notificationDaysBefore ?? this.notificationDaysBefore,
+    phoneNumber: phoneNumber.present ? phoneNumber.value : this.phoneNumber,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -870,6 +907,9 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
       notificationDaysBefore: data.notificationDaysBefore.present
           ? data.notificationDaysBefore.value
           : this.notificationDaysBefore,
+      phoneNumber: data.phoneNumber.present
+          ? data.phoneNumber.value
+          : this.phoneNumber,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -887,6 +927,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
           ..write('isLunarCalendar: $isLunarCalendar, ')
           ..write('notificationEnabled: $notificationEnabled, ')
           ..write('notificationDaysBefore: $notificationDaysBefore, ')
+          ..write('phoneNumber: $phoneNumber, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -904,6 +945,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
     isLunarCalendar,
     notificationEnabled,
     notificationDaysBefore,
+    phoneNumber,
     createdAt,
     updatedAt,
   );
@@ -920,6 +962,7 @@ class BirthdayData extends DataClass implements Insertable<BirthdayData> {
           other.isLunarCalendar == this.isLunarCalendar &&
           other.notificationEnabled == this.notificationEnabled &&
           other.notificationDaysBefore == this.notificationDaysBefore &&
+          other.phoneNumber == this.phoneNumber &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -934,6 +977,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
   final Value<bool> isLunarCalendar;
   final Value<bool> notificationEnabled;
   final Value<int> notificationDaysBefore;
+  final Value<String?> phoneNumber;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -947,6 +991,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     this.isLunarCalendar = const Value.absent(),
     this.notificationEnabled = const Value.absent(),
     this.notificationDaysBefore = const Value.absent(),
+    this.phoneNumber = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -961,6 +1006,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     this.isLunarCalendar = const Value.absent(),
     this.notificationEnabled = const Value.absent(),
     this.notificationDaysBefore = const Value.absent(),
+    this.phoneNumber = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -979,6 +1025,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     Expression<bool>? isLunarCalendar,
     Expression<bool>? notificationEnabled,
     Expression<int>? notificationDaysBefore,
+    Expression<String>? phoneNumber,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -995,6 +1042,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
         'notification_enabled': notificationEnabled,
       if (notificationDaysBefore != null)
         'notification_days_before': notificationDaysBefore,
+      if (phoneNumber != null) 'phone_number': phoneNumber,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1011,6 +1059,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
     Value<bool>? isLunarCalendar,
     Value<bool>? notificationEnabled,
     Value<int>? notificationDaysBefore,
+    Value<String?>? phoneNumber,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -1026,6 +1075,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
       notificationEnabled: notificationEnabled ?? this.notificationEnabled,
       notificationDaysBefore:
           notificationDaysBefore ?? this.notificationDaysBefore,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1064,6 +1114,9 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
         notificationDaysBefore.value,
       );
     }
+    if (phoneNumber.present) {
+      map['phone_number'] = Variable<String>(phoneNumber.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1088,6 +1141,7 @@ class BirthdaysCompanion extends UpdateCompanion<BirthdayData> {
           ..write('isLunarCalendar: $isLunarCalendar, ')
           ..write('notificationEnabled: $notificationEnabled, ')
           ..write('notificationDaysBefore: $notificationDaysBefore, ')
+          ..write('phoneNumber: $phoneNumber, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -2175,6 +2229,7 @@ typedef $$BirthdaysTableCreateCompanionBuilder =
       Value<bool> isLunarCalendar,
       Value<bool> notificationEnabled,
       Value<int> notificationDaysBefore,
+      Value<String?> phoneNumber,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -2190,6 +2245,7 @@ typedef $$BirthdaysTableUpdateCompanionBuilder =
       Value<bool> isLunarCalendar,
       Value<bool> notificationEnabled,
       Value<int> notificationDaysBefore,
+      Value<String?> phoneNumber,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -2283,6 +2339,11 @@ class $$BirthdaysTableFilterComposer
 
   ColumnFilters<int> get notificationDaysBefore => $composableBuilder(
     column: $table.notificationDaysBefore,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phoneNumber => $composableBuilder(
+    column: $table.phoneNumber,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2394,6 +2455,11 @@ class $$BirthdaysTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get phoneNumber => $composableBuilder(
+    column: $table.phoneNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2466,6 +2532,11 @@ class $$BirthdaysTableAnnotationComposer
 
   GeneratedColumn<int> get notificationDaysBefore => $composableBuilder(
     column: $table.notificationDaysBefore,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get phoneNumber => $composableBuilder(
+    column: $table.phoneNumber,
     builder: (column) => column,
   );
 
@@ -2561,6 +2632,7 @@ class $$BirthdaysTableTableManager
                 Value<bool> isLunarCalendar = const Value.absent(),
                 Value<bool> notificationEnabled = const Value.absent(),
                 Value<int> notificationDaysBefore = const Value.absent(),
+                Value<String?> phoneNumber = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -2574,6 +2646,7 @@ class $$BirthdaysTableTableManager
                 isLunarCalendar: isLunarCalendar,
                 notificationEnabled: notificationEnabled,
                 notificationDaysBefore: notificationDaysBefore,
+                phoneNumber: phoneNumber,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -2589,6 +2662,7 @@ class $$BirthdaysTableTableManager
                 Value<bool> isLunarCalendar = const Value.absent(),
                 Value<bool> notificationEnabled = const Value.absent(),
                 Value<int> notificationDaysBefore = const Value.absent(),
+                Value<String?> phoneNumber = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -2602,6 +2676,7 @@ class $$BirthdaysTableTableManager
                 isLunarCalendar: isLunarCalendar,
                 notificationEnabled: notificationEnabled,
                 notificationDaysBefore: notificationDaysBefore,
+                phoneNumber: phoneNumber,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,

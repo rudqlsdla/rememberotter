@@ -33,6 +33,7 @@ class Birthdays extends Table {
   BoolColumn get isLunarCalendar => boolean().withDefault(const Constant(false))();
   BoolColumn get notificationEnabled => boolean().withDefault(const Constant(true))();
   IntColumn get notificationDaysBefore => integer().withDefault(const Constant(1))();
+  TextColumn get phoneNumber => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -69,13 +70,18 @@ class AppDatabase extends _$AppDatabase {
   static AppDatabase get instance => _instance ??= AppDatabase._();
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           await m.createAll();
           await _insertDefaultGroups();
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.addColumn(birthdays, birthdays.phoneNumber);
+          }
         },
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
